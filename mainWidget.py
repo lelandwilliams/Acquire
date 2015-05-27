@@ -2,7 +2,8 @@ import sys
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget
 from PyQt5.QtCore import Qt
 from playerboxgroup import PlayerBoxGroup
-from acquire_board import Board
+from board import Board
+from stockchooserdialog import StockChooserDialog
 
 #class AcquireUI(QMainWindow):
 class AcquireUI(QFrame):
@@ -30,22 +31,23 @@ class AcquireUI(QFrame):
 #       self.playerDock.setAllowedAreas(Qt.RightDockWidgetArea)
 
 #       self.show()
+    def setColors(self): 
+        colorscheme = {}
+        colorscheme['None'] = "rgb(32,32,32)"
+        colorscheme['Tower'] = "rgb(246,214,86)"
+        colorscheme['Luxor'] = "rgb(246,153,153)"
+        colorscheme['Worldwide'] = "rgb(155,98,41)"
+        colorscheme['Festival'] = "rgb(5,119,51)"
+        colorscheme['American'] = "rgb(0,0,102)"
+        colorscheme['Imperial'] = "rgb(242,82,42)"
+        colorscheme['Continental'] = "rgb(0,128,255)"
+
+        return colorscheme
 
 def test():
     app = QApplication(sys.argv)
-    ex = AcquireUI()
+    a = AcquireUI()
+    ex = StockChooserDialog(['Tower', "Luxor", "American"], a.setColors())
     ex.show()
     sys.exit(app.exec_())
 
-def setColors(self): 
-    colorscheme = {}
-    colorscheme['None'] = "rgb(32,32,32)"
-    colorscheme['Tower'] = "rgb(246,214,86)"
-    colorscheme['Luxor'] = "rgb(246,153,153)"
-    colorscheme['Worldwide'] = "rgb(155,98,41)"
-    colorscheme['Festival'] = "rgb(5,119,51)"
-    colorscheme['American'] = "rgb(0,0,102)"
-    colorscheme['Imperial'] = "rgb(242,82,42)"
-    colorscheme['Continental'] = "rgb(0,128,255)"
-
-    return colorscheme
