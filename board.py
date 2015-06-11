@@ -1,9 +1,9 @@
 import sys, string
-from PyQt5.QtWidgets import QLabel, QFrame, QGridLayout, QApplication
-from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtWidgets import QLabel, QFrame, QGridLayout
+#from PyQt5.QtCore import Qt, QCoreApplication
 
 class Board(QFrame):
-    def __init__(self):
+    def __init__(self,colors):
         super().__init__()
 
         self.setLineWidth(1)
@@ -11,8 +11,7 @@ class Board(QFrame):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
         self.tiles = {}
-        self.companycolors = self.setColors()
-#       self.setAlignment(Qt.AlignTop)
+        self.companycolors = colors
 
         self.tile_size = 40
 
@@ -21,7 +20,6 @@ class Board(QFrame):
                 text = str(j) + '-' + i
                 space = QLabel(text,self)
                 self.tiles[text] = space
-#               space.setAlignment(Qt.AlignCenter)
                 space.setFrameShape(QFrame.Panel)
                 space.setFrameShadow(QFrame.Sunken)
             
@@ -36,15 +34,3 @@ class Board(QFrame):
         item.setStyleSheet("QLabel {background-color: " + color + "; color: white;}")
         item.setFrameShadow(QFrame.Raised)
 
-    def setColors(self): 
-        colorscheme = {}
-        colorscheme['None'] = "rgb(32,32,32)"
-        colorscheme['Tower'] = "rgb(246,214,86)"
-        colorscheme['Luxor'] = "rgb(246,153,153)"
-        colorscheme['Worldwide'] = "rgb(155,98,41)"
-        colorscheme['Festival'] = "rgb(5,119,51)"
-        colorscheme['American'] = "rgb(0,0,102)"
-        colorscheme['Imperial'] = "rgb(242,82,42)"
-        colorscheme['Continental'] = "rgb(0,128,255)"
-
-        return colorscheme

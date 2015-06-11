@@ -3,27 +3,28 @@ from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QAppl
 from PyQt5.QtCore import Qt
 from playerboxgroup import PlayerBoxGroup
 from board import Board
-from stockchooserdialog import StockChooserDialog
 from playerDialogBox import PlayerDialogBox
 
 class AcquireUI(QMainWindow):
-#class AcquireUI(QFrame):
     def __init__(self):
         super().__init__()
         self.frame = QFrame()
         self.lt = QGridLayout()
-        self.board = Board()
+        self.board = Board(self.setColors())
         self.pb = PlayerBoxGroup()
+        self.dialogbox = PlayerDialogBox()
         self.board.show()
         self.pb.show()
-        self.pb.test()
         self.lt.addWidget(self.board, 0,0, 1,5)
         self.lt.addWidget(self.pb,0,6,1,2)
+        self.lt.addWidget(self.dialogbox,1,2,1,3)
         self.lt.setAlignment(Qt.AlignTop)
         self.frame.setLayout(self.lt)
 
-
         self.setCentralWidget(self.frame)
+
+    def changeTileColor(self, tile, company):
+        self.board.changeTileColor(tile,company)
 
     def setColors(self): 
         colorscheme = {}
@@ -38,25 +39,21 @@ class AcquireUI(QMainWindow):
 
         return colorscheme
 
-def stockChooserTest():
-    app = QApplication(sys.argv)
-    a = AcquireUI()
-    ex = StockChooserDialog(['Tower', "Luxor", "American", "Worldwide"], a.setColors())
-    ex.show()
-    sys.exit(app.exec_())
+    def test(self):
+        self.pb.test()
+        tile = self.dialogbox.chooseTile(["1-A","7-D","11-F"])
+        self.board.changeTileColor(tile,'None')
 
 def test():
-    app = QApplication(sys.argv)
-    a = AcquireUI()
-    a.show()
-    sys.exit(app.exec_())
+        app = QApplication(sys.argv)
+        a = AcquireUI()
+        a.show()
+        a.test()
+        sys.exit(app.exec_())
 
 def dialogTest():
     app = QApplication(sys.argv)
     a = AcquireUI()
-    ex = PlayerDialogBox()
-    ex.show()
-    tile = ex.chooseTile(["1-A","7-D","11-F"])
     print(" **** %s ****" %(tile))
     stock = ex.chooseStock(['Tower', "Luxor", "American", "Worldwide"], a.setColors())
     print(" **** %s ****" %(stock))
