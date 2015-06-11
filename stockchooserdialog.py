@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QHBoxLayout,QFrame,QPushButton
+from PyQt5.QtWidgets import QHBoxLayout,QDialog,QPushButton
 from PyQt5.QtCore import QObject, pyqtSignal
 
-class StockChooserDialog(QFrame,QObject):
+class StockChooserDialog(QDialog):
     chosen = pyqtSignal(str)
     def __init__(self, companyList, colors):
         super().__init__()
+        self.company_list = companyList
 
         self.tile_size = 40
 
@@ -16,15 +17,15 @@ class StockChooserDialog(QFrame,QObject):
                         "border-color: white;"
                         "border-style: outset;}")
             newStock.clicked.connect(self.buttonClicked)
-            newStock.setFixedSize((3 * self.tile_size)//5, self.tile_size)
             newStock.setObjectName(company)
+            newStock.setFixedSize((3 * self.tile_size)//5, self.tile_size)
             l.addWidget(newStock)
         self.setLayout(l)
 
     def buttonClicked(self):
         sender = self.sender()
         print(sender.objectName())
-        self.chosen.emit(sender.text())
+        self.done(self.company_list.index(sender.objectName()))
 
 
 

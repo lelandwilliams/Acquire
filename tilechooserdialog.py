@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QHBoxLayout,QFrame,QPushButton
+from PyQt5.QtWidgets import QHBoxLayout,QDialog,QPushButton
 from PyQt5.QtCore import QObject, pyqtSignal
 
-class TileChooserDialog(QFrame,QObject):
+class TileChooserDialog(QDialog):
     chosen = pyqtSignal(str)
     def __init__(self, tileList):
         super().__init__()
+        self.tile_list = tileList
 
         self.tile_size = 40
 
@@ -23,7 +24,7 @@ class TileChooserDialog(QFrame,QObject):
     def buttonClicked(self):
         sender = self.sender()
         print(sender.text())
-        self.chosen.emit(sender.text())
+        self.done(self.tile_list.index(sender.text()))
 
 
 

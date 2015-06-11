@@ -4,33 +4,27 @@ from PyQt5.QtCore import Qt
 from playerboxgroup import PlayerBoxGroup
 from board import Board
 from stockchooserdialog import StockChooserDialog
+from playerDialogBox import PlayerDialogBox
 
-#class AcquireUI(QMainWindow):
-class AcquireUI(QFrame):
+class AcquireUI(QMainWindow):
+#class AcquireUI(QFrame):
     def __init__(self):
         super().__init__()
+        self.frame = QFrame()
         self.lt = QGridLayout()
         self.board = Board()
-#       self.board.test()
         self.pb = PlayerBoxGroup()
         self.board.show()
         self.pb.show()
         self.pb.test()
-#       self.pb.setMaximumHeight((self.board.height()))
         self.lt.addWidget(self.board, 0,0, 1,5)
-#        self.lt.addStretch()
         self.lt.addWidget(self.pb,0,6,1,2)
         self.lt.setAlignment(Qt.AlignTop)
-        self.setLayout(self.lt)
-#        self.setMaximumHeight(500)
+        self.frame.setLayout(self.lt)
 
 
-#        self.setCentralWidget(self.board)
-#       self.playerDock = QDockWidget()
-#       self.playerDock.setWidget(self.pb)
-#       self.playerDock.setAllowedAreas(Qt.RightDockWidgetArea)
+        self.setCentralWidget(self.frame)
 
-#       self.show()
     def setColors(self): 
         colorscheme = {}
         colorscheme['None'] = "rgb(32,32,32)"
@@ -44,10 +38,26 @@ class AcquireUI(QFrame):
 
         return colorscheme
 
-def test():
+def stockChooserTest():
     app = QApplication(sys.argv)
     a = AcquireUI()
-    ex = StockChooserDialog(['Tower', "Luxor", "American"], a.setColors())
+    ex = StockChooserDialog(['Tower', "Luxor", "American", "Worldwide"], a.setColors())
     ex.show()
     sys.exit(app.exec_())
 
+def test():
+    app = QApplication(sys.argv)
+    a = AcquireUI()
+    a.show()
+    sys.exit(app.exec_())
+
+def dialogTest():
+    app = QApplication(sys.argv)
+    a = AcquireUI()
+    ex = PlayerDialogBox()
+    ex.show()
+    tile = ex.chooseTile(["1-A","7-D","11-F"])
+    print(" **** %s ****" %(tile))
+    stock = ex.chooseStock(['Tower', "Luxor", "American", "Worldwide"], a.setColors())
+    print(" **** %s ****" %(stock))
+    sys.exit(app.exec_())
