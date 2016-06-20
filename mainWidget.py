@@ -26,7 +26,7 @@ class AcquireUI(QMainWindow):
         self.fileMenu = self.menuBar().addMenu("&Game")
         self.startAction = (QAction("&New", self))
         self.fileMenu.addAction(self.startAction)
-        self.startAction.triggered.connect(self.newGame())
+        self.startAction.triggered.connect(self.newGame)
         self.exitAction = QAction("E&xit",self)
         self.fileMenu.addAction(self.exitAction)
         self.exitAction.triggered.connect(qApp.quit)
@@ -35,6 +35,9 @@ class AcquireUI(QMainWindow):
 
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
+    
+    def newGame(self):
+        pass
 
     def setColors(self): 
         colorscheme = {}
@@ -54,11 +57,11 @@ class AcquireUI(QMainWindow):
         tile = self.dialogbox.chooseTile(["1-A","7-D","11-F"])
         self.board.changeTileColor(tile,'None')
 
-def test():
+def play():
         app = QApplication(sys.argv)
         a = AcquireUI()
         a.show()
-        a.test()
+        #a.test()
         sys.exit(app.exec_())
 
 def dialogTest():
