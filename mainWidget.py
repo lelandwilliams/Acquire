@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
+from acquire import Game
 
 class AcquireUI(QMainWindow):
     def __init__(self):
@@ -37,7 +38,7 @@ class AcquireUI(QMainWindow):
         self.board.changeTileColor(tile,company)
     
     def newGame(self):
-        pass
+        self.game = Game(self)
 
     def setColors(self): 
         colorscheme = {}
@@ -51,6 +52,15 @@ class AcquireUI(QMainWindow):
         colorscheme['Continental'] = "rgb(0,128,255)"
 
         return colorscheme
+
+    def setPlayers(self):
+        players = {}
+        players['Bender'] = 'Robot'
+        players['C3P0'] = "Robot"
+        players['Hal 9000'] = 'Robot'
+        players['Puny Human'] = 'Human'
+
+        return players
 
     def test(self):
         self.pb.test()
