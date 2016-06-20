@@ -8,11 +8,17 @@ mainWidget.py
 	dialogTest()
 
 acquire.py
+	class Player(self, name, PlayerType)
+		self.name
+		self.playerType
+		self.hand
+		self.money
 	class Game(self)
 		addTiletoGroup(self,tile,group)
 		adjoiningGroups(self,tile)
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
+		setStarters():
 	play()
 
 board.py
