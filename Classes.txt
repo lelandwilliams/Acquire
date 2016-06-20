@@ -2,9 +2,11 @@
 mainWidget.py
 	class AcquireUI
 		changeTileColor(self,tile,company)
+		newGame()
 		setColors(self)
 		test(self)
-	test()
+		setPlayers()
+	play()
 	dialogTest()
 
 acquire.py
