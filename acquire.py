@@ -2,15 +2,24 @@ import sys, string, random
 from PyQt5.QtWidgets import QApplication
 from mainWidget import AcquireUI
 
+class Player:
+    def __init(self, name, playerType):
+        self.name = name
+        self.playerType = playerType
+        self.hand = []
+        self.money = 5000
+
 class Game:
-    def __init__(self):
+    def __init__(self, ui = nil):
         self.tiles = self.initiate_tiles()
-        self.app = QApplication(sys.argv)
-        self.ui = AcquireUI()
         self.tilegroups = []
         for i in range(7):
             self.tilegroups.append([])
-        self.ui.show()
+
+        self.ui = ui
+        self.players = []
+        for newplayer in self.ui.setPlayers():
+            self.players.append(Player(i, playerType[i]))
 
     def addTiletoGroup(self,tile,group):
         index = self.tilegroups.index(group)
@@ -42,23 +51,26 @@ class Game:
             return True
         return False
 
+    def setStarters():
+        for i in range(len(self.players)):
+            starters.append(self.tiles.pop())
+        for tile in starters:
+            game.ui.changeTileColor(tile, 'None')
+
+            groups = self.adjoiningGroups(tile)
+            if len(groups) > 0:
+                while len(groups) > 1:
+                    self.tilegrousp[groups[0]] += self.tilegrousp[groups[1]] 
+                    del self.tilegrousp[groups[1]] 
+                    groups = self.adjoiningGroups(tile)
+                self.tilegroups[groups[0]].append(tile)
+            else:
+                self.tilegroups.append([tile])
+
 def play():
     game = Game()
     starters = []
     hand = []
-    for i in range(6):
-        starters.append(game.tiles.pop())
-        hand.append(game.tiles.pop())
-    for tile in starters:
-        if len(game.tiles) < 8:
-            game.tiles.append([tile])
-        else:
-            groups = game.adjoiningGroups(tile)
-            if len(groups) > 0:
-                game.tilegroups[groups[0]].append(tile)
-            else:
-                game.tilegroups.append([tile])
-            game.ui.changeTileColor(tile, 'None')
 #-------->    while(len( <----------------------------
     sys.exit(game.app.exec_())
 
