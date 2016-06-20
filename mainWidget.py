@@ -23,7 +23,10 @@ class AcquireUI(QMainWindow):
 
         self.setCentralWidget(self.frame)
 
-        self.fileMenu = self.menuBar().addMenu("&File")
+        self.fileMenu = self.menuBar().addMenu("&Game")
+        self.startAction = (QAction("&New", self))
+        self.fileMenu.addAction(self.startAction)
+        self.startAction.triggered.connect(self.newGame())
         self.exitAction = QAction("E&xit",self)
         self.fileMenu.addAction(self.exitAction)
         self.exitAction.triggered.connect(qApp.quit)
