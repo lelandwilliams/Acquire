@@ -1,0 +1,34 @@
+
+mainWidget.py
+	class AcquireUI
+		changeTileColor(self,tile,company)
+		setColors(self)
+		test(self)
+	test()
+	dialogTest()
+
+acquire.py
+	class Game(self)
+		addTiletoGroup(self,tile,group)
+		adjoiningGroups(self,tile)
+		initiate_tiles(self)
+		isAdjoining(self,tile,group)
+	play()
+
+board.py
+	class Board(self,colors)
+	changeTileColor(self,tile,company)
+
+playerboxgroup.py
+	class PlayerBoxGroup(self)
+		addPlayer(self,name,money)
+		test(self)
+
+playerbox.py
+	class PlayerBox(self)
+		setName(self, name)
+
+playerDialogBox.py
+	class PlayerDialogBox(self)
+		chooseStock(self,companies,colors)
+		chooseTile(self,tiles)
