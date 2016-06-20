@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp
 from PyQt5.QtCore import Qt
 from playerboxgroup import PlayerBoxGroup
 from board import Board
@@ -22,6 +22,13 @@ class AcquireUI(QMainWindow):
         self.frame.setLayout(self.lt)
 
         self.setCentralWidget(self.frame)
+
+        self.fileMenu = self.menuBar().addMenu("&File")
+        self.exitAction = QAction("E&xit",self)
+        self.fileMenu.addAction(self.exitAction)
+        self.exitAction.triggered.connect(qApp.quit)
+
+        self.setWindowTitle('Acquire')
 
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
