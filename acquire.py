@@ -3,14 +3,14 @@ from PyQt5.QtWidgets import QApplication
 from mainWidget import AcquireUI
 
 class Player:
-    def __init(self, name, playerType):
+    def __init__(self, name, playerType):
         self.name = name
         self.playerType = playerType
         self.hand = []
         self.money = 5000
 
-class Game:
-    def __init__(self, ui = nil):
+class Acquire:
+    def __init__(self, ui = False):
         self.tiles = self.initiate_tiles()
         self.tilegroups = []
         for i in range(7):
@@ -18,8 +18,10 @@ class Game:
 
         self.ui = ui
         self.players = []
-        for newplayer in self.ui.setPlayers():
-            self.players.append(Player(i, playerType[i]))
+        newplayers = self.ui.setPlayers()
+        for newplayer in newplayers:
+            self.players.append(Player(newplayer, newplayers[newplayer]))
+        random.shuffle(self.players)
 
     def addTiletoGroup(self,tile,group):
         index = self.tilegroups.index(group)
@@ -32,6 +34,20 @@ class Game:
                 adjoininggrouplist.append(i)
         return adjoininggrouplist
                 
+    def determineStartingPlayer(self, arr, start=0, current=1):
+        if current > len(arr):
+            return start
+
+        if arr[start][3] < arr{current][3]:
+            return self.determineStartingPlayer(self, arr, start, current +1)
+        elif arr[start][3] > arr{current][3]:
+            return self.determineStartingPlayer(self, arr, current, current +1)
+        else:
+            if arr[start][1] < arr{current][1]:
+                return self.determineStartingPlayer(self, arr, start, current +1)
+            elif arr[start][1] > arr{current][1]:
+                return self.determineStartingPlayer(self, arr, current, current +1)
+
     def initiate_tiles(self):
         tiles = []
         for i in string.ascii_uppercase[:9]:
@@ -54,18 +70,20 @@ class Game:
     def setStarters():
         for i in range(len(self.players)):
             starters.append(self.tiles.pop())
-        for tile in starters:
-            game.ui.changeTileColor(tile, 'None')
 
-            groups = self.adjoiningGroups(tile)
-            if len(groups) > 0:
-                while len(groups) > 1:
-                    self.tilegrousp[groups[0]] += self.tilegrousp[groups[1]] 
-                    del self.tilegrousp[groups[1]] 
-                    groups = self.adjoiningGroups(tile)
-                self.tilegroups[groups[0]].append(tile)
-            else:
-                self.tilegroups.append([tile])
+        groups = self.adjoiningGroups(tile)
+        if len(groups) > 0:
+            while len(groups) > 1:
+                self.tilegroups[groups[0]] += self.tilegroups[groups[1]] 
+                del self.tilegroups[groups[1]] 
+                groups = self.adjoiningGroups(tile)
+            self.tilegroups[groups[0]].append(tile)
+        else:
+            self.tilegroups.append([tile])
+
+        self.currentPlayerNumber = self.determineStartingPlayer(starters)
+
+        return starters
 
 def play():
     game = Game()
