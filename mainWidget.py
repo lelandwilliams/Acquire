@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
-from acquire import Game
+import acquire 
 
 class AcquireUI(QMainWindow):
     def __init__(self):
@@ -34,11 +34,20 @@ class AcquireUI(QMainWindow):
 
         self.setWindowTitle('Acquire')
 
+    def addPlayers(self, players):
+        for player in players:
+            self.pb.addPlayer(player.name, player.money)
+
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
     
     def newGame(self):
-        self.game = Game(self)
+        self.game = acquire.Acquire(ui = self)
+        self.addPlayers(self.game.players)
+
+        starters = self.game.setStarters()
+        for tile in starters:
+            self.changeTileColor(tile, 'None')
 
     def setColors(self): 
         colorscheme = {}

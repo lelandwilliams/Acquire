@@ -35,18 +35,18 @@ class Acquire:
         return adjoininggrouplist
                 
     def determineStartingPlayer(self, arr, start=0, current=1):
-        if current > len(arr):
+        if current >= len(arr):
             return start
 
-        if arr[start][3] < arr{current][3]:
-            return self.determineStartingPlayer(self, arr, start, current +1)
-        elif arr[start][3] > arr{current][3]:
-            return self.determineStartingPlayer(self, arr, current, current +1)
+        if arr[start][2] < arr[current][2]:
+            return self.determineStartingPlayer(arr, start, current +1)
+        elif arr[start][2] > arr[current][2]:
+            return self.determineStartingPlayer(arr, current, current +1)
         else:
-            if arr[start][1] < arr{current][1]:
-                return self.determineStartingPlayer(self, arr, start, current +1)
-            elif arr[start][1] > arr{current][1]:
-                return self.determineStartingPlayer(self, arr, current, current +1)
+            if arr[start][0] < arr[current][0]:
+                return self.determineStartingPlayer(arr, start, current +1)
+            elif arr[start][0] > arr[current][0]:
+                return self.determineStartingPlayer(arr, current, current +1)
 
     def initiate_tiles(self):
         tiles = []
@@ -67,19 +67,21 @@ class Acquire:
             return True
         return False
 
-    def setStarters():
+    def setStarters(self):
+        starters = []
         for i in range(len(self.players)):
             starters.append(self.tiles.pop())
 
-        groups = self.adjoiningGroups(tile)
-        if len(groups) > 0:
-            while len(groups) > 1:
-                self.tilegroups[groups[0]] += self.tilegroups[groups[1]] 
-                del self.tilegroups[groups[1]] 
-                groups = self.adjoiningGroups(tile)
-            self.tilegroups[groups[0]].append(tile)
-        else:
-            self.tilegroups.append([tile])
+        for tile in starters:
+            groups = self.adjoiningGroups(tile)
+            if len(groups) > 0:
+                while len(groups) > 1:
+                    self.tilegroups[groups[0]] += self.tilegroups[groups[1]] 
+                    del self.tilegroups[groups[1]] 
+                    groups = self.adjoiningGroups(tile)
+                self.tilegroups[groups[0]].append(tile)
+            else:
+                self.tilegroups.append([tile])
 
         self.currentPlayerNumber = self.determineStartingPlayer(starters)
 
