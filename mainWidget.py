@@ -42,12 +42,29 @@ class AcquireUI(QMainWindow):
         self.board.changeTileColor(tile,company)
     
     def newGame(self):
-        self.game = acquire.Acquire(ui = self)
+        players = self.setPlayers()
+        self.game = acquire.Acquire(players)
         self.addPlayers(self.game.players)
 
         starters = self.game.setStarters()
         for tile in starters:
             self.changeTileColor(tile, 'None')
+        while(not self.game.gameOver()):
+            player = self.game.getCurrentPlayer()
+            while(len(player.hand) < 6):
+                player.hand.append(self.game.tiles.pop())
+                player.hand.sort()
+            if(player.playerType == 'Human'):
+                tile = self.dialogbox.chooseTile(player.hand)
+                player.hand.remove(tile)
+            else:
+                tile = self.game.aiChooseTile(player)
+            self.changeTileColor(tile, 'None')
+            player.hand.append(self.game.tiles.pop())
+            player.hand.sort()
+            self.game.advanceCurrentPlayer()
+
+
 
     def setColors(self): 
         colorscheme = {}
@@ -63,11 +80,11 @@ class AcquireUI(QMainWindow):
         return colorscheme
 
     def setPlayers(self):
-        players = {}
-        players['Bender'] = 'Robot'
-        players['C3P0'] = "Robot"
-        players['Hal 9000'] = 'Robot'
-        players['Puny Human'] = 'Human'
+        players = []
+        players.append(acquire.Player('Bender', 'Robot'))
+        players.append(acquire.Player('C3P0', 'Robot'))
+        players.append(acquire.Player('Bender', 'Robot'))
+        players.append(acquire.Player('Puny Human', 'Human'))
 
         return players
 
@@ -81,7 +98,7 @@ def play():
         a = AcquireUI()
         a.show()
         #a.test()
-        sys.exit(app.exec_())
+        #sys.exit(app.exec_())
 
 def dialogTest():
     app = QApplication(sys.argv)
@@ -90,3 +107,5 @@ def dialogTest():
     stock = ex.chooseStock(['Tower', "Luxor", "American", "Worldwide"], a.setColors())
     print(" **** %s ****" %(stock))
     sys.exit(app.exec_())
+
+play()
