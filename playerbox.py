@@ -24,6 +24,7 @@ class PlayerBox(QFrame):
         self.layout.addWidget(self.lastPlayFrame)
 
         self.setLineWidth(1)
+        self.setFrameStyle(QFrame.Panel)
 
     def setName(self, name):
         self.nameLabel.setText(name)
