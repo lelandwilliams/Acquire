@@ -1,6 +1,6 @@
 import sys, string, random
-from PyQt5.QtWidgets import QApplication
-from mainWidget import AcquireUI
+#from PyQt5.QtWidgets import QApplication
+#from mainWidget import AcquireUI
 
 class Player:
     def __init__(self, name, playerType):
@@ -10,17 +10,13 @@ class Player:
         self.money = 5000
 
 class Acquire:
-    def __init__(self, ui = False):
+    def __init__(self, players):
+        self.players = players
         self.tiles = self.initiate_tiles()
         self.tilegroups = []
         for i in range(7):
             self.tilegroups.append([])
 
-        self.ui = ui
-        self.players = []
-        newplayers = self.ui.setPlayers()
-        for newplayer in newplayers:
-            self.players.append(Player(newplayer, newplayers[newplayer]))
         random.shuffle(self.players)
 
     def addTiletoGroup(self,tile,group):
@@ -34,6 +30,13 @@ class Acquire:
                 adjoininggrouplist.append(i)
         return adjoininggrouplist
                 
+    def advanceCurrentPlayer(self):
+        self.currentPlayer = (self.currentPlayer + 1 ) % (len(self.players) -1)
+
+    def aiChooseTile(player):
+        random.shuffle(player.hand)
+        return player.hand.pop()
+
     def determineStartingPlayer(self, arr, start=0, current=1):
         if current >= len(arr):
             return start
@@ -47,6 +50,12 @@ class Acquire:
                 return self.determineStartingPlayer(arr, start, current +1)
             elif arr[start][0] > arr[current][0]:
                 return self.determineStartingPlayer(arr, current, current +1)
+
+    def gameOver(self):
+        return len(self.tiles) <= 1
+
+    def getCurrentPlayer(self):
+        return self.players[self.currentPlayerNumber]
 
     def initiate_tiles(self):
         tiles = []
