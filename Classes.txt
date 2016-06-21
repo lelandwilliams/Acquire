@@ -16,9 +16,17 @@ acquire.py
 		self.hand
 		self.money
 	class Game(self)
+		self.tiles
+		self.tilegroups
+		self.players
+
+		__init__(self,players)
 		addTiletoGroup(self,tile,group)
 		adjoiningGroups(self,tile)
+		advanceCurrentPlayer(self)
+		aiChooseTile(self, player)
 		determineStartingPlayer(self,array,starter,index)
+		gameOver(self)
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
 		setStarters():
