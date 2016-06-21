@@ -18,6 +18,7 @@ acquire.py
 	class Game(self)
 		addTiletoGroup(self,tile,group)
 		adjoiningGroups(self,tile)
+		determineStartingPlayer(self,array,starter,index)
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
 		setStarters():
