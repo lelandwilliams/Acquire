@@ -12,6 +12,7 @@ class Player:
 class Acquire:
     def __init__(self, players):
         self.players = players
+        self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
         self.tilegroups = []
         for i in range(7):
@@ -31,9 +32,9 @@ class Acquire:
         return adjoininggrouplist
                 
     def advanceCurrentPlayer(self):
-        self.currentPlayer = (self.currentPlayer + 1 ) % (len(self.players) -1)
+        self.currentPlayerNumber = (self.currentPlayerNumber + 1 ) % len(self.players) 
 
-    def aiChooseTile(player):
+    def aiChooseTile(self,player):
         random.shuffle(player.hand)
         return player.hand.pop()
 
