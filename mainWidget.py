@@ -98,7 +98,7 @@ def play():
         a = AcquireUI()
         a.show()
         #a.test()
-        #sys.exit(app.exec_())
+        sys.exit(app.exec_())
 
 def dialogTest():
     app = QApplication(sys.argv)
@@ -108,4 +108,4 @@ def dialogTest():
     print(" **** %s ****" %(stock))
     sys.exit(app.exec_())
 
-play()
+#play()
