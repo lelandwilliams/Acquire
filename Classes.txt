@@ -15,10 +15,24 @@ acquire.py
 		self.playerType
 		self.hand
 		self.money
+
+	class Corp(self, name)
+		self.name
+		self.shares_available
+		self.share_price
+		self.active
+		self.anchor_tile
+
+		__repr__(self)
+		isActive(self)
+		setInitialPrice(self)
+
+
 	class Game(self)
 		self.tiles
 		self.tilegroups
 		self.players
+		self.corporations
 
 		__init__(self,players)
 		addTiletoGroup(self,tile,group)
@@ -27,6 +41,7 @@ acquire.py
 		aiChooseTile(self, player)
 		determineStartingPlayer(self,array,starter,index)
 		gameOver(self)
+		initiate_corps(self)
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
 		setStarters():
