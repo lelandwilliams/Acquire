@@ -59,6 +59,15 @@ class AcquireUI(QMainWindow):
                 player.hand.remove(tile)
             else:
                 tile = self.game.aiChooseTile(player)
+            corp = None
+            if len(self.game.adjoiningGroups(tile)) >= 1:
+                if(player.playerType == 'Human'):
+                    corp = self.dialogbox.chooseCorporation(self.game.inactiveCorps())
+                else:
+                    corp = self.game.aiChooseCorp(self.game.inactiveCorps())
+                self.game.setActive(corp, player, tile)
+                self.changeGroupColor(tile, corp)
+
             self.changeTileColor(tile, 'None')
             player.hand.append(self.game.tiles.pop())
             player.hand.sort()
