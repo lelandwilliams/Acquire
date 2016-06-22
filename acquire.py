@@ -7,16 +7,66 @@ class Player:
         self.name = name
         self.playerType = playerType
         self.hand = []
-        self.money = 5000
+        self.money = 6000
+
+    def __repr__(self):
+        s = "\t"
+        s.append(self.name)
+        s.append(" $")
+        s.append(self.money)
+        s.append(" ")
+        for i in self.hand:
+            s.append(i)
+            s.append(" ")
+        return s
+
+class Corp:
+    def __init__(self, name):
+        self.name = name
+        self.shares_available = 25
+        self.share_price = self.setInitialPrice()
+        self.active = False
+        self.anchor_tile = None
+
+    def __repr__(self):
+        s = "\t"
+        s.append(self.name)
+        s.append(" active: ")
+        if self.active:
+            s.append("Yes  shares outstanding: ")
+        else:
+            s.append("No   shares outstanding: ")
+        s.append(self.shares_available)
+        s.append(" price: $ ")
+        s.append(self.price())
+        return s
+
+    def isActive(self):
+        return self.active
+
+    def setInitialPrice(self):
+        if self.name in ["Worldwide", "American", "Festival"]:
+            return 300
+        if self.name in ["Imperial", "Continental"]:
+            return 400
+        return 200
+
+    def price(self):
+        return self.share_price
+
 
 class Acquire:
     def __init__(self, players):
+        self.corpNames = ["Tower","Luxor","Worldwide","Festival","American",
+                "Continental","Imperial"]:
         self.players = players
         self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
         self.tilegroups = []
         for i in range(7):
             self.tilegroups.append([])
+
+        self.corporations = self.initiate_corps()
 
         random.shuffle(self.players)
 
@@ -57,6 +107,12 @@ class Acquire:
 
     def getCurrentPlayer(self):
         return self.players[self.currentPlayerNumber]
+
+    def initiate_corps(self):
+        a = {}
+        for name in self.corpNames:
+            a[name] = Corp(name)
+        return a
 
     def initiate_tiles(self):
         tiles = []
