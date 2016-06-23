@@ -11,7 +11,7 @@ class TileChooserDialog(QDialog):
 
         l = QHBoxLayout()
         for tile in tileList:
-            newTile = QPushButton(tile)
+            newTile = QPushButton(str(tile[0])+"-"+tile[1])
             newTile.setStyleSheet("QPushButton {background-color: black;"
                         "color: white;"
                         "border-color: white;"
