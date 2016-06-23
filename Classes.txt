@@ -40,6 +40,7 @@ acquire.py
 		advanceCurrentPlayer(self)
 		aiChooseTile(self, player)
 		determineStartingPlayer(self,array,starter,index)
+		fillHands(self)
 		gameOver(self)
 		inactiveCorps(self)
 		initiate_corps(self)

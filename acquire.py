@@ -123,6 +123,12 @@ class Acquire:
             elif arr[start][0] > arr[current][0]:
                 return self.determineStartingPlayer(arr, current, current +1)
 
+    def fillHands(self):
+        for player in self.players:
+            while len(player.hand < 6):
+                player.hand.append(self.game.tiles.pop())
+            player.hand.sort()
+
     def gameOver(self):
         return len(self.tiles) <= 1
 
