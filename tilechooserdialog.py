@@ -24,7 +24,14 @@ class TileChooserDialog(QDialog):
     def buttonClicked(self):
         sender = self.sender()
         print(sender.text())
-        self.done(self.tile_list.index(sender.text()))
+        txt = sender.text()
+        num = 0
+        if len(txt) ==4:
+            num = 10 + int(txt[1])
+        else:
+            num = int(txt[0])
+        tile = (num,txt[-1])
+        self.done(self.tile_list.index(tile))
 
 
 

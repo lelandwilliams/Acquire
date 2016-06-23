@@ -27,7 +27,7 @@ class PlayerDialogBox(QFrame,QObject):
         self.label1.setText("Choose your Tile")
         self.layout.addWidget(self.dialog)
         tile =  tiles[self.dialog.exec()]
-        self.label1.setText("You Chose " + tile)
+        self.label1.setText("You Chose " + str(tile))
         return tile
 
     def chooseCorporation(self, corps):
