@@ -29,7 +29,8 @@ class Board(QFrame):
 #        self.setMaximumSize(self.frameWidth(), self.frameWidth())
 
     def changeTileColor(self,tile, company):
-        item = self.tiles[tile]
+        tilestr = str(tile[0])+"-"+tile[1]
+        item = self.tiles[tilestr]
         color = self.companycolors[company]
         item.setStyleSheet("QLabel {background-color: " + color + "; color: white;}")
         item.setFrameShadow(QFrame.Raised)
