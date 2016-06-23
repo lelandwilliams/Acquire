@@ -198,7 +198,7 @@ class Acquire:
             #groups[0].append(tile)
             while len(groups) > 1:
                 self.tilegroups[groups[0]] += self.tilegroups[groups[1]] 
-                del self.tilegroups[self.tilegroups.index(groups[1])] 
+                del self.tilegroups[groups[1]]
             self.tilegroups[groups[0]].append(tile)
         else:
             self.tilegroups.append([tile])
