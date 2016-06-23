@@ -41,6 +41,7 @@ acquire.py
 		aiChooseTile(self, player)
 		determineStartingPlayer(self,array,starter,index)
 		gameOver(self)
+		inactiveCorps(self)
 		initiate_corps(self)
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
