@@ -150,8 +150,8 @@ class Acquire:
 
     def fillHands(self):
         for player in self.players:
-            while len(player.hand < 6):
-                player.hand.append(self.game.tiles.pop())
+            while len(player.hand) < 6:
+                player.hand.append(self.tiles.pop())
             player.hand.sort()
 
     def gameOver(self):
@@ -195,7 +195,7 @@ class Acquire:
     def placeTile(self, tile, starters = True):
         groups = self.adjoiningGroups(tile)
         if len(groups) > 0:
-            groups[0].append(tile)
+            #groups[0].append(tile)
             while len(groups) > 1:
                 self.tilegroups[groups[0]] += self.tilegroups[groups[1]] 
                 del self.tilegroups[self.tilegroups.index(groups[1])] 
