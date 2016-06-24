@@ -9,13 +9,13 @@ class Player:
 
     def __repr__(self):
         s = '\t'
-        s.append(self.name)
-        s.append(" $")
-        s.append(self.money)
-        s.append(" ")
+        s += (self.name)
+        s += (" $")
+        s += (str(self.money))
+        s += (" ")
         for i in self.hand:
-            s.append(i)
-        s.append(" \n")
+            s += (str(i))
+        s += (" \n")
         return s
 
 class Corp:
