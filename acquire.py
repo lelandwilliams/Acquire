@@ -107,7 +107,7 @@ class Acquire:
 
     def aiChooseTile(self,player):
         random.shuffle(player.hand)
-        return player.hand.pop()
+        return player.hand[0]
 
     def corpSize(self, corp):
         for group in self.tilegroups:
