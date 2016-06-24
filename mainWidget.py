@@ -33,6 +33,7 @@ class AcquireUI(QMainWindow):
         self.exitAction.triggered.connect(qApp.quit)
 
         self.setWindowTitle('Acquire')
+        self.debug = True
 
     def addPlayers(self, players):
         for player in players:
@@ -41,6 +42,21 @@ class AcquireUI(QMainWindow):
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
     
+    def chooseNewCorp(self,player,tile): 
+        corp = None
+        corps = self.game.inactiveCorps()
+        if(player.playerType == 'Human'):
+            corp = self.dialogbox.chooseCorp(corps)
+        else:
+            corp = self.game.aiChooseTile(corps)
+        
+        groups = self.game.adjoiningGroups(tile)
+        if len(groups) > 1:
+            print ("Group Error")
+        self.game.tilegroups.append(tile)
+        for member in groups[0]:
+            self.changeTileColor(member, corp)
+
     def chooseTile(self,player):
         tile = None
         while True:
@@ -48,7 +64,9 @@ class AcquireUI(QMainWindow):
                 tile = self.dialogbox.chooseTile(player.hand)
             else:
                 tile = self.game.aiChooseTile(player)
-            if evaluatePlay(tile) != "Illegal":
+            if self.game.evaluatePlay(tile) != "Illegal":
+                if self.debug:
+                    print(player.name, "chose", tile)
                 return tile
          
     def newGame(self):
@@ -63,8 +81,14 @@ class AcquireUI(QMainWindow):
         while(not self.game.gameOver()):
             player = self.game.getCurrentPlayer()
             tile = self.chooseTile(player)
+            outcome = self.game.evaluatePlay(tile)
+            if outcome == "Regular":
+                self.game.placeTile(tile)
+                self.changeTileColor(tile, 'None')
+            elif outcome == "NewCorp":
+                self.chooseNewCorp(player,tile)
 
-            self.changeTileColor(tile, 'None')
+            player.hand.remove(tile)
             player.hand.append(self.game.tiles.pop())
             player.hand.sort()
             self.game.advanceCurrentPlayer()
@@ -113,4 +137,4 @@ def dialogTest():
     print(" **** %s ****" %(stock))
     sys.exit(app.exec_())
 
-#play()
+play()
