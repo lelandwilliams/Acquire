@@ -42,10 +42,14 @@ class AcquireUI(QMainWindow):
         self.board.changeTileColor(tile,company)
     
     def chooseTile(self,player):
-        if(player.playerType == 'Human'):
-            return self.dialogbox.chooseTile(player.hand)
-            player.hand.remove(tile)
-        return  self.game.aiChooseTile(player)
+        tile = None
+        while True:
+            if(player.playerType == 'Human'):
+                tile = self.dialogbox.chooseTile(player.hand)
+            else:
+                tile = self.game.aiChooseTile(player)
+            if evaluatePlay(tile) != "Illegal":
+                return tile
          
     def newGame(self):
         players = self.setPlayers()
@@ -59,14 +63,6 @@ class AcquireUI(QMainWindow):
         while(not self.game.gameOver()):
             player = self.game.getCurrentPlayer()
             tile = self.chooseTile(player)
-            corp = None
-            if len(self.game.adjoiningGroups(tile)) >= 1:
-                if(player.playerType == 'Human'):
-                    corp = self.dialogbox.chooseCorporation(self.game.inactiveCorps())
-                else:
-                    corp = self.game.aiChooseCorp(self.game.inactiveCorps())
-                self.game.setActive(corp, player, tile)
-                self.changeGroupColor(tile, corp)
 
             self.changeTileColor(tile, 'None')
             player.hand.append(self.game.tiles.pop())
