@@ -146,8 +146,6 @@ class Acquire:
             return "Illegal"
         return "Regular"
 
-
-
     def fillHands(self):
         for player in self.players:
             while len(player.hand) < 6:
