@@ -8,14 +8,12 @@ class Player:
         self.money = 6000
 
     def __repr__(self):
-        s = '\t'
-        s += (self.name)
+        s = (self.name)
         s += (" $")
         s += (str(self.money))
         s += (" ")
         for i in self.hand:
             s += (str(i))
-        s += (" \n")
         return s
 
 class Corp:
@@ -24,7 +22,7 @@ class Corp:
         self.shares_available = 25
         self.share_price = self.setInitialPrice()
         self.active = False
-        self.anchor_tile = None
+        self.anchorTile = None
 
     def __repr__(self):
         s = "\t"
