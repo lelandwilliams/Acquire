@@ -46,7 +46,7 @@ class AcquireUI(QMainWindow):
         corp = None
         corps = self.game.inactiveCorps()
         if(player.playerType == 'Human'):
-            corp = self.dialogbox.chooseCorp(corps)
+            corp = self.dialogbox.chooseCorporation(corps)
         else:
             corp = self.game.aiChooseTile(corps)
         
@@ -66,7 +66,7 @@ class AcquireUI(QMainWindow):
                 tile = self.game.aiChooseTile(player)
             if self.game.evaluatePlay(tile) != "Illegal":
                 if self.debug:
-                    print(player.name, "chose", tile)
+                    print(player.name, "chose", tile, self.game.evaluatePlay(tile))
                 return tile
          
     def newGame(self):
