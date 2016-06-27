@@ -46,7 +46,7 @@ class AcquireUI(QMainWindow):
         corp = None
         corps = self.game.inactiveCorps()
         if(player.playerType == 'Human'):
-            corp = self.dialogbox.chooseCorporation(corps)
+            corp = self.dialogbox.chooseCorporation(corps, self.setColors())
         else:
             corp = self.game.aiChooseTile(corps)
         
