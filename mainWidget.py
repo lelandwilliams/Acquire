@@ -114,7 +114,7 @@ class AcquireUI(QMainWindow):
         players = []
         players.append(acquire.Player('Bender', 'Robot'))
         players.append(acquire.Player('C3P0', 'Robot'))
-        players.append(acquire.Player('Bender', 'Robot'))
+        players.append(acquire.Player('Hal 9000', 'Robot'))
         players.append(acquire.Player('Puny Human', 'Human'))
 
         return players
