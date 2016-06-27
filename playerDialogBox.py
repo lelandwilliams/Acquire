@@ -30,11 +30,11 @@ class PlayerDialogBox(QFrame,QObject):
         self.label1.setText("You Chose " + str(tile))
         return tile
 
-    def chooseCorporation(self, corps):
+    def chooseCorporation(self, corps, colors):
         self.dialog = StockChooserDialog(corps,colors)
         self.label1.setText("You have founded a corporation. Which one ?")
         self.layout.addWidget(self.dialog)
-        corp =  companies[self.dialog.exec()]
+        corp =  corps[self.dialog.exec()]
         print(corp)
 #       self.label1.setText("You Chose " + stock)
-        return stock
+        return corp
