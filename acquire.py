@@ -22,7 +22,7 @@ class Corp:
         self.shares_available = 25
         self.share_price = self.setInitialPrice()
         self.active = False
-        self.anchorTile = None
+        self.groupIndex = -1
 
     def __repr__(self):
         s = "\t"
@@ -66,6 +66,8 @@ class Acquire:
         self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
         self.tilegroups = []
+        while len(self.tilegroups < 7):
+            self.tilegroups.append([])
         self.corporations = self.initiate_corps()
 
         self.fillHands()
@@ -89,11 +91,11 @@ class Acquire:
         return adjoininggrouplist
 
     def adjoiningCorps(self, tile):
-        corps = []
-        groups = self.adjoiningGroups(tile)
+        corps = set()
+        groupindices = self.adjoiningGroups(tile)
         for corp in self.corporations:
-            for group in groups:
-                if self.corporations[corp].anchorTile in self.tilegroups[group]:
+            for idx in groupindices:
+                if self.corporations[corp].anchorTile in self.tilegroups[idx]:
                     corps.append(corp)
         return corps
                 
@@ -136,14 +138,14 @@ class Acquire:
                 return "Illegal"
             return "NewCorp"
         if len(self.adjoiningCorps(tile)) == 1:
-            return "Regular"
-        safe_corps = False
+            return "Addon"
+        safe_corps = 0
         for corp in self.adjoiningCorps(tile):
             if self.corpSize(corp) > 10:
                 safe_corps += 1
         if safe_corps > 1:
             return "Illegal"
-        return "Regular"
+        return "Merger"
 
     def fillHands(self):
         for player in self.players:
