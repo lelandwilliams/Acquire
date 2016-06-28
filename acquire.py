@@ -66,7 +66,7 @@ class Acquire:
         self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
         self.tilegroups = []
-        while len(self.tilegroups < 7):
+        while len(self.tilegroups) < 7:
             self.tilegroups.append([])
         self.corporations = self.initiate_corps()
 
