@@ -216,6 +216,10 @@ class Acquire:
         if playtype == "Regular":
             self.tilegroups.append([tile])
         elif playtype == "Addon":
+            groupindices = self.adjoiningGroups(tile)
+            while len(groupindices) > 1:
+                self.addGrouptoGroup(groupindices[-1],groupindices[0])
+                groupindices = self.adjoiningGroups(tile)
             self.addTiletoCorp(tile, self.adjoiningCorps(tile)[0]) 
         else:
             print("improper call to Acquire.placeTile()")
