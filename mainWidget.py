@@ -43,7 +43,7 @@ class AcquireUI(QMainWindow):
         self.board.changeTileColor(tile,company)
 
     def changeGroupColor(self, corp):
-        idx = self.changeGroupColor(self.game.corporations[corp].groupIndex)
+        idx = self.game.corporations[corp].groupIndex
         for member in self.game.tilegroups[idx]:
             self.changeTileColor(member, corp)
     
