@@ -212,9 +212,23 @@ class Acquire:
                 groupindices = self.adjoiningGroups(tile)
             self.tilegroups[groups[0]].append(tile)
 
+    def placeTile(self, tile):
+        playtype =  self.evaluatePlay(tile)
+        if playtype == "Regular":
+            self.tilegroups.append([tile])
+        elif playtype == "Addon":
+            self.addTiletoCorp(tile, self.adjoiningCorps(tile)[0]) 
+        else:
+            print("improper call to Acquire.placeTile()")
+
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)
-        self.corporations[corp].setAnchorTile(tile)
+        groupindices = self.adjoiningTiles(tile)
+        while len(groupindices) > 1:
+            self.addGrouptoGroup(groupindices[0], groupindices[-1])
+            groupindices = self.adjoiningTiles(tile)
+        self.addGrouptoGroup(oldgroupindex, self.corporations[corp].groupIndex)
+        self.addTiletoCorp(tile, corp)
 
     def setStarters(self):
         starters = []
