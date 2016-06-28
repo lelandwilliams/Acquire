@@ -222,7 +222,7 @@ class Acquire:
 
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)
-        groupindices = self.adjoiningTiles(tile)
+        groupindices = self.adjoiningGroups(tile)
         while len(groupindices) > 1:
             self.addGrouptoGroup(groupindices[0], groupindices[-1])
             groupindices = self.adjoiningTiles(tile)
