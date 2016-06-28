@@ -39,6 +39,7 @@ acquire.py
 
 		__init__(self,players)
 		addGrouptoGroup(self,oldgroup,newgroup)
+		addTiletoCorp(self,tile,corp)
 		addTiletoGroup(self,tile,group)
 		adjoiningGroups(self,tile)
 		advanceCurrentPlayer(self)
