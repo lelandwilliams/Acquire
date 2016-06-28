@@ -11,14 +11,14 @@ class StockChooserDialog(QDialog):
 
         l = QHBoxLayout()
         for company in companyList:
-            newStock = QPushButton()
+            newStock = QPushButton(company)
             newStock.setStyleSheet("QPushButton {background-color: " + colors[company] + ";"
                         "color: white;"
                         "border-color: white;"
                         "border-style: outset;}")
             newStock.clicked.connect(self.buttonClicked)
             newStock.setObjectName(company)
-            newStock.setFixedSize((3 * self.tile_size)//5, self.tile_size)
+            newStock.setFixedSize((5 * self.tile_size)//7, self.tile_size)
             l.addWidget(newStock)
         self.setLayout(l)
 
