@@ -119,10 +119,7 @@ class Acquire:
         return player.hand[0]
 
     def corpSize(self, corp):
-        for group in self.tilegroups:
-            if self.corporations[corp].anchor_tile in group:
-                return len(group)
-        return 0
+        return len(self.tilegroups[self.corporations[corp].groupIndex])
 
     def determineStartingPlayer(self, arr, start=0, current=1):
         if current >= len(arr):
