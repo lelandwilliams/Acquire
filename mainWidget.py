@@ -50,7 +50,7 @@ class AcquireUI(QMainWindow):
         else:
             corp = self.game.aiChooseCorp(corps)
         
-        self.game.corporations[corp].setActive(True)
+        self.game.setActive(corp, player, tile)
         groupindices = self.game.adjoiningGroups(tile)
         if len(groupindices) > 1:
             print ("Group Error")
