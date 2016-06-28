@@ -100,12 +100,12 @@ class Acquire:
         return adjoininggrouplist
 
     def adjoiningCorps(self, tile):
-        corps = set()
+        corps = []
         groupindices = self.adjoiningGroups(tile)
         for corp in self.corporations:
                 if self.corporations[corp].groupIndex in groupindices:
                     corps.append(corp)
-        return list(corps)
+        return corps
                 
     def advanceCurrentPlayer(self):
         self.currentPlayerNumber = (self.currentPlayerNumber + 1 ) % len(self.players) 
