@@ -28,10 +28,10 @@ class Corp:
         s = "\t"
         s += (self.name)
         s += (" active: ")
-        if self.active:
-            s += ("Yes  shares outstanding: ")
+        if self.active and self.shares_available > 0:
+            s += str(self.shares_available) + ("shares outstanding")
         else:
-            s += ("No   shares outstanding: ")
+            s += ("No shares outstanding: ")
         s += str(self.shares_available)
         s += (" price: $ ")
         s += str(self.price())
@@ -193,16 +193,15 @@ class Acquire:
             return True
         return False
 
-    def placeTile(self, tile, starters = True):
-        groups = self.adjoiningGroups(tile)
-        if len(groups) > 0:
-            #groups[0].append(tile)
-            while len(groups) > 1:
-                self.tilegroups[groups[0]] += self.tilegroups[groups[1]] 
-                del self.tilegroups[groups[1]]
-            self.tilegroups[groups[0]].append(tile)
-        else:
+    def placeStarter(self, tile):
+        groupindices = self.adjoiningGroups(tile)
+        if len(groupindices) == 0:
             self.tilegroups.append([tile])
+        else:
+            while len(groupindexes) > 1:
+                self.addGroupToGroup(groupindices[-1], groupindices[0])
+                groupindices = self.adjoiningGroups(tile)
+            self.tilegroups[groups[0]].append(tile)
 
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)
@@ -214,7 +213,7 @@ class Acquire:
             starters.append(self.tiles.pop())
 
         for tile in starters:
-            self.placeTile(tile, True)
+            self.placeStarter(tile)
 
         self.currentPlayerNumber = self.determineStartingPlayer(starters)
         return starters
