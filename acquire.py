@@ -225,7 +225,7 @@ class Acquire:
         groupindices = self.adjoiningGroups(tile)
         while len(groupindices) > 1:
             self.addGrouptoGroup(groupindices[0], groupindices[-1])
-            groupindices = self.adjoiningTiles(tile)
+            groupindices = self.adjoiningGroups(tile)
         self.addGrouptoGroup(groupindices[0], self.corporations[corp].groupIndex)
         self.addTiletoCorp(tile, corp)
 
