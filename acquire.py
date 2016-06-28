@@ -170,7 +170,8 @@ class Acquire:
         a = {}
         idx = 0
         for name in self.corpNames:
-            a[name] = Corp(name)
+            a[name] = Corp(name,idx)
+            idx += 1
         return a
 
     def initiate_tiles(self):
