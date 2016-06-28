@@ -41,6 +41,11 @@ class AcquireUI(QMainWindow):
 
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
+
+    def changeGroupColor(self, corp):
+        idx = self.changeGroupColor(self.game.corporations[corp].groupIndex)
+        for member in self.game.tilegroups[idx]:
+            self.changeTileColor(member, corp)
     
     def chooseNewCorp(self,player,tile): 
         corp = None
@@ -51,13 +56,6 @@ class AcquireUI(QMainWindow):
             corp = self.game.aiChooseCorp(corps)
         
         return corp
-        self.game.setActive(corp, player, tile)
-        groupindices = self.game.adjoiningGroups(tile)
-        if len(groupindices) > 1:
-            print ("Group Error")
-        self.game.tilegroups[groupindices[0]].append(tile)
-        for member in self.game.tilegroups[groupindices[0]]:
-            self.changeTileColor(member, corp)
 
     def chooseTile(self,player):
         tile = None
@@ -92,7 +90,7 @@ class AcquireUI(QMainWindow):
             elif outcome == "NewCorp":
                 newcorp = self.chooseNewCorp(player,tile)
                 self.game.setActive(newcorp,player,tile)
-                self.setcorpcolors(corp)
+                self.changeGroupColor(corp)
             elif outcome == "Addon":
                 self.game.placeTile(tile)
                 self.changeTileColor(tile, self.game.adjoiningCorps[0])
