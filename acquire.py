@@ -103,10 +103,9 @@ class Acquire:
         corps = set()
         groupindices = self.adjoiningGroups(tile)
         for corp in self.corporations:
-            for idx in groupindices:
-                if self.corporations[corp].anchorTile in self.tilegroups[idx]:
+                if self.corporations[corp].groupIndex in groupindices:
                     corps.append(corp)
-        return corps
+        return list(corps)
                 
     def advanceCurrentPlayer(self):
         self.currentPlayerNumber = (self.currentPlayerNumber + 1 ) % len(self.players) 
