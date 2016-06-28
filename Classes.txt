@@ -2,7 +2,9 @@
 mainWidget.py
 	class AcquireUI
 		addPlayers(self, players)
+		changeGroupColor(self,corp)
 		changeTileColor(self,tile,company)
+		chooseNewCorp(self,player,tile)
 		chooseTile(self, player)
 		newGame()
 		setColors(self)
