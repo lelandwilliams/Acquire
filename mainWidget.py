@@ -50,6 +50,7 @@ class AcquireUI(QMainWindow):
         else:
             corp = self.game.aiChooseCorp(corps)
         
+        return corp
         self.game.setActive(corp, player, tile)
         groupindices = self.game.adjoiningGroups(tile)
         if len(groupindices) > 1:
@@ -89,14 +90,17 @@ class AcquireUI(QMainWindow):
                 self.game.placeTile(tile)
                 self.changeTileColor(tile, 'None')
             elif outcome == "NewCorp":
-                self.chooseNewCorp(player,tile)
+                newcorp = self.chooseNewCorp(player,tile)
+                self.game.setActive(newcorp,player,tile)
+                self.setcorpcolors(corp)
+            elif outcome == "Addon":
+                self.game.placeTile(tile)
+                self.changeTileColor(tile, self.game.adjoiningCorps[0])
 
             player.hand.remove(tile)
             player.hand.append(self.game.tiles.pop())
             player.hand.sort()
             self.game.advanceCurrentPlayer()
-
-
 
     def setColors(self): 
         colorscheme = {}
