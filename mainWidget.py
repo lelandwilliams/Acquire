@@ -93,7 +93,7 @@ class AcquireUI(QMainWindow):
                 self.changeGroupColor(newcorp)
             elif outcome == "Addon":
                 self.game.placeTile(tile)
-                self.changeTileColor(tile, self.game.adjoiningCorps[0])
+                self.changeTileColor(tile, self.game.adjoiningCorps(tile)[0])
 
             player.hand.remove(tile)
             player.hand.append(self.game.tiles.pop())
