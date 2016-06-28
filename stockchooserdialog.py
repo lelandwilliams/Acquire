@@ -7,7 +7,7 @@ class StockChooserDialog(QDialog):
         super().__init__()
         self.company_list = companyList
 
-        self.tile_size = 40
+        self.width = 100
 
         l = QHBoxLayout()
         for company in companyList:
@@ -18,7 +18,7 @@ class StockChooserDialog(QDialog):
                         "border-style: outset;}")
             newStock.clicked.connect(self.buttonClicked)
             newStock.setObjectName(company)
-            newStock.setFixedSize((5 * self.tile_size)//7, self.tile_size)
+            newStock.setFixedSize(self.width, int(1.5 *self.width))
             l.addWidget(newStock)
         self.setLayout(l)
 
