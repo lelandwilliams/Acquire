@@ -68,6 +68,7 @@ class Acquire:
         self.tilegroups = []
         self.corporations = self.initiate_corps()
 
+        self.fillHands()
         random.shuffle(self.players)
 
     def __repr__(self):
@@ -131,7 +132,7 @@ class Acquire:
         if len(self.adjoiningGroups(tile)) == 0:
             return "Regular"
         if len(self.adjoiningCorps(tile)) == 0:
-            if self.activeCorps() == 7:
+            if len(self.inactiveCorps()) == 0:
                 return "Illegal"
             return "NewCorp"
         if len(self.adjoiningCorps(tile)) == 1:
@@ -178,9 +179,9 @@ class Acquire:
         return tiles
 
     def isAdjoining(self,tile,group):
-        if (tile[0],str(ord(tile[1])+1)) in group:
+        if (tile[0],chr(ord(tile[1])+1)) in group:
             return True
-        if (tile[0],str(ord(tile[1])-1)) in group:
+        if (tile[0],chr(ord(tile[1])-1)) in group:
             return True
         if (tile[0]+1,tile[1]) in group:
             return True
