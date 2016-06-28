@@ -17,12 +17,12 @@ class Player:
         return s
 
 class Corp:
-    def __init__(self, name):
+    def __init__(self, name, index):
         self.name = name
         self.shares_available = 25
         self.share_price = self.setInitialPrice()
         self.active = False
-        self.groupIndex = -1
+        self.groupIndex = index
 
     def __repr__(self):
         s = "\t"
@@ -168,6 +168,7 @@ class Acquire:
 
     def initiate_corps(self):
         a = {}
+        idx = 0
         for name in self.corpNames:
             a[name] = Corp(name)
         return a
