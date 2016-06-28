@@ -209,7 +209,7 @@ class Acquire:
             while len(groupindices) > 1:
                 self.addGroupToGroup(groupindices[-1], groupindices[0])
                 groupindices = self.adjoiningGroups(tile)
-            self.tilegroups[groups[0]].append(tile)
+            self.tilegroups[groupindices[0]].append(tile)
 
     def placeTile(self, tile):
         playtype =  self.evaluatePlay(tile)
