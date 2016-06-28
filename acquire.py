@@ -226,7 +226,7 @@ class Acquire:
         while len(groupindices) > 1:
             self.addGrouptoGroup(groupindices[0], groupindices[-1])
             groupindices = self.adjoiningTiles(tile)
-        self.addGrouptoGroup(oldgroupindex, self.corporations[corp].groupIndex)
+        self.addGrouptoGroup(groupindices[0], self.corporations[corp].groupIndex)
         self.addTiletoCorp(tile, corp)
 
     def setStarters(self):
