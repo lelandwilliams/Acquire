@@ -7,11 +7,11 @@ class StockChooserDialog(QDialog):
         super().__init__()
         self.company_list = companyList
 
-        self.width = 100
+        self.width = 80
 
         l = QHBoxLayout()
         for company in companyList:
-            newStock = QPushButton(company)
+            newStock = QPushButton(company + "\nHotels")
             newStock.setStyleSheet("QPushButton {background-color: " + colors[company] + ";"
                         "color: white;"
                         "border-color: white;"
