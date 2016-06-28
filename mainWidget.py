@@ -50,11 +50,12 @@ class AcquireUI(QMainWindow):
         else:
             corp = self.game.aiChooseCorp(corps)
         
-        groups = self.game.adjoiningGroups(tile)
-        if len(groups) > 1:
+        self.game.corporations[corp].setActive(True)
+        groupindices = self.game.adjoiningGroups(tile)
+        if len(groupindices) > 1:
             print ("Group Error")
-        self.game.tilegroups.append(tile)
-        for member in groups[0]:
+        self.game.tilegroups[groupindices[0]].append(tile)
+        for member in self.game.tilegroups[groupindices[0]]:
             self.changeTileColor(member, corp)
 
     def chooseTile(self,player):
