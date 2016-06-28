@@ -18,12 +18,13 @@ acquire.py
 		self.hand
 		self.money
 
-	class Corp(self, name)
+	class Corp(self, name, tilegroupindex)
 		self.name
 		self.shares_available
 		self.share_price
 		self.active
 		self.anchor_tile
+		self.groupIndex
 
 		__repr__(self)
 		isActive(self)
@@ -37,6 +38,7 @@ acquire.py
 		self.corporations
 
 		__init__(self,players)
+		addGrouptoGroup(self,oldgroup,newgroup)
 		addTiletoGroup(self,tile,group)
 		adjoiningGroups(self,tile)
 		advanceCurrentPlayer(self)
@@ -51,7 +53,8 @@ acquire.py
 		initiate_corps(self)
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
-		setStarters():
+		placeStarter(self,tile)
+		setStarters(self):
 	play()
 
 board.py
