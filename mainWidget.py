@@ -48,7 +48,7 @@ class AcquireUI(QMainWindow):
         if(player.playerType == 'Human'):
             corp = self.dialogbox.chooseCorporation(corps, self.setColors())
         else:
-            corp = self.game.aiChooseTile(corps)
+            corp = self.game.aiChooseCorp(corps)
         
         groups = self.game.adjoiningGroups(tile)
         if len(groups) > 1:
