@@ -81,9 +81,12 @@ class Acquire:
 
     def addGrouptoGroup(self,oldgroup,newgroup):
         while(len(self.tilegroups[oldgroup]) > 0):
-            self.tilegroups[newgroup].append(self.tilegroups[oldgroup].pop) 
+            self.tilegroups[newgroup].append(self.tilegroups[oldgroup].pop()) 
         if oldgroup > 6:
             del self.tilegroups[oldgroup]
+
+    def addTiletoCorp(self, tile, corp):
+        self.tilegroups[self.corporations[corp].groupIndex].append(tile)
 
     def addTiletoGroup(self,tile,group):
         index = self.tilegroups.index(group)
