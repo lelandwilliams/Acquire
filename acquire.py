@@ -206,7 +206,7 @@ class Acquire:
         if len(groupindices) == 0:
             self.tilegroups.append([tile])
         else:
-            while len(groupindexes) > 1:
+            while len(groupindices) > 1:
                 self.addGroupToGroup(groupindices[-1], groupindices[0])
                 groupindices = self.adjoiningGroups(tile)
             self.tilegroups[groups[0]].append(tile)
