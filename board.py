@@ -26,6 +26,8 @@ class Board(QFrame):
                 self.grid.addWidget(space, ord(i) - ord('A'), j - 1 )
                 space.setFixedSize(self.tile_size, self.tile_size)
 
+        self.grid.setSizeConstraint(3)
+
 #        self.setMaximumSize(self.frameWidth(), self.frameWidth())
 
     def changeTileColor(self,tile, company):
