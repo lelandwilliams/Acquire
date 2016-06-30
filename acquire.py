@@ -68,15 +68,15 @@ class Corp:
     def price(self):
         price = self.price_modifier
         if self.size() > 40:
-            price += 800
+            price += 1000
         elif self.size() > 30:
-            price += 700
+            price += 900
         elif self.size() > 20:
-            price += 600
+            price += 800
         elif self.size() > 10:
-            price += 500
+            price += 700
         elif self.size() > 5:
-            price += 400
+            price += 600
         else:
             price += self.size() * 100
         return price
@@ -135,7 +135,7 @@ class Acquire:
                 
     def advanceCurrentPlayer(self):
         self.currentPlayerNumber = (self.currentPlayerNumber + 1 ) % len(self.players) 
-        self.Player[self.currentPlayerNumber].stockAcquired = []
+        self.players[self.currentPlayerNumber].stockAcquired = []
 
     def aiChooseCorp(self, corps):
         random.shuffle(corps)
@@ -259,6 +259,7 @@ class Acquire:
         if self.corporations[corp].shares_available > 0:
             self.corporations[corp].shares_available -= 1
             player.stock[corp] += 1
+            player.stockAcquired.append(corp)
 
     def setStarters(self):
         starters = []
