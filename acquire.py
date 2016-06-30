@@ -47,9 +47,6 @@ class Corp:
     def isActive(self):
         return self.active
 
-    def setAnchorTile(self, tile):
-        self.anchor_tile = tile
-
     def setActive(self, b):
         self.active = b
 
