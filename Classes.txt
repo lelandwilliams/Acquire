@@ -14,11 +14,13 @@ mainWidget.py
 	dialogTest()
 
 acquire.py
-	class Player(self, name, PlayerType)
+	class Player(self, name, PlayerType, corps)
 		self.name
 		self.playerType
+		self.playerSubtype
 		self.hand
 		self.money
+		self.stocks
 
 	class Corp(self, name, tilegroupindex)
 		self.name
