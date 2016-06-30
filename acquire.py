@@ -22,10 +22,11 @@ class Player:
         return s
 
 class Corp:
-    def __init__(self, name, index):
+    def __init__(self, name, index, model):
+        self.game = model
         self.name = name
         self.shares_available = 25
-        self.share_price = self.setInitialPrice()
+        self.price_modifier = self.setInitialPrice()
         self.active = False
         self.groupIndex = index
 
@@ -36,6 +37,7 @@ class Corp:
             s += (" active, ")
         else:
             s += " not active, "
+        s += str(self.size()).rjust(2) + (" tiles, ")
         s += str(self.shares_available).rjust(2) + (" shares outstanding,")
         s += (" price: $ ")
         s += str(self.price())
@@ -53,14 +55,29 @@ class Corp:
 
     def setInitialPrice(self):
         if self.name in ["Worldwide", "American", "Festival"]:
-            return 300
+            return 100
         if self.name in ["Imperial", "Continental"]:
-            return 400
-        return 200
+            return 200
+        return 0
+
+    def size(self):
+        return len(self.game.tilegroups[self.groupIndex])
 
     def price(self):
-        return self.share_price
-
+        price = self.price_modifier
+        if self.size() > 40:
+            price += 800
+        elif self.size() > 30:
+            price += 700
+        elif self.size() > 20:
+            price += 600
+        elif self.size() > 10:
+            price += 500
+        elif self.size() > 5:
+            price += 400
+        else:
+            price += self.size() * 100
+        return price
 
 class Acquire:
     corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
@@ -179,7 +196,7 @@ class Acquire:
         a = {}
         idx = 0
         for name in self.corpNames:
-            a[name] = Corp(name,idx)
+            a[name] = Corp(name,idx,self)
             idx += 1
         return a
 
