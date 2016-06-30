@@ -253,6 +253,9 @@ class Acquire:
             groupindices = self.adjoiningGroups(tile)
         self.addGrouptoGroup(groupindices[0], self.corporations[corp].groupIndex)
         self.addTiletoCorp(tile, corp)
+        if self.corporations[corp].shares_available > 0:
+            self.corporations[corp].shares_available -= 1
+            player.stock[corp] += 1
 
     def setStarters(self):
         starters = []
