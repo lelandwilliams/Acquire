@@ -81,7 +81,7 @@ class AcquireUI(QMainWindow):
         while(not self.game.gameOver()):
             player = self.game.getCurrentPlayer()
             if self.debug:
-                print(str(player))
+                print(str(self.game))
             tile = self.chooseTile(player)
             outcome = self.game.evaluatePlay(tile)
             if outcome == "Regular":
