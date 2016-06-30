@@ -8,6 +8,8 @@ class Player:
         self.hand = []
         self.money = 6000
         self.stock = {}
+        self.lastPlacement = None
+        self.stockAcquired = []
         for name in Acquire.corpNames:
             self.stock[name] = 0
 
