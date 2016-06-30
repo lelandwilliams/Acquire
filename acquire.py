@@ -4,8 +4,13 @@ class Player:
     def __init__(self, name, playerType):
         self.name = name
         self.playerType = playerType
+        self.playerSubtype = None
         self.hand = []
         self.money = 6000
+        self.stock = {}
+        for name in Acquire.corpNames:
+            self.stock[name] = 0
+
 
     def __repr__(self):
         s = (self.name)
@@ -59,9 +64,9 @@ class Corp:
 
 
 class Acquire:
+    corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
+
     def __init__(self, players):
-        self.corpNames = ["Tower","Luxor","Worldwide","Festival","American",
-                "Continental","Imperial"]
         self.players = players
         self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
