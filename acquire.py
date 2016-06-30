@@ -31,13 +31,12 @@ class Corp:
 
     def __repr__(self):
         s = "\t"
-        s += (self.name)
-        s += (" active: ")
-        if self.active and self.shares_available > 0:
-            s += str(self.shares_available) + ("shares outstanding")
+        s += self.name.ljust(12)
+        if self.active:
+            s += (" active, ")
         else:
-            s += ("No shares outstanding: ")
-        s += str(self.shares_available)
+            s += " not active, "
+        s += str(self.shares_available).rjust(2) + (" shares outstanding,")
         s += (" price: $ ")
         s += str(self.price())
         s += ('\n')
