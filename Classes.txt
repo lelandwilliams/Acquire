@@ -19,8 +19,10 @@ acquire.py
 		self.playerType
 		self.playerSubtype
 		self.hand
+		self.lastPlacement
 		self.money
-		self.stocks
+		self.stock
+		self.stockAcquired
 
 	class Corp(self, name, tilegroupindex, model)
 		self.game
