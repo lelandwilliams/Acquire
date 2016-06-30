@@ -13,12 +13,15 @@ class Player:
 
 
     def __repr__(self):
-        s = (self.name)
+        s = "\t"
+        s += self.name.ljust(20)
         s += (" $")
         s += (str(self.money))
         s += (" ")
         for i in self.hand:
             s += (str(i))
+        s += "\n\t\t"
+        s += str(self.stock) + "\n"
         return s
 
 class Corp:
@@ -92,7 +95,10 @@ class Acquire:
         random.shuffle(self.players)
 
     def __repr__(self):
-        s = "Corporations\n"
+        s = "Players\n"
+        for p in self.players:
+            s += str(p)
+        s += "Corporations\n"
         for corp in self.corporations:
             s += str(self.corporations[corp])
         return s
@@ -265,7 +271,7 @@ class Acquire:
 players = []
 players.append(Player('Bender', 'Robot'))
 players.append(Player('C3P0', 'Robot'))
-players.append(Player('Bender', 'Robot'))
+players.append(Player('Hal 9000', 'Robot'))
 players.append(Player('Puny Human', 'Human'))
 
 def play():
