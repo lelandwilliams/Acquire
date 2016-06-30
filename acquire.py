@@ -37,7 +37,7 @@ class Corp:
         s = "\t"
         s += self.name.ljust(12)
         if self.active:
-            s += (" active, ")
+            s += "     active, "
         else:
             s += " not active, "
         s += str(self.size()).rjust(2) + (" tiles, ")
