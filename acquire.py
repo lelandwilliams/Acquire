@@ -135,6 +135,7 @@ class Acquire:
                 
     def advanceCurrentPlayer(self):
         self.currentPlayerNumber = (self.currentPlayerNumber + 1 ) % len(self.players) 
+        self.Player[self.currentPlayerNumber].stockAcquired = []
 
     def aiChooseCorp(self, corps):
         random.shuffle(corps)
