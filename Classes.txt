@@ -22,7 +22,8 @@ acquire.py
 		self.money
 		self.stocks
 
-	class Corp(self, name, tilegroupindex)
+	class Corp(self, name, tilegroupindex, model)
+		self.game
 		self.name
 		self.shares_available
 		self.share_price
@@ -33,6 +34,9 @@ acquire.py
 		__repr__(self)
 		isActive(self)
 		setInitialPrice(self)
+		selfActive(self, b)
+		size(self)
+		price(self)
 
 
 	class Game(self)
