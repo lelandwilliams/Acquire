@@ -141,6 +141,9 @@ class Acquire:
         random.shuffle(corps)
         return corps[0]
 
+    def aiChooseStock(self, corps):
+        return corps[random.randrange(len(corps))]
+
     def aiChooseTile(self,player):
         random.shuffle(player.hand)
         return player.hand[0]
