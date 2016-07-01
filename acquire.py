@@ -251,6 +251,13 @@ class Acquire:
         else:
             print("improper call to Acquire.placeTile()")
 
+    def playerBoughtStock(self, player, stock):
+        player.stockAcquired.append(stock)
+        player.money -= self.corporations[stock].price()
+        self.corporations[stock].shares_available -= 1
+        player.stock[stock] += 1
+
+
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)
         groupindices = self.adjoiningGroups(tile)
