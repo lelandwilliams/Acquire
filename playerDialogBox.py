@@ -13,9 +13,14 @@ class PlayerDialogBox(QFrame,QObject):
 
         self.setLayout(self.layout)
 
-    def chooseStock(self,companies,colors):
+    def chooseStock(self,number,companies,colors):
         self.dialog = StockChooserDialog(companies,colors)
-        self.label1.setText("Choose your Stock")
+        if number == 1:
+            self.label1.setText("Choose your first stock")
+        elif number == 2:
+            self.label1.setText("Choose your second stock")
+        elif number == 3:
+            self.label1.setText("Choose your third stock")
         self.layout.addWidget(self.dialog)
         stock =  companies[self.dialog.exec()]
         print(stock)
