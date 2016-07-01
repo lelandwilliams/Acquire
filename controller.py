@@ -3,8 +3,11 @@ import acquire
 class Controller:
     def __init__(self):
         pass
- 
-    def chooseTile(self):
+
+    def pickStock(self):
+        pass
+
+    def playTile(self):
         player = self.game.getCurrentPlayer()
         if self.debug:
             print(str(self.game))
@@ -28,8 +31,8 @@ class Controller:
     def newGame(self):
         self.setup()
         while(not self.game.gameOver()):
-            self.chooseTile()
-            self.choseStock()
+            self.playTile()
+            self.pickStock()
             self.game.advanceCurrentPlayer()
 
     def setup(self):
