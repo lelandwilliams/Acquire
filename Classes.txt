@@ -6,7 +6,6 @@ mainWidget.py
 		changeTileColor(self,tile,company)
 		chooseNewCorp(self,player,tile)
 		chooseTile(self, player)
-		newGame()
 		setColors(self)
 		test(self)
 		setPlayers()
@@ -67,6 +66,14 @@ acquire.py
 		placeStarter(self,tile)
 		setStarters(self):
 	play()
+
+controller.py
+	class Controller
+	__init__(self)
+	pickStock(self)
+	playTile(self)
+	newGame(self)
+	setup(self)
 
 board.py
 	class Board(self,colors)
