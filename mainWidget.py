@@ -58,6 +58,9 @@ class AcquireUI(QMainWindow, Controller):
         
         return corp
 
+    def chooseStock(self,corps):
+        return self.dialogbox.chooseTile(corps)
+
     def chooseTile(self,player):
         tile = None
         while True:
