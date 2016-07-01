@@ -5,12 +5,11 @@ class Controller:
         pass
 
     def pickStock(self):
-        pass
+        player = self.game.getCurrentPlayer()
+
 
     def playTile(self):
         player = self.game.getCurrentPlayer()
-        if self.debug:
-            print(str(self.game))
         tile = self.chooseTile(player)
         outcome = self.game.evaluatePlay(tile)
         if outcome == "Regular":
@@ -31,6 +30,8 @@ class Controller:
     def newGame(self):
         self.setup()
         while(not self.game.gameOver()):
+            if self.debug:
+                print(str(self.game))
             self.playTile()
             self.pickStock()
             self.game.advanceCurrentPlayer()
