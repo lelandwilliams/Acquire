@@ -64,6 +64,7 @@ acquire.py
 		initiate_tiles(self)
 		isAdjoining(self,tile,group)
 		placeStarter(self,tile)
+		playerBoughtStock(self,player,stock)
 		setStarters(self):
 	play()
 
