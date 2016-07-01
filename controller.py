@@ -6,19 +6,19 @@ class Controller:
 
     def pickStock(self):
         player = self.game.getCurrentPlayer()
-        available = []
-        for corp in self.game.corporations:
-            if (self.game.corporations[corp].isActive() and 
-                    self.game.corporations[corp].shares_available > 0 and
-                    self.game.corporations[corp].price() <= player.money):
-                available.append(corp)
-        if len(available) > 0:
-            if player.playerType == 'Human':
-                stock = self.chooseStock(player)
-            else:
-                stock = self.game.aiChooseStock(player)
-
-
+        for idx in range(1,4):
+            available = []
+            for corp in self.game.corporations:
+                if (self.game.corporations[corp].isActive() and 
+                        self.game.corporations[corp].shares_available > 0 and
+                        self.game.corporations[corp].price() <= player.money):
+                    available.append(corp)
+            if len(available) > 0:
+                if player.playerType == 'Human':
+                    stock = self.chooseStock(available, idx)
+                else:
+                    stock = self.game.aiChooseStock(available)
+                self.game.playerBoughtStock(player,stock)
 
     def playTile(self):
         player = self.game.getCurrentPlayer()
