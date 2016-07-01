@@ -34,6 +34,7 @@ class Controller:
         elif outcome == "Addon":
             self.game.placeTile(tile)
             self.changeGroupColor(self.game.adjoiningCorps(tile)[0])
+        player.lastPlacement = tile
         player.hand.remove(tile)
         player.hand.append(self.game.tiles.pop())
         player.hand.sort()
