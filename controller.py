@@ -4,6 +4,20 @@ class Controller:
     def __init__(self):
         pass
 
+    def pickCorp(self,player,tile): 
+        corp = None
+        corps = self.game.inactiveCorps()
+        if(player.playerType == 'Human'):
+            available = {}
+            for c in corps:
+                available[c] = self.game.corporations[c].price() 
+            corp = self.chooseNewCorp(corps)
+        else:
+            corp = self.game.aiChooseCorp(corps)
+        
+        return corp
+
+
     def pickStock(self):
         player = self.game.getCurrentPlayer()
         for idx in range(1,4):
@@ -29,7 +43,7 @@ class Controller:
             self.game.placeTile(tile)
             self.changeTileColor(tile, 'None')
         elif outcome == "NewCorp":
-            newcorp = self.chooseNewCorp(player,tile)
+            newcorp = self.pickCorp(player,tile)
             self.game.setActive(newcorp,player,tile)
             self.changeGroupColor(newcorp)
         elif outcome == "Addon":
