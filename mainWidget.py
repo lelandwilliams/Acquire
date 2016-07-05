@@ -49,7 +49,7 @@ class AcquireUI(QMainWindow, Controller):
             self.changeTileColor(member, corp)
     
     def chooseNewCorp(self,available): 
-        return self.dialogbox.chooseCorporation(corps, self.setColors())
+        return self.dialogbox.chooseCorporation(available, self.setColors())
 
     def chooseStock(self,corps,number):
         return self.dialogbox.chooseStock(number, corps, self.setColors())
