@@ -75,12 +75,12 @@ class Controller:
         primaries = []
         secondaries = []
 
-        for idx in self.game.players:
-            if self.game.players[idx].stock[corp] > 0:
-                if len(primaries) == 0 or self.game.players[idx].stock[corp] > self.game.players[primaries[0]].stock[corp]:
-                    primaries = [idx]
-                elif self.game.players[idx].stock[corp] == self.game.players[primaries[0]].stock[corp]:
-                    primaries.append(idx)
+        for player in self.game.players:
+            if player.stock[corp] > 0:
+                if len(primaries) == 0 or player.stock[corp] > primaries[0].stock[corp]:
+                    primaries = [player]
+                elif player.stock[corp] == primaries[0].stock[corp]:
+                    primaries.append(player)
 
         for idx in self.game.players:
             if self.game.players[idx].stock[corp] > 0 and idx not in primaries and len(primaries) == 1:
