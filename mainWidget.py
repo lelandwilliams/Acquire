@@ -48,15 +48,8 @@ class AcquireUI(QMainWindow, Controller):
         for member in self.game.tilegroups[idx]:
             self.changeTileColor(member, corp)
     
-    def chooseNewCorp(self,player,tile): 
-        corp = None
-        corps = self.game.inactiveCorps()
-        if(player.playerType == 'Human'):
-            corp = self.dialogbox.chooseCorporation(corps, self.setColors())
-        else:
-            corp = self.game.aiChooseCorp(corps)
-        
-        return corp
+    def chooseNewCorp(self,available): 
+        return self.dialogbox.chooseCorporation(corps, self.setColors())
 
     def chooseStock(self,corps,number):
         return self.dialogbox.chooseStock(number, corps, self.setColors())
