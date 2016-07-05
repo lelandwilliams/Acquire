@@ -90,9 +90,9 @@ class Controller:
                     secondaries.append(player)
 
         if len(secondaries) == 0:
-            bonus = self.game.corporations[corp].price() * 15 / len(primaries)
+            bonus = self.game.corporations[corp].price() * 15 // len(primaries)
         else:
-            bonus = self.game.corporations[corp].price() * 10 / len(primaries)
+            bonus = self.game.corporations[corp].price() * 10 // len(primaries)
 
         if bonus % 100 > 0:
             bonux = bonus - (bonus % 100) + 100
@@ -104,7 +104,7 @@ class Controller:
                 print(player.name, "is a primary holder and recieves $", str(bonus))
 
         if len(secondaries) > 0:
-            bonus = self.game.corporations[corp].price() * 5 / len(secondaries)
+            bonus = self.game.corporations[corp].price() * 5 // len(secondaries)
             if bonus % 100 > 0:
                 bonux = bonus - (bonus % 100) + 100
             for idx in secondaries:
