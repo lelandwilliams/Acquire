@@ -82,12 +82,12 @@ class Controller:
                 elif player.stock[corp] == primaries[0].stock[corp]:
                     primaries.append(player)
 
-        for idx in self.game.players:
-            if self.game.players[idx].stock[corp] > 0 and idx not in primaries and len(primaries) == 1:
-                if len(secondaries) == 0 or self.game.players[idx].stock[corp] > self.game.players[secondaries[0]].stock[corp]:
-                    secondaries = [idx]
-                elif self.game.players[idx].stock[corp] == self.game.players[secondaries[0]].stock[corp]:
-                    secondaries.append(idx)
+        for player in self.game.players:
+            if player.stock[corp] > 0 and player not in primaries and len(primaries) == 1:
+                if len(secondaries) == 0 or player.stock[corp] > secondaries[0].stock[corp]:
+                    secondaries = [player]
+                elif player.stock[corp] == secondaries[0].stock[corp]:
+                    secondaries.append(player)
 
         if len(secondaries) == 0:
             bonus = self.game.corporations[corp].price() * 15 / len(primaries)
@@ -97,21 +97,21 @@ class Controller:
         if bonus % 100 > 0:
             bonux = bonus - (bonus % 100) + 100
 
-        for idx in primaries:
-            self.game.players[idx].money += bonus
-            self.pb.updatePlayerMoney(self.game.players[idx])
+        for player in primaries:
+            player.money += bonus
+            self.pb.updatePlayerMoney(player)
             if self.debug:
-                print(self.game.players[idx].name, "is a primary holder and recieves $", str(bonus))
+                print(player.name, "is a primary holder and recieves $", str(bonus))
 
         if len(secondaries) > 0:
             bonus = self.game.corporations[corp].price() * 5 / len(secondaries)
             if bonus % 100 > 0:
                 bonux = bonus - (bonus % 100) + 100
             for idx in secondaries:
-                self.game.players[idx].money += bonus
-                self.pb.updatePlayerMoney(self.game.players[idx])
+                player.money += bonus
+                self.pb.updatePlayerMoney(player)
                 if self.debug:
-                    print(self.game.players[idx].name, "is a secondary holder and recieves $", str(bonus))
+                    print(player.name, "is a secondary holder and recieves $", str(bonus))
 
     def setup(self):
         players = self.setPlayers()
