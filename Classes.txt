@@ -71,6 +71,7 @@ acquire.py
 controller.py
 	class Controller
 	__init__(self)
+	pickCorp(self,player,tile)
 	pickStock(self)
 	playTile(self)
 	newGame(self)
