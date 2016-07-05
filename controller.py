@@ -19,6 +19,7 @@ class Controller:
                 else:
                     stock = self.game.aiChooseStock(available)
                 self.game.playerBoughtStock(player,stock)
+                self.pb.updatePlayerMoney(player)
 
     def playTile(self):
         player = self.game.getCurrentPlayer()
