@@ -84,6 +84,7 @@ playerboxgroup.py
 	class PlayerBoxGroup(self)
 		addPlayer(self,name,money)
 		test(self)
+		updatePlayerMoney(self,name)
 
 playerbox.py
 	class PlayerBox(self)
