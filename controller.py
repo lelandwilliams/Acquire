@@ -8,6 +8,14 @@ class Controller:
         for corp in self.game.corporations:
             if self.game.corporations[corp].isActive():
                 self.rewardPrimaries(corp)
+                for player in self.game.players:
+                    if player.stock[corp] > 0:
+                        reward = player.stock[corp] * self.game.corporations[corp].price()
+                        player.money += reward
+                        self.pb.updatePlayerMoney(player)
+                        if self.debug:
+                            print(player.name, "recieves $", reward, "for shares in ", corp)
+
 
     def pickCorp(self,player,tile): 
         corp = None
@@ -83,8 +91,8 @@ class Controller:
                     primaries.append(player)
 
         for player in self.game.players:
-            if player.stock[corp] > 0 and player not in primaries and len(primaries) == 1:
-                if len(secondaries) == 0 or player.stock[corp] > secondaries[0].stock[corp]:
+            if (player.stock[corp]) > 0 and (player not in primaries) and (len(primaries) == 1):
+                if (len(secondaries) == 0) or (player.stock[corp] > secondaries[0].stock[corp]):
                     secondaries = [player]
                 elif player.stock[corp] == secondaries[0].stock[corp]:
                     secondaries.append(player)
@@ -101,7 +109,7 @@ class Controller:
             player.money += bonus
             self.pb.updatePlayerMoney(player)
             if self.debug:
-                print(player.name, "is a primary holder and recieves $", str(bonus))
+                print(player.name, "is a primary holder of ", corp, "and recieves $", str(bonus))
 
         if len(secondaries) > 0:
             bonus = self.game.corporations[corp].price() * 5 // len(secondaries)
@@ -111,7 +119,7 @@ class Controller:
                 player.money += bonus
                 self.pb.updatePlayerMoney(player)
                 if self.debug:
-                    print(player.name, "is a secondary holder and recieves $", str(bonus))
+                    print(player.name, "is a secondary holder of", corp, "and recieves $", str(bonus))
 
     def setup(self):
         players = self.setPlayers()
