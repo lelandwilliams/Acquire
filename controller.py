@@ -11,7 +11,7 @@ class Controller:
             available = {}
             for c in corps:
                 available[c] = self.game.corporations[c].price() 
-            corp = self.chooseNewCorp(corps)
+            corp = self.chooseNewCorp(available)
         else:
             corp = self.game.aiChooseCorp(corps)
         

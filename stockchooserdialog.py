@@ -5,12 +5,13 @@ class StockChooserDialog(QDialog):
     chosen = pyqtSignal(str)
     def __init__(self, companyList, colors):
         super().__init__()
+        self.company_list = list(companyList)
         self.width = 80
 
         l = QHBoxLayout()
         for corp, price in companyList.items():
             newStock = QPushButton(corp + "\nHotels\n\n" + str(price))
-            newStock.setStyleSheet("QPushButton {background-color: " + colors[company] + ";"
+            newStock.setStyleSheet("QPushButton {background-color: " + colors[corp] + ";"
                         "color: white;"
                         "border-color: white;"
                         "border-style: outset;}")

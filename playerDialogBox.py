@@ -22,7 +22,7 @@ class PlayerDialogBox(QFrame,QObject):
         elif number == 3:
             self.label1.setText("Choose your third stock")
         self.layout.addWidget(self.dialog)
-        stock =  companies[self.dialog.exec()]
+        stock =  list(companies)[self.dialog.exec()]
         print(stock)
         self.label1.setText("You Chose " + stock)
         return stock
@@ -39,7 +39,7 @@ class PlayerDialogBox(QFrame,QObject):
         self.dialog = StockChooserDialog(corps,colors)
         self.label1.setText("You have founded a corporation. Which one ?")
         self.layout.addWidget(self.dialog)
-        corp =  corps[self.dialog.exec()]
+        corp =  list(corps)[self.dialog.exec()]
         print(corp)
 #       self.label1.setText("You Chose " + stock)
         return corp
