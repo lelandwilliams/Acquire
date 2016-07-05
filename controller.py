@@ -4,6 +4,11 @@ class Controller:
     def __init__(self):
         pass
 
+    def liquidate(self):
+        for corp in self.game.corporations:
+            if self.game.corporations[corp].isActive():
+                self.rewardPrimaries(corp)
+
     def pickCorp(self,player,tile): 
         corp = None
         corps = self.game.inactiveCorps()
@@ -64,6 +69,8 @@ class Controller:
             self.pickStock()
             self.game.advanceCurrentPlayer()
 
+        self.liquidate()
+
     def rewardPrimaries(self, corp):
         primaries = []
         secondaries = []
@@ -91,14 +98,20 @@ class Controller:
             bonux = bonus - (bonus % 100) + 100
 
         for idx in primaries:
-            self.game.players[idx] += bonus
+            self.game.players[idx].money += bonus
+            self.pb.updatePlayerMoney(self.game.players[idx])
+            if self.debug:
+                print(self.game.players[idx].name, "is a primary holder and recieves $", str(bonus))
 
         if len(secondaries) > 0:
             bonus = self.game.corporations[corp].price() * 5 / len(secondaries)
             if bonus % 100 > 0:
                 bonux = bonus - (bonus % 100) + 100
             for idx in secondaries:
-                self.game.players[idx] += bonus
+                self.game.players[idx].money += bonus
+                self.pb.updatePlayerMoney(self.game.players[idx])
+                if self.debug:
+                    print(self.game.players[idx].name, "is a secondary holder and recieves $", str(bonus))
 
     def setup(self):
         players = self.setPlayers()
