@@ -7,12 +7,12 @@ class Controller:
     def pickStock(self):
         player = self.game.getCurrentPlayer()
         for idx in range(1,4):
-            available = []
+            available = {}
             for corp in self.game.corporations:
                 if (self.game.corporations[corp].isActive() and 
                         self.game.corporations[corp].shares_available > 0 and
                         self.game.corporations[corp].price() <= player.money):
-                    available.append(corp)
+                    available[corp] = self.game.corporations[corp].price() 
             if len(available) > 0:
                 if player.playerType == 'Human':
                     stock = self.chooseStock(available, idx)
