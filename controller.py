@@ -69,36 +69,36 @@ class Controller:
         secondaries = []
 
         for idx in players:
-            if self.players[idx].stock[corp] > 0:
-                if len(primaries) == 0 or self.players[idx].stock[corp] > self.players[primaries[0]].stock[corp]:
+            if self.game.players[idx].stock[corp] > 0:
+                if len(primaries) == 0 or self.game.players[idx].stock[corp] > self.game.players[primaries[0]].stock[corp]:
                     primaries = [idx]
-                elif self.players[idx].stock[corp] == self.players[primaries[0]].stock[corp]:
+                elif self.game.players[idx].stock[corp] == self.game.players[primaries[0]].stock[corp]:
                     primaries.append(idx)
 
         for idx in players:
-            if self.players[idx].stock[corp] > 0 and idx not in primaries and len(primaries) == 1:
-                if len(secondaries) == 0 or self.players[idx].stock[corp] > self.players[secondaries[0]].stock[corp]:
+            if self.game.players[idx].stock[corp] > 0 and idx not in primaries and len(primaries) == 1:
+                if len(secondaries) == 0 or self.game.players[idx].stock[corp] > self.game.players[secondaries[0]].stock[corp]:
                     secondaries = [idx]
-                elif self.players[idx].stock[corp] == self.players[secondaries[0]].stock[corp]:
+                elif self.game.players[idx].stock[corp] == self.game.players[secondaries[0]].stock[corp]:
                     secondaries.append(idx)
 
         if len(secondaries) == 0:
-            bonus = self.corporations[corp].price() * 15 / len(primaries)
+            bonus = self.game.corporations[corp].price() * 15 / len(primaries)
         else:
-            bonus = self.corporations[corp].price() * 10 / len(primaries)
+            bonus = self.game.corporations[corp].price() * 10 / len(primaries)
 
         if bonus % 100 > 0:
             bonux = bonus - (bonus % 100) + 100
 
         for idx in primaries:
-            self.players[idx] += bonus
+            self.game.players[idx] += bonus
 
         if len(secondaries) > 0:
-            bonus = self.corporations[corp].price() * 5 / len(secondaries)
+            bonus = self.game.corporations[corp].price() * 5 / len(secondaries)
             if bonus % 100 > 0:
                 bonux = bonus - (bonus % 100) + 100
             for idx in secondaries:
-                self.players[idx] += bonus
+                self.game.players[idx] += bonus
 
     def setup(self):
         players = self.setPlayers()
