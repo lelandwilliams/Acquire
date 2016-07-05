@@ -258,6 +258,8 @@ class Acquire:
         self.corporations[stock].shares_available -= 1
         player.stock[stock] += 1
 
+            
+
 
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)

@@ -70,12 +70,13 @@ acquire.py
 
 controller.py
 	class Controller
-	__init__(self)
-	pickCorp(self,player,tile)
-	pickStock(self)
-	playTile(self)
-	newGame(self)
-	setup(self)
+		__init__(self)
+		pickCorp(self,player,tile)
+		pickStock(self)
+		playTile(self)
+		newGame(self)
+		rewardPrimaries(self,corp)
+		setup(self)
 
 board.py
 	class Board(self,colors)
