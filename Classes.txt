@@ -1,6 +1,11 @@
 
 mainWidget.py
 	class AcquireUI
+		self.frame
+		self.lt
+		self.board
+		self.pb
+		self.dialogbox
 		addPlayers(self, players)
 		changeGroupColor(self,corp)
 		changeTileColor(self,tile,company)
@@ -8,14 +13,14 @@ mainWidget.py
 		chooseTile(self, player)
 		setColors(self)
 		test(self)
-		setPlayers()
+		setPlayers(self)
 	play()
 	dialogTest()
 
 acquire.py
 	class Player(self, name, PlayerType, corps)
 		self.name
-		self.playerType
+		self.playerType = "Player", "Robot"
 		self.playerSubtype
 		self.hand
 		self.lastPlacement
