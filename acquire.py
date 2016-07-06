@@ -271,7 +271,7 @@ class Acquire:
         return holders
 
     def secondaryHolders(self, corp):
-        primaries = primaryHolders(corp)
+        primaries = self.primaryHolders(corp)
         possibles = []
         secondaries = []
         for player in self.players:
