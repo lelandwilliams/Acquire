@@ -65,6 +65,8 @@ acquire.py
 		isAdjoining(self,tile,group)
 		placeStarter(self,tile)
 		playerBoughtStock(self,player,stock)
+		primaryShareholder(self, corp)
+		setActive(self, corp, player, tile)
 		setStarters(self):
 	play()
 

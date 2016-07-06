@@ -258,7 +258,17 @@ class Acquire:
         self.corporations[stock].shares_available -= 1
         player.stock[stock] += 1
 
+    def primaryShareholder(self, corp):
+        holders = []
+        maxshares = 0
+        for player in self.players:
+            if player.shares[corp] > maxshares:
+                holders = [player]
+                maxshares = player.shares[corp]
+            elif player.shares[corp] == maxshares:
+                holders.append(player)
             
+        return holders
 
 
     def setActive(self, corp, player, tile):
