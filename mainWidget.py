@@ -51,6 +51,9 @@ class AcquireUI(QMainWindow, Controller):
     def chooseNewCorp(self,available): 
         return self.dialogbox.chooseCorporation(available, self.setColors())
 
+    def chooseMerger(self, corps):
+        return self.dialogbox.chooseStock(corps)
+
     def chooseStock(self,corps,number):
         return self.dialogbox.chooseStock(number, corps, self.setColors())
 
