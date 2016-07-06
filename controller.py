@@ -103,7 +103,7 @@ class Controller:
             bonus = self.game.corporations[corp].price() * 5 // len(secondaries)
             if bonus % 100 > 0:
                 bonux = bonus - (bonus % 100) + 100
-            for idx in secondaries:
+            for player in secondaries:
                 player.money += bonus
                 self.pb.updatePlayerMoney(player)
                 if self.debug:
