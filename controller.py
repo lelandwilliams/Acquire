@@ -94,7 +94,11 @@ class Controller:
         else:
             largestCorp = self.pickMerger(largestCorp)
 
-        for
+        for corp in mergingCorps:
+            result = ""
+            for player in self.game.getMergerPlayers():
+                while(player.stocks[corp] > 0 and result != "Keep"):
+                    result = self.liquidateMergerStock(player, corp, largestCorp)
 
 
     def rewardPrimaries(self, corp):
