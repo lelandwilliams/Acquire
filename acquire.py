@@ -145,6 +145,9 @@ class Acquire:
         corps = list(available)
         return corps[random.randrange(len(corps))]
 
+    def aiChooseMerger(self, corps):
+        return corps[random.randrange(len(corps))
+
     def aiChooseTile(self,player):
         random.shuffle(player.hand)
         return player.hand[0]
