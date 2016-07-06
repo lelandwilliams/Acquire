@@ -76,9 +76,11 @@ controller.py
 		__init__(self)
 		liquidate(self)
 		pickCorp(self,player,tile)
+		pickMerger(self, corps)
 		pickStock(self)
 		playTile(self)
 		newGame(self)
+		resolveMerger(tile)
 		rewardPrimaries(self,corp)
 		setup(self)
 

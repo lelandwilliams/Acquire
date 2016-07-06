@@ -62,6 +62,8 @@ class Controller:
         elif outcome == "Addon":
             self.game.placeTile(tile)
             self.changeGroupColor(self.game.adjoiningCorps(tile)[0])
+        elif outcome == "Merger":
+            self.resolveMerger(tile)
         player.lastPlacement = tile
         player.hand.remove(tile)
         player.hand.append(self.game.tiles.pop())
@@ -78,6 +80,25 @@ class Controller:
             self.game.advanceCurrentPlayer()
 
         self.liquidate()
+
+    def resolveMerger(self, tile):
+        corps = self.game.adjoiningCorps(tile)
+        largestCorp = []
+        maxSize = 0
+        for corp in corps:
+            if len(largestCorp) == 0:
+                largestCorp.append(corp)
+                maxSize = self.game.corporations[corp].size()
+            elif self.game.corporations[corp].size() > maxSize:
+                largestCorp = [corp]
+                maxSize = self.game.corporations[corp].size()
+            elif self.game.corporations[corp].size() == maxSize:
+                largestCorp.append(corp)
+        if len(largestCorp) == 1:
+            largestCorp = largestCorp[0]
+        else:
+            largestCorp = self.pickMerger(largestCorp)
+
 
     def rewardPrimaries(self, corp):
         primaries = self.game.primaryHolders(corp)
