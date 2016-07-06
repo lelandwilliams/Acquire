@@ -262,10 +262,10 @@ class Acquire:
         holders = []
         maxshares = 0
         for player in self.players:
-            if player.shares[corp] > maxshares:
+            if player.stock[corp] > maxshares:
                 holders = [player]
-                maxshares = player.shares[corp]
-            elif player.shares[corp] == maxshares:
+                maxshares = player.stock[corp]
+            elif player.stock[corp] == maxshares:
                 holders.append(player)
             
         return holders
@@ -275,7 +275,7 @@ class Acquire:
         possibles = []
         secondaries = []
         for player in self.players:
-            if player.shares[corp] > 0:
+            if player.stock[corp] > 0:
                 possibles.append(player)
 
         for player in primaries:
@@ -284,13 +284,13 @@ class Acquire:
 
         maxshares = 0
         for player in possibles:
-            if player.shares[corp] > maxshares:
-                maxshares = players.shares[corp]
+            if player.stock[corp] > maxshares:
+                maxshares = players.stock[corp]
                 secondaries = [player]
-            elif player.shares[corp] == maxshares:
+            elif player.stock[corp] == maxshares:
                 secondaries.append(player)
 
-        returns secondaries
+        return secondaries
 
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)
