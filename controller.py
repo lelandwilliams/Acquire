@@ -80,22 +80,10 @@ class Controller:
         self.liquidate()
 
     def rewardPrimaries(self, corp):
-        primaries = []
+        primaries = self.game.primaryHolders(corp)
         secondaries = []
-
-        for player in self.game.players:
-            if player.stock[corp] > 0:
-                if len(primaries) == 0 or player.stock[corp] > primaries[0].stock[corp]:
-                    primaries = [player]
-                elif player.stock[corp] == primaries[0].stock[corp]:
-                    primaries.append(player)
-
-        for player in self.game.players:
-            if (player.stock[corp]) > 0 and (player not in primaries) and (len(primaries) == 1):
-                if (len(secondaries) == 0) or (player.stock[corp] > secondaries[0].stock[corp]):
-                    secondaries = [player]
-                elif player.stock[corp] == secondaries[0].stock[corp]:
-                    secondaries.append(player)
+        if len(primaries) == 1:
+            secondaries = self.game.secondaryHolders(corp)
 
         if len(secondaries) == 0:
             bonus = self.game.corporations[corp].price() * 15 // len(primaries)
