@@ -214,6 +214,8 @@ class Acquire:
 
         return corps
 
+    def getMergerPlayers(self):
+        return self.players[self.currentPlayerNumber:] + self.players[:self.currentPlayerNumber]
 
     def inactiveCorps(self):
         a = []
