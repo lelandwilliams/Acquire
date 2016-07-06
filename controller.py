@@ -87,22 +87,14 @@ class Controller:
         self.liquidate()
 
     def resolveMerger(self, tile):
-        corps = self.game.adjoiningCorps(tile)
-        largestCorp = []
-        maxSize = 0
-        for corp in corps:
-            if len(largestCorp) == 0:
-                largestCorp.append(corp)
-                maxSize = self.game.corporations[corp].size()
-            elif self.game.corporations[corp].size() > maxSize:
-                largestCorp = [corp]
-                maxSize = self.game.corporations[corp].size()
-            elif self.game.corporations[corp].size() == maxSize:
-                largestCorp.append(corp)
+        mergingCorps = self.game.adjacentCorps(tile)
+        largestCorp = self.game.getLargestCorps(tile)
         if len(largestCorp) == 1:
             largestCorp = largestCorp[0]
         else:
             largestCorp = self.pickMerger(largestCorp)
+
+        for
 
 
     def rewardPrimaries(self, corp):
