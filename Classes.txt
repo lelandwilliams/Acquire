@@ -66,6 +66,7 @@ acquire.py
 		evaluatePlay(self,tile)
 		fillHands(self)
 		gameOver(self)
+		getLargestCorps(self, tile)
 		inactiveCorps(self)
 		initiate_corps(self)
 		initiate_tiles(self)

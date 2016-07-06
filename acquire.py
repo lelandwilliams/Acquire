@@ -198,6 +198,23 @@ class Acquire:
     def getCurrentPlayer(self):
         return self.players[self.currentPlayerNumber]
 
+    def getLargestCorps(self, tile):
+        corps = self.adjoiningCorps(tile)
+        maxSize = 0
+
+        for corp in corps:
+            if len(largestCorp) == 0:
+                largestCorp.append(corp)
+                maxSize = self.game.corporations[corp].size()
+            elif self.game.corporations[corp].size() > maxSize:
+                largestCorp = [corp]
+                maxSize = self.game.corporations[corp].size()
+            elif self.game.corporations[corp].size() == maxSize:
+                largestCorp.append(corp)
+
+        return corps
+
+
     def inactiveCorps(self):
         a = []
         for corp in self.corporations:
