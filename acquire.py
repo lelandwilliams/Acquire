@@ -285,7 +285,7 @@ class Acquire:
         maxshares = 0
         for player in possibles:
             if player.stock[corp] > maxshares:
-                maxshares = players.stock[corp]
+                maxshares = player.stock[corp]
                 secondaries = [player]
             elif player.stock[corp] == maxshares:
                 secondaries.append(player)
