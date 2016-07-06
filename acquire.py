@@ -258,7 +258,7 @@ class Acquire:
         self.corporations[stock].shares_available -= 1
         player.stock[stock] += 1
 
-    def primaryShareholder(self, corp):
+    def primaryHolders(self, corp):
         holders = []
         maxshares = 0
         for player in self.players:
@@ -270,6 +270,27 @@ class Acquire:
             
         return holders
 
+    def secondaryHolders(self, corp):
+        primaries = primaryHolders(corp)
+        possibles = []
+        secondaries = []
+        for player in self.players:
+            if player.shares[corp] > 0:
+                possibles.append(player)
+
+        for player in primaries:
+            if player in possibles:
+                possibles.remove(player)
+
+        maxshares = 0
+        for player in possibles:
+            if player.shares[corp] > maxshares:
+                maxshares = players.shares[corp]
+                secondaries = [player]
+            elif player.shares[corp] == maxshares:
+                secondaries.append(player)
+
+        returns secondaries
 
     def setActive(self, corp, player, tile):
         self.corporations[corp].setActive(True)
