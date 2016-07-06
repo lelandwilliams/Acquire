@@ -30,6 +30,11 @@ class Controller:
         
         return corp
 
+    def pickMerger(self, player, corps):
+        if self.game.getCurrentPlayer().playerType == "Human":
+            return self.chooseMerger(corps)
+        else:
+            return self.game.aiChooseMerger(corp)
 
     def pickStock(self):
         player = self.game.getCurrentPlayer()
