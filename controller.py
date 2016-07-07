@@ -68,7 +68,7 @@ class Controller:
             self.game.placeTile(tile)
             self.changeGroupColor(self.game.adjoiningCorps(tile)[0])
         elif outcome == "Merger":
-            self.resolveMerger(tile)
+            self.resolveMerger(player, tile)
         player.lastPlacement = tile
         player.hand.remove(tile)
         player.hand.append(self.game.tiles.pop())
@@ -86,13 +86,13 @@ class Controller:
 
         self.liquidate()
 
-    def resolveMerger(self, tile):
-        mergingCorps = self.game.adjacentCorps(tile)
+    def resolveMerger(self, player, tile):
+        mergingCorps = self.game.adjoiningCorps(tile)
         largestCorp = self.game.getLargestCorps(tile)
         if len(largestCorp) == 1:
             largestCorp = largestCorp[0]
         else:
-            largestCorp = self.pickMerger(largestCorp)
+            largestCorp = self.pickMerger(player, largestCorp)
 
         for corp in mergingCorps:
             result = ""
