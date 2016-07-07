@@ -105,7 +105,7 @@ class Controller:
         largestCorp = self.game.getLargestCorps(tile)
         if self.debug:
             print(str(mergingCorps), "will be merged.")
-            print(str(largestCorps), "are the largest corporations")
+            print(str(largestCorp), "are the largest corporations")
         if len(largestCorp) == 1:
             largestCorp = largestCorp[0]
         else:
