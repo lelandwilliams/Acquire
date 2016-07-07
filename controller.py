@@ -34,7 +34,7 @@ class Controller:
         if self.game.getCurrentPlayer().playerType == "Human":
             return self.chooseMerger(corps)
         else:
-            return self.game.aiChooseMerger(corp)
+            return self.game.aiChooseMerger(corps)
 
     def pickStock(self):
         player = self.game.getCurrentPlayer()
