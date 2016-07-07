@@ -15,10 +15,10 @@ class PlayerDialogBox(QFrame,QObject):
 
     def chooseMerger(self, corps, colors):
         self.dialog = StockChooserDialog(corps,colors)
-        self.label1.setText("You have caused a Merger. \n
+        self.label1.setText("You have caused a Merger. \n \
         which Company should remain ?")
         self.layout.addWidget(self.dialog)
-        corp = corps[self.dialog.exec()]
+        corp = list(corps)[self.dialog.exec()]
         return corp
 
     def chooseStock(self,number,companies,colors):
