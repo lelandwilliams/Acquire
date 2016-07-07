@@ -81,6 +81,8 @@ class Controller:
             self.changeGroupColor(self.game.adjoiningCorps(tile)[0])
         elif outcome == "Merger":
             self.resolveMerger(player, tile)
+            self.game.placeTile(tile)
+            self.changeGroupColor(self.game.adjoiningCorps(tile)[0])
         player.lastPlacement = tile
         player.hand.remove(tile)
         player.hand.append(self.game.tiles.pop())
