@@ -210,7 +210,7 @@ class Acquire:
             elif self.corporations[corp].size() > maxSize:
                 largestCorp = [corp]
                 maxSize = self.corporations[corp].size()
-            elif self.game.corporations[corp].size() == maxSize:
+            elif self.corporations[corp].size() == maxSize:
                 largestCorp.append(corp)
 
         return corps
