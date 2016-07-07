@@ -14,6 +14,7 @@ class PlayerDialogBox(QFrame,QObject):
         self.setLayout(self.layout)
 
     def chooseMerger(self, corps, colors):
+        print("In Merger Dialog Box")
         self.dialog = StockChooserDialog(corps,colors)
         self.label1.setText("You have caused a Merger. \n \
         which Company should remain ?")
