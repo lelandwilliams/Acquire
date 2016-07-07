@@ -17,8 +17,8 @@ class Controller:
                             print(player.name, "recieves $", reward, "for shares in ", corp)
 
     def liquidateMergerStock(self, player, corp, largestCorp):
-        result = ""
         for player in self.game.getMergerPlayers():
+            result = ""
             while(player.stock[corp] > 0 and result != "Keep"):
                 actions = ["Sell","Keep"]
                 if player.stock[corp] > 1 and self.game.corporations[largestCorp].shares_available > 0:
