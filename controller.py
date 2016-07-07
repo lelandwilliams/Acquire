@@ -109,7 +109,13 @@ l
 
         for corp in mergingCorps:
             self.rewardPrimaries(corp)
-            self.liquidateMergerStock(player, corp, largestCorp):
+            self.liquidateMergerStock(player, corp, largestCorp)
+            self.game.addGrouptoGroup(self.game.corporations[corp].groupIndex,
+                self.game.corporations[largestCorp].groupIndex)
+            self.game.corporations[corp].setActive(False)
+
+        self.game.addTiletoCorp(tile, largestCorp)
+                
 
     def resolveMergerAction(self, player, corp, largestCorp, result):
         if result == "Trade":
