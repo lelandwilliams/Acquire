@@ -103,6 +103,9 @@ class Controller:
     def resolveMerger(self, player, tile):
         mergingCorps = self.game.adjoiningCorps(tile)
         largestCorp = self.game.getLargestCorps(tile)
+        if self.debug:
+            print(str(mergingCorp)s, "will be merged.")
+            print(str(largestCorp), "are the largest corporations")
         if len(largestCorp) == 1:
             largestCorp = largestCorp[0]
         else:
