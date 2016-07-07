@@ -203,20 +203,31 @@ class Acquire:
 
     def getLargestCorps(self, tile):
         corps = self.adjoiningCorps(tile)
+        sizes = []
+        largest = []
+        for corp in corps:
+            sizes.append(self.corpSize(corp))
+        for corp in corps:
+            if self.corpSize(corp) == max(sizes):
+                largest.append(corp)
+        return largest
+
+    def getLargestCorpsi(self, tile):
+        corps = self.adjoiningCorps(tile)
         maxSize = 0
         largestCorp = [] 
 
         for corp in corps:
             if len(largestCorp) == 0:
                 largestCorp.append(corp)
-            elif self.corporations[corp].size() > self.corporations[largestCorp[0]].size():
+            elif self.corpSize(corp) > self.corpSize(largestCorp[0]):
                 while len(largestCorp) > 0:
                     largestCorp.pop()
                 largestCorp.append(corp)
-            elif self.corporations[corp].size() == self.corporations[largestCorp[0]].size():
+            elif self.corpSize(corp) ==  self.corpSize(largestCorp[0]):
                 largestCorp.append(corp)
 
-        return corps
+        return largestCorp
 
     def getMergerPlayers(self):
         return self.players[self.currentPlayerNumber:] + self.players[:self.currentPlayerNumber]
