@@ -55,7 +55,7 @@ class AcquireUI(QMainWindow, Controller):
         companyList = {}
         for corp in corps:
             companyList[corp] = ""
-        return self.dialogbox.chooseMerger(corps, self.setColors())
+        return self.dialogbox.chooseMerger(companyList, self.setColors())
 
     def chooseStock(self,corps,number):
         return self.dialogbox.chooseStock(number, corps, self.setColors())
