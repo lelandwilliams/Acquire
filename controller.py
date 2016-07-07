@@ -16,6 +16,11 @@ class Controller:
                         if self.debug:
                             print(player.name, "recieves $", reward, "for shares in ", corp)
 
+    def liquidateMergerStock(self, player, corp, largestCorp):
+        if self.game.getCurrentPlayer().playerType == "Human":
+            return self.chooseMergerStockAction(corps)
+        else:
+            return self.game.aiChooseMergerStockAction(corps)
 
     def pickCorp(self,player,tile): 
         corp = None
@@ -99,7 +104,6 @@ class Controller:
             for player in self.game.getMergerPlayers():
                 while(player.stock[corp] > 0 and result != "Keep"):
                     result = self.liquidateMergerStock(player, corp, largestCorp)
-
 
     def rewardPrimaries(self, corp):
         primaries = self.game.primaryHolders(corp)
