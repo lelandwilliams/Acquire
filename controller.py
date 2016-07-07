@@ -28,7 +28,7 @@ class Controller:
                 else:
                     result =  self.game.aiChooseMergerStockAction(actions)
                 self.resolveMergerAction(player, corp, largestCorp, result)
-l
+
     def pickCorp(self,player,tile): 
         corp = None
         corps = self.game.inactiveCorps()
