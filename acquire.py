@@ -141,6 +141,9 @@ class Acquire:
         random.shuffle(corps)
         return corps[0]
 
+    def aiChooseMergerStockAction(corps):
+        pass 
+
     def aiChooseStock(self, available):
         corps = list(available)
         return corps[random.randrange(len(corps))]
