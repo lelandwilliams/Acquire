@@ -17,10 +17,17 @@ class Controller:
                             print(player.name, "recieves $", reward, "for shares in ", corp)
 
     def liquidateMergerStock(self, player, corp, largestCorp):
-        if self.game.getCurrentPlayer().playerType == "Human":
-            return self.chooseMergerStockAction(corps)
-        else:
-            return self.game.aiChooseMergerStockAction(corps)
+        result = ""
+        for player in self.game.getMergerPlayers(corp):
+            while(player.stock[corp] > 0 and result != "Keep"):
+                actions = ["Sell","Keep"]
+                if player.stock[corp] > 1 and largestCorp.shares_available > 0:
+                    actions.append("Trade")
+                if self.game.getCurrentPlayer().playerType == "Human":
+                    result = self.chooseMergerStockAction(player, corp, largestCorp, actions)
+                else:
+                    result =  self.game.aiChooseMergerStockAction(actions)
+                self.resoveMergerAction(player, corp, largestCorp, result)
 
     def pickCorp(self,player,tile): 
         corp = None
@@ -98,12 +105,23 @@ class Controller:
             largestCorp = largestCorp[0]
         else:
             largestCorp = self.pickMerger(player, largestCorp)
+        mergingCorps.remove(largestCorp)
 
         for corp in mergingCorps:
-            result = ""
-            for player in self.game.getMergerPlayers():
-                while(player.stock[corp] > 0 and result != "Keep"):
-                    result = self.liquidateMergerStock(player, corp, largestCorp)
+            self.rewardPrimaries(corp)
+            self.liquidateMergerStock(player, corp, largestCorp):
+
+    def resoveMergerAction(self, player, corp, largestCorp, result):
+        if result == "Trade":
+            player.stock[corp] -= 2
+            player.stock[largestCorp] += 1
+            self.game.corporations[corp].shares_available +=2
+            self.game.corporations[largestCorp].shares_available -=1
+        elif result == "Sell":
+            player.stock[corp] -= 1
+            self.game.corporations[corp].shares_available += 1
+            player.money += self.game.corporations[corp].price()
+
 
     def rewardPrimaries(self, corp):
         primaries = self.game.primaryHolders(corp)
