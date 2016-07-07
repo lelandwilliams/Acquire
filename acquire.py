@@ -146,7 +146,7 @@ class Acquire:
         return corps[random.randrange(len(corps))]
 
     def aiChooseMerger(self, corps):
-        return corps[random.randrange(len(corps))
+        return corps[random.randrange(len(corps))]
 
     def aiChooseTile(self,player):
         random.shuffle(player.hand)
@@ -201,6 +201,7 @@ class Acquire:
     def getLargestCorps(self, tile):
         corps = self.adjoiningCorps(tile)
         maxSize = 0
+        largestCorp = [] 
 
         for corp in corps:
             if len(largestCorp) == 0:
