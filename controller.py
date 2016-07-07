@@ -97,7 +97,7 @@ class Controller:
         for corp in mergingCorps:
             result = ""
             for player in self.game.getMergerPlayers():
-                while(player.stocks[corp] > 0 and result != "Keep"):
+                while(player.stock[corp] > 0 and result != "Keep"):
                     result = self.liquidateMergerStock(player, corp, largestCorp)
 
 
