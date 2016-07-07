@@ -27,8 +27,8 @@ class Controller:
                     result = self.chooseMergerStockAction(player, corp, largestCorp, actions)
                 else:
                     result =  self.game.aiChooseMergerStockAction(actions)
-                self.resoveMergerAction(player, corp, largestCorp, result)
-
+                self.resolveMergerAction(player, corp, largestCorp, result)
+l
     def pickCorp(self,player,tile): 
         corp = None
         corps = self.game.inactiveCorps()
@@ -111,7 +111,7 @@ class Controller:
             self.rewardPrimaries(corp)
             self.liquidateMergerStock(player, corp, largestCorp):
 
-    def resoveMergerAction(self, player, corp, largestCorp, result):
+    def resolveMergerAction(self, player, corp, largestCorp, result):
         if result == "Trade":
             player.stock[corp] -= 2
             player.stock[largestCorp] += 1
