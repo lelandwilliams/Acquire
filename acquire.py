@@ -211,7 +211,9 @@ class Acquire:
                 largestCorp.append(corp)
                 maxSize = self.corporations[corp].size()
             elif self.corporations[corp].size() > maxSize:
-                largestCorp = [corp]
+                while len(largestCorp) > 0:
+                    largestCorp.pop()
+                largestCorp.append(corp)
                 maxSize = self.corporations[corp].size()
             elif self.corporations[corp].size() == maxSize:
                 largestCorp.append(corp)
