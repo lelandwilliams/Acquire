@@ -7,6 +7,7 @@ class MergerActionDialog(QDialog):
         super().__init__()
 
 #        self.tile_size = 40
+        self.actions = actions
 
         l = QHBoxLayout()
         for action in actions:
@@ -24,7 +25,7 @@ class MergerActionDialog(QDialog):
     def buttonClicked(self):
         sender = self.sender()
         print(sender.objectName())
-        self.done(self.company_list.index(sender.objectName()))
+        self.done(self.actions.index(sender.objectName()))
 
 
 
