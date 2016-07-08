@@ -9,7 +9,7 @@ class MergerActionDialog(QDialog):
 #        self.tile_size = 40
 
         l = QHBoxLayout()
-        for action in actions::
+        for action in actions:
             newButton = QPushButton(action)
 #            newStock.setStyleSheet("QPushButton {background-color: " + colors[company] + ";"
 #                       "color: white;"
