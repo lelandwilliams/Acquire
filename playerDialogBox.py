@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QFrame, QVBoxLayout, QLabel, QApplication
 from PyQt5.QtCore import pyqtSlot, QObject
 from stockchooserdialog import StockChooserDialog
 from tilechooserdialog import TileChooserDialog
+from mergeractionchooserdialog import MergerActionDialog
 import sys
 
 class PlayerDialogBox(QFrame,QObject):
