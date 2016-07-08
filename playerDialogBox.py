@@ -23,6 +23,14 @@ class PlayerDialogBox(QFrame,QObject):
         corp = list(corps)[self.dialog.exec()]
         return corp
 
+    def chooseMergerStockAction(self,player,corp,largestCorp, actions, colors):
+        self.dialog = MergerActionDialog(actions, colors)
+        self.label1.setText("Choose what to do with your \n\
+                stock in the liquidated company")
+        self.layout.addWidget(self.dialog)
+        return actions[self.dialog.exec()]
+
+
     def chooseStock(self,number,companies,colors):
         self.dialog = StockChooserDialog(companies,colors)
         if number == 1:
