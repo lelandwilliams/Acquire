@@ -26,6 +26,9 @@ class PlayerBox(QFrame):
         self.setLineWidth(1)
         self.setFrameStyle(QFrame.Panel)
 
+    def setBackground(self, color):
+        self.setStyleSheet("QFrame {background-color:" + color +"}")
+
     def setName(self, name):
         self.nameLabel.setText(name)
 
