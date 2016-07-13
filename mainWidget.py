@@ -13,7 +13,7 @@ class AcquireUI(QMainWindow, Controller):
         self.frame = QFrame()
         self.lt = QGridLayout()
         self.board = Board(self.setColors())
-        self.pb = PlayerBoxGroup()
+        self.pb = PlayerBoxGroup(self.setColors())
         self.dialogbox = PlayerDialogBox()
         self.board.show()
         self.pb.show()
@@ -77,14 +77,24 @@ class AcquireUI(QMainWindow, Controller):
 
     def setColors(self): 
         colorscheme = {}
-        colorscheme['None'] = "rgb(32,32,32)"
-        colorscheme['Tower'] = "rgb(246,214,86)"
-        colorscheme['Luxor'] = "rgb(246,153,153)"
-        colorscheme['Worldwide'] = "rgb(155,98,41)"
-        colorscheme['Festival'] = "rgb(5,119,51)"
-        colorscheme['American'] = "rgb(0,0,102)"
-        colorscheme['Imperial'] = "rgb(242,82,42)"
-        colorscheme['Continental'] = "rgb(0,128,255)"
+#       colorscheme['None'] = "rgb(32,32,32)"
+        colorscheme['None'] = "rgb(46,45,50)"
+#       colorscheme['Tower'] = "rgb(246,214,86)"
+        colorscheme['Tower'] = "rgb(215,155,23)"
+#       colorscheme['Luxor'] = "rgb(246,153,153)"
+        colorscheme['Luxor'] = "rgb(255,81,57)"
+#       colorscheme['Worldwide'] = "rgb(155,98,41)"
+        colorscheme['Worldwide'] = "rgb(145,72,45)"
+#       colorscheme['Festival'] = "rgb(5,119,51)"
+        colorscheme['Festival'] = "rgb(32,132,86)"
+#       colorscheme['American'] = "rgb(0,0,102)"
+        colorscheme['American'] = "rgb(29,75,102)"
+#       colorscheme['Imperial'] = "rgb(242,82,42)"
+        colorscheme['Imperial'] = "rgb(238,98,137)"
+#       colorscheme['Continental'] = "rgb(0,128,255)"
+        colorscheme['Continental'] = "rgb(42,157,150)"
+        colorscheme['ActivePlayerBackground'] = "rgb(250,250,250)"
+        colorscheme['PlayerBackground'] = "rgb(230,230,230)"
 
         return colorscheme
 
