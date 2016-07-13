@@ -15,7 +15,9 @@ class TileChooserDialog(QDialog):
             newTile.setStyleSheet("QPushButton {background-color: black;"
                         "color: white;"
                         "border-color: white;"
-                        "border-style: outset;}")
+                        "border-style: outset;}\n
+                        QPushButton:hover {border-color: white"
+                        "border: 2px solid")
             newTile.clicked.connect(self.buttonClicked)
             newTile.setFixedSize(self.tile_size, self.tile_size)
             l.addWidget(newTile)
