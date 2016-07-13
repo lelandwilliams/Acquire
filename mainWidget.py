@@ -95,7 +95,7 @@ class AcquireUI(QMainWindow, Controller):
         colorscheme['Continental'] = "rgb(42,157,150)"
         colorscheme['ActivePlayerBackground'] = "rgb(250,250,250)"
         colorscheme['PlayerBackground'] = "rgb(230,230,230)"
-
+        colorscheme['Board'] = "rgb(228,202,127)"
         return colorscheme
 
     def setPlayers(self):
