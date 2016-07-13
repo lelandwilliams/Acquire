@@ -13,8 +13,8 @@ class StockChooserDialog(QDialog):
             newStock = QPushButton(corp + "\nHotels\n\n" + str(price))
             newStock.setStyleSheet("QPushButton {background-color: " + colors[corp] + ";"
                         "color: white;"
-                        "border-color: white;"
-                        "border-style: outset;}")
+                        "border: 6px solid white;"
+                        "border-radius: 4px ;}")
             newStock.clicked.connect(self.buttonClicked)
             newStock.setObjectName(corp)
             newStock.setFixedSize(self.width, int(1.5 *self.width))
