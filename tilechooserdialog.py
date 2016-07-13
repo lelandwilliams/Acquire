@@ -14,10 +14,9 @@ class TileChooserDialog(QDialog):
             newTile = QPushButton(str(tile[0])+"-"+tile[1])
             newTile.setStyleSheet("QPushButton {background-color: black;"
                         "color: white;"
-                        "border-color: white;"
-                        "border-style: outset;}\n
-                        QPushButton:hover {border-color: white"
-                        "border: 2px solid")
+                        "border: 2px outset white;}"
+                        "QPushButton:hover {border-color: white;"
+                        "border: 4px ridge red;}")
             newTile.clicked.connect(self.buttonClicked)
             newTile.setFixedSize(self.tile_size, self.tile_size)
             l.addWidget(newTile)
