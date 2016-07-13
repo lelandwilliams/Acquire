@@ -1,0 +1,8 @@
+** change background of active player box
+** add in instructions/prompts for human players
+** redo mainWidget so that dialog area lines up with board area
+** tweak colors
+** add in delays with oneshot timers
+** show last player actions in player bar
+** show stocks owned in player bar
+** add mouseover animations to tiles and stocks when selecting
