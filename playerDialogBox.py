@@ -45,8 +45,12 @@ class PlayerDialogBox(QFrame,QObject):
         return stock
 
     def chooseTile(self, tiles, player):
+        label = "<h1><font color=\"blue\">" + player.name + "</font> Choose a Tile</h1>\n"
+        label += "<p> on this part of your turn, choose one of your six</p>"
+        label += "<p> tiles to place on the board. Tiles that are not legal plays</p>"
+        label += "<p>will be ignored</p>"
         self.dialog = TileChooserDialog(tiles)
-        self.label1.setText("Choose your Tile")
+        self.label1.setText(label)
         self.label1.setAlignment(Qt.AlignHCenter)
         self.layout.addWidget(self.dialog)
         tile =  tiles[self.dialog.exec()]
