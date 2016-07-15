@@ -67,7 +67,7 @@ class AcquireUI(QMainWindow, Controller):
         tile = None
         while True:
             if(player.playerType == 'Human'):
-                tile = self.dialogbox.chooseTile(player.hand)
+                tile = self.dialogbox.chooseTile(player.hand, player)
             else:
                 tile = self.game.aiChooseTile(player)
             if self.game.evaluatePlay(tile) != "Illegal":

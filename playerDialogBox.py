@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QFrame, QVBoxLayout, QLabel, QApplication
-from PyQt5.QtCore import pyqtSlot, QObject
+from PyQt5.QtCore import pyqtSlot, QObject, Qt
 from stockchooserdialog import StockChooserDialog
 from tilechooserdialog import TileChooserDialog
 from mergeractionchooserdialog import MergerActionDialog
@@ -44,9 +44,10 @@ class PlayerDialogBox(QFrame,QObject):
         self.label1.setText("You Chose " + stock)
         return stock
 
-    def chooseTile(self, tiles):
+    def chooseTile(self, tiles, player):
         self.dialog = TileChooserDialog(tiles)
         self.label1.setText("Choose your Tile")
+        self.label1.setAlignment(Qt.AlignHCenter)
         self.layout.addWidget(self.dialog)
         tile =  tiles[self.dialog.exec()]
         self.label1.setText("You Chose " + str(tile))
