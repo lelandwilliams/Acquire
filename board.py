@@ -1,6 +1,6 @@
 import sys, string
 from PyQt5.QtWidgets import QLabel, QFrame, QGridLayout
-#from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtCore import Qt
 
 class Board(QFrame):
     def __init__(self,colors):
@@ -17,8 +17,11 @@ class Board(QFrame):
 
         for i in string.ascii_uppercase[:9]:
             for j in range(1,13):
-                text = str(j) + '-' + i
-                space = QLabel(text,self)
+                text = str(j) + '-' + i 
+#               space = QLabel("<b>" + text+ "</b>",self)
+                space = QLabel(text ,self)
+#               space = QLabel("<font size=\"8\">" + text+ "</font>",self)
+                space.setAlignment(Qt.AlignCenter)
                 self.tiles[text] = space
                 space.setFrameShape(QFrame.Panel)
                 space.setFrameShadow(QFrame.Sunken)
