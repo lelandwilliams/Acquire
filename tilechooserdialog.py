@@ -10,6 +10,7 @@ class TileChooserDialog(QDialog):
         self.tile_size = 40
 
         l = QHBoxLayout()
+        l.addStretch()
         for tile in tileList:
             newTile = QPushButton(str(tile[0])+"-"+tile[1])
             newTile.setStyleSheet("QPushButton {background-color: black;"
@@ -20,6 +21,7 @@ class TileChooserDialog(QDialog):
             newTile.clicked.connect(self.buttonClicked)
             newTile.setFixedSize(self.tile_size, self.tile_size)
             l.addWidget(newTile)
+        l.addStretch()
         self.setLayout(l)
 
     def buttonClicked(self):
