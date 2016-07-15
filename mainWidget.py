@@ -19,7 +19,7 @@ class AcquireUI(QMainWindow, Controller):
         self.pb.show()
         self.lt.addWidget(self.board, 0,0, 1,5)
         self.lt.addWidget(self.pb,0,6,1,2)
-        self.lt.addWidget(self.dialogbox,1,2,1,3)
+        self.lt.addWidget(self.dialogbox,1,0,1,5)
         self.lt.setAlignment(Qt.AlignTop)
         self.frame.setLayout(self.lt)
 
