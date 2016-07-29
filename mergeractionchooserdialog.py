@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 class MergerActionDialog(QDialog):
     chosen = pyqtSignal(str)
-    def __init__(self, actions, colors):
+    def __init__(self, actions, colors = None):
         super().__init__()
 
 #        self.tile_size = 40
