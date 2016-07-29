@@ -13,6 +13,7 @@ mainWidget.py
 		chooseNewCorp(self,player,tile)
 		chooseTile(self, player)
 		setColors(self)
+		gameOverDialog(self)
 		test(self)
 		setPlayers(self)
 	play()
@@ -51,6 +52,7 @@ acquire.py
 		self.tilegroups
 		self.players
 		self.corporations
+		self.game_over
 
 		__init__(self,players)
 		addGrouptoGroup(self,oldgroup,newgroup)
@@ -59,6 +61,7 @@ acquire.py
 		adjoiningGroups(self,tile)
 		advanceCurrentPlayer(self)
 		aiChooseCorp(self, corps)
+		aiChooseGameOver(self)
 		aiChooseMerger(self, corps)
 		aiChooseTile(self, player)
 		corpSize(self, corp)
@@ -77,13 +80,16 @@ acquire.py
 		primaryHolders(self, corp)
 		secondaryHolders(self, corp)
 		setActive(self, corp, player, tile)
-		setStarters(self):
+		setGameOver(self)
+		setStarters(self)
 	play()
 
 controller.py
 	class Controller
 		__init__(self)
 		liquidate(self)
+		newGame(self)
+		offerGameOver(self)
 		pickCorp(self,player,tile)
 		pickMerger(self, corps)
 		pickStock(self)
