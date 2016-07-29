@@ -14,6 +14,16 @@ class PlayerDialogBox(QFrame,QObject):
 
         self.setLayout(self.layout)
 
+    def chooseGameOver(self,player):
+        actions = ["End Game","Continue"]
+        self.dialog = MergerActionDialog(actions)
+        text = "<h1>End the Game ?</hi>"
+        text += "<p><b>"+ player.name +"</b>:"
+        text += "you man choose to end the game, or to have it continue<br>"
+        text += "The game may end becuase either all corporations on the board<br>"
+        text += "Are size 7 or at least one corporation is size 41</p>"
+        return actions[self.dialog.exec()]
+
     def chooseMerger(self, corps, colors):
         self.dialog = StockChooserDialog(corps,colors)
         text = "<h1> Liquidate a Company</h1>"
