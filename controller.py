@@ -96,9 +96,21 @@ class Controller:
                 print(str(self.game))
             self.playTile()
             self.pickStock()
+            if self.game.endGameConditionsMet():
+                self.offerGameOver()
             self.game.advanceCurrentPlayer()
 
         self.liquidate()
+
+    def offerGameOver(self):
+        player = self.game.getCurrentPlayer()
+        if player.playerType == "Human":
+            result = self.ChooseGameOver()
+        else:
+            result = self.game.aiChooseGameOver()
+
+        if result:
+            self.game.setGameOver()
 
     def resolveMerger(self, player, tile):
         mergingCorps = self.game.adjoiningCorps(tile)
