@@ -52,6 +52,9 @@ class Corp:
     def isActive(self):
         return self.active
 
+    def isSafe(self):
+        return self.isActive() and (self.size() >= 6)
+
     def setActive(self, b):
         self.active = b
 
@@ -85,6 +88,7 @@ class Acquire:
     corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
     def __init__(self, players):
+        self.game_over = False
         self.players = players
         self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
@@ -141,6 +145,9 @@ class Acquire:
         random.shuffle(corps)
         return corps[0]
 
+    def aiChooseGameOver(self):
+        return True
+
     def aiChooseMergerStockAction(self, actions):
         return actions[random.randrange(len(actions))]
 
@@ -172,6 +179,27 @@ class Acquire:
             elif arr[start][0] > arr[current][0]:
                 return self.determineStartingPlayer(arr, current, current +1)
 
+    def endGameConditionsMet(self):
+        activecorps = []
+        for corp in self.corporations:
+            if corp.isActive():
+                activecorps.append(corp)
+        if len(activecorps) == 0:
+            return False
+
+        allSafe = True
+        for corp in activecorps:
+            allSafe = allSafe and corp.isSafe()
+
+        if allSafe:
+            return True
+
+        for corp in activecorps:
+            if corp.size() >= 41:
+                return true
+
+        return False
+
     def evaluatePlay(self, tile):
         if len(self.adjoiningGroups(tile)) == 0:
             return "Regular"
@@ -196,7 +224,8 @@ class Acquire:
             player.hand.sort()
 
     def gameOver(self):
-        return len(self.tiles) <= 1
+        #return len(self.tiles) <= 1
+        return self.game_over
 
     def getCurrentPlayer(self):
         return self.players[self.currentPlayerNumber]
@@ -341,6 +370,9 @@ class Acquire:
             self.corporations[corp].shares_available -= 1
             player.stock[corp] += 1
             player.stockAcquired.append(corp)
+
+    def setGameOver(self):
+        self.game_over = True
 
     def setStarters(self):
         starters = []
