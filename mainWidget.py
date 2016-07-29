@@ -51,6 +51,9 @@ class AcquireUI(QMainWindow, Controller):
     def chooseNewCorp(self,available): 
         return self.dialogbox.chooseCorporation(available, self.setColors())
 
+    def chooseGameOver(self):
+        return self.dialogbox.chooseGameOver(self.game.getCurrentPlayer().playerName) == "End"
+
     def chooseMerger(self, corps):
         companyList = {}
         for corp in corps:
