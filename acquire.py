@@ -182,20 +182,20 @@ class Acquire:
     def endGameConditionsMet(self):
         activecorps = []
         for corp in self.corporations:
-            if corp.isActive():
+            if self.corporations[corp].isActive():
                 activecorps.append(corp)
         if len(activecorps) == 0:
             return False
 
         allSafe = True
         for corp in activecorps:
-            allSafe = allSafe and corp.isSafe()
+            allSafe = allSafe and self.corporations[corp].isSafe()
 
         if allSafe:
             return True
 
         for corp in activecorps:
-            if corp.size() >= 41:
+            if self.corporations[corp].size() >= 41:
                 return true
 
         return False
