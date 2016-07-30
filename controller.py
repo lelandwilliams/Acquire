@@ -116,14 +116,15 @@ class Controller:
     def resolveMerger(self, player, tile):
         mergingCorps = self.game.adjoiningCorps(tile)
         largestCorps = self.game.getLargestCorps(tile)
+        largestCorp = None
         for bigcorp in largestCorps: mergingCorps.remove(bigcorp)
         if self.debug:
             print(str(mergingCorps), "will be merged.")
             print(str(largestCorps), "are the largest corporations")
         if len(largestCorps) == 1:
-            largestCorps = largestCorps[0]
+            largestCorp = largestCorps[0]
         else:
-            largestCorps = self.pickMerger(player, largestCorps)
+            largestCorp = self.pickMerger(player, largestCorps)
 
         for corp in mergingCorps:
             self.rewardPrimaries(corp)
