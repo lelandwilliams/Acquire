@@ -119,7 +119,8 @@ class Controller:
         mergingCorps = self.game.adjoiningCorps(tile)
         largestCorps = self.game.getLargestCorps(tile)
         largestCorp = None
-        for bigcorp in largestCorps: mergingCorps.remove(bigcorp)
+#       for bigcorp in largestCorps: 
+#           mergingCorps.remove(bigcorp)
         if self.debug:
             print(str(mergingCorps), "will be merged.")
             print(str(largestCorps), "are the largest corporations")
@@ -127,6 +128,7 @@ class Controller:
             largestCorp = largestCorps[0]
         else:
             largestCorp = self.pickMerger(player, largestCorps)
+        mergingCorps.remove(largestCorp)
 
         for corp in mergingCorps:
             self.rewardPrimaries(corp)
@@ -154,7 +156,7 @@ class Controller:
                 player.stock[largestCorp] += 1
                 self.game.corporations[corp].shares_available +=2
                 self.game.corporations[largestCorp].shares_available -=1
-        elif result == "Sell":
+        elif result == "Sell All`":
             while player.stock[corp] >= 1:
                 player.stock[corp] -= 1
                 self.game.corporations[corp].shares_available += 1
