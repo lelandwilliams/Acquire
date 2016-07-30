@@ -107,7 +107,7 @@ class Controller:
     def offerGameOver(self):
         player = self.game.getCurrentPlayer()
         if player.playerType == "Human":
-            result = self.ChooseGameOver()
+            result = self.chooseGameOver()
         else:
             result = self.game.aiChooseGameOver()
 
