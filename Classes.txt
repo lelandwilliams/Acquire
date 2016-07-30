@@ -7,6 +7,7 @@ mainWidget.py
 		self.pb
 		self.dialogbox
 		addPlayers(self, players)
+		announceGameOver(self, name)
 		changeGroupColor(self,corp)
 		changeTileColor(self,tile,company)
 		chooseMerger(self,corps)
@@ -86,6 +87,7 @@ acquire.py
 
 controller.py
 	class Controller
+		self,gui
 		__init__(self)
 		liquidate(self)
 		newGame(self)
@@ -115,5 +117,6 @@ playerbox.py
 
 playerDialogBox.py
 	class PlayerDialogBox(self)
+		announceGameOver(self, name)
 		chooseStock(self,companies,colors)
 		chooseTile(self,tiles)
