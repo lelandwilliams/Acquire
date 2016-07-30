@@ -119,12 +119,11 @@ class Controller:
         for bigcorp in largestCorps: mergingCorps.remove(bigcorp)
         if self.debug:
             print(str(mergingCorps), "will be merged.")
-            print(str(largestCorp), "are the largest corporations")
-        if len(largestCorp) == 1:
-            largestCorp = largestCorp[0]
+            print(str(largestCorps), "are the largest corporations")
+        if len(largestCorps) == 1:
+            largestCorps = largestCorps[0]
         else:
-            largestCorp = self.pickMerger(player, largestCorp)
-        mergingCorps.remove(largestCorp)
+            largestCorps = self.pickMerger(player, largestCorps)
 
         for corp in mergingCorps:
             self.rewardPrimaries(corp)
