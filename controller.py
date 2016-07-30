@@ -110,7 +110,7 @@ class Controller:
             result = self.game.aiChooseGameOver()
 
         if result:
-            if self.gui: self.announceGameOver(self.game.getCurrentPlayer().playerName)
+            if self.gui: self.announceGameOver(self.game.getCurrentPlayer().name)
             self.game.setGameOver()
 
     def resolveMerger(self, player, tile):
