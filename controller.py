@@ -149,13 +149,13 @@ class Controller:
             self.game.corporations[corp].shares_available += 1
             player.money += self.game.corporations[corp].price()
         elif result == "Trade All":
-            while stock[corp] >= 2 and stock[largestCorp] >= 1:
+            while player.stock[corp] >= 2 and player.stock[largestCorp] >= 1:
                 player.stock[corp] -= 2
                 player.stock[largestCorp] += 1
                 self.game.corporations[corp].shares_available +=2
                 self.game.corporations[largestCorp].shares_available -=1
         elif result == "Sell":
-            while stock[corp] >= 1:
+            while player.stock[corp] >= 1:
                 player.stock[corp] -= 1
                 self.game.corporations[corp].shares_available += 1
                 player.money += self.game.corporations[corp].price()
