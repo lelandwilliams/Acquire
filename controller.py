@@ -110,12 +110,13 @@ class Controller:
             result = self.game.aiChooseGameOver()
 
         if result:
-            self.announceGameOver(self.game.getCurrentPlayer())
+            if self.gui: self.announceGameOver(self.game.getCurrentPlayer().playerName)
             self.game.setGameOver()
 
     def resolveMerger(self, player, tile):
         mergingCorps = self.game.adjoiningCorps(tile)
-        largestCorp = self.game.getLargestCorps(tile)
+        largestCorps = self.game.getLargestCorps(tile)
+        for bigcorp in largestCorps: mergingCorps.remove(bigcorp)
         if self.debug:
             print(str(mergingCorps), "will be merged.")
             print(str(largestCorp), "are the largest corporations")
