@@ -20,9 +20,11 @@ class Controller:
         for player in self.game.getMergerPlayers():
             result = ""
             while(player.stock[corp] > 0 and result != "Keep"):
-                actions = ["Sell","Keep"]
+                actions = ["Sell","Sell All"]
                 if player.stock[corp] > 1 and self.game.corporations[largestCorp].shares_available > 0:
+                    actions.append("Trade All")
                     actions.append("Trade")
+                actions.append("Keep")
                 if player.playerType == "Human":
                     result = self.chooseMergerStockAction(player, corp, largestCorp, actions)
                 else:
