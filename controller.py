@@ -2,7 +2,7 @@ import acquire
 
 class Controller:
     def __init__(self):
-        pass
+        self.gui = False
 
     def liquidate(self):
         for corp in self.game.corporations:
@@ -110,6 +110,7 @@ class Controller:
             result = self.game.aiChooseGameOver()
 
         if result:
+            self.announceGameOver(self.game.getCurrentPlayer())
             self.game.setGameOver()
 
     def resolveMerger(self, player, tile):

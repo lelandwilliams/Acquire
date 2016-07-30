@@ -35,6 +35,7 @@ class AcquireUI(QMainWindow, Controller):
 
         self.setWindowTitle('Acquire')
         self.debug = True
+        self.gui = True
 
     def addPlayers(self, players):
         for player in players:
