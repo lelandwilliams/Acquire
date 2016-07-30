@@ -196,7 +196,7 @@ class Acquire:
 
         for corp in activecorps:
             if self.corporations[corp].size() >= 41:
-                return true
+                return True
 
         return False
 
