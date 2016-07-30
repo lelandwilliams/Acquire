@@ -41,6 +41,9 @@ class AcquireUI(QMainWindow, Controller):
         for player in players:
             self.pb.addPlayer(player.name, player.money)
 
+    def announceGameOver(self, name):
+        self.dialogbox.announceGameOver(name)
+
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
 
