@@ -6,7 +6,7 @@ class StockChooserDialog(QDialog):
     def __init__(self, companyList, colors):
         super().__init__()
         self.company_list = list(companyList)
-        self.width = 80
+        self.width = 90
 
         l = QHBoxLayout()
         for corp, price in companyList.items():
