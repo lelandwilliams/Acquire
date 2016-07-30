@@ -156,7 +156,7 @@ class Controller:
                 player.stock[largestCorp] += 1
                 self.game.corporations[corp].shares_available +=2
                 self.game.corporations[largestCorp].shares_available -=1
-        elif result == "Sell All`":
+        elif result == "Sell All":
             while player.stock[corp] >= 1:
                 player.stock[corp] -= 1
                 self.game.corporations[corp].shares_available += 1
