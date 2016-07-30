@@ -18,6 +18,7 @@ class PlayerDialogBox(QFrame,QObject):
         self.dialog = ["Continue"]
         text = "<h1> Game Called </h1>"
         text += "Player " + name + " has declared the game over"
+        self.dialog.exec()
 
     def chooseGameOver(self,player):
         actions = ["End Game","Continue"]
