@@ -15,7 +15,7 @@ class PlayerDialogBox(QFrame,QObject):
         self.setLayout(self.layout)
     
     def announceGameOver(self, name):
-        self.dialog = ["Continue"]
+        self.dialog = MergerActionDialog(["Continue"])
         text = "<h1> Game Called </h1>"
         text += "Player " + name + " has declared the game over"
         self.dialog.exec()
@@ -24,8 +24,8 @@ class PlayerDialogBox(QFrame,QObject):
         actions = ["End Game","Continue"]
         self.dialog = MergerActionDialog(actions)
         text = "<h1>End the Game ?</hi>"
-        text += "<p><b>"+ player.name +"</b>:"
-        text += "you man choose to end the game, or to have it continue<br>"
+        text += "<p><b>"+ player  + "</b>:"
+        text += " you man choose to end the game, or to have it continue<br>"
         text += "The game may end becuase either all corporations on the board<br>"
         text += "Are size 7 or at least one corporation is size 41</p>"
         return actions[self.dialog.exec()]
