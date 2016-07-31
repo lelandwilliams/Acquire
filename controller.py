@@ -170,28 +170,29 @@ class Controller:
             secondaries = self.game.secondaryHolders(corp)
 
         if len(secondaries) == 0:
-            bonus = self.game.corporations[corp].price() * 15 // len(primaries)
+            primary_bonus = self.game.corporations[corp].price() * 15 // len(primaries)
         else:
-            bonus = self.game.corporations[corp].price() * 10 // len(primaries)
+            primary_bonus = self.game.corporations[corp].price() * 10 // len(primaries)
 
-        if bonus % 100 > 0:
+        if primary_bonus % 100 > 0:
             bonux = bonus - (bonus % 100) + 100
 
         for player in primaries:
-            player.money += bonus
+            player.money += primary_bonus
             self.pb.updatePlayerMoney(player)
             if self.debug:
-                print(player.name, "is a primary holder of ", corp, "and recieves $", str(bonus))
+                print(player.name, "is a primary holder of ", corp, "and recieves $", str(primary_bonus))
 
         if len(secondaries) > 0:
-            bonus = self.game.corporations[corp].price() * 5 // len(secondaries)
-            if bonus % 100 > 0:
-                bonux = bonus - (bonus % 100) + 100
+            secondary_bonus = self.game.corporations[corp].price() * 5 // len(secondaries)
+            if secondary_bonus % 100 > 0:
+                secondary_bonux = secondary_bonus - (secondary_bonus % 100) + 100
             for player in secondaries:
-                player.money += bonus
+                player.money += secondary_bonus
                 self.pb.updatePlayerMoney(player)
                 if self.debug:
-                    print(player.name, "is a secondary holder of", corp, "and recieves $", str(bonus))
+                    print(player.name, "is a secondary holder of", corp, "and recieves $", str(secondary_bonus))
+
 
     def setup(self):
         players = self.setPlayers()
