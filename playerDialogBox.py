@@ -16,8 +16,11 @@ class PlayerDialogBox(QFrame,QObject):
     
     def announceGameOver(self, name):
         self.dialog = MergerActionDialog(["Continue"])
-        text = "<h1> Game Called </h1>"
+        text = "<h1> The Game Has Been Called </h1>"
         text += "Player " + name + " has declared the game over"
+        text += "<p>Now we will liquidate all the corporations</p>"
+        self.label1.setText(text)
+        self.layout.addWidget(self.dialog)
         self.dialog.exec()
 
     def chooseGameOver(self,player):
@@ -28,6 +31,8 @@ class PlayerDialogBox(QFrame,QObject):
         text += " you man choose to end the game, or to have it continue<br>"
         text += "The game may end becuase either all corporations on the board<br>"
         text += "Are size 7 or at least one corporation is size 41</p>"
+        self.label1.setText(text)
+        self.layout.addWidget(self.dialog)
         return actions[self.dialog.exec()]
 
     def chooseMerger(self, corps, colors):
