@@ -1,6 +1,6 @@
 # Acquire
 An implementation of the Sid Sackson 3M Classic for purposes of exploring Artificial Intelligence
-# Background
+## Background
 Acquire is a favorite of mine. When I'm hosting a game night, I find this game to be a good one to teachpersons new to gaming, as the rules are simple, and the goal (make money) is more concrete than victory point schemes, and the game has suspense, and a sense of history.
 
 I thought that coming up with an AI for the game could be very interesting, as good play 
