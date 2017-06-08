@@ -19,3 +19,10 @@ imagining the developments under the hood than a wow-inspiring UI.
 
 The model was a piece of cake. For now, development has focused on building the view and controller in
 parallel, with the 'AI' only making random choices, which is enough to test M-V-C interaction.
+
+## Status
+The UI is nearly complete. I think I have only one or two more dialogs to write, and then it 
+is playable enough, albeit only against agents that choose their actions randomly. Once this
+is done I want to explore the construction of neural nets, and possibly experiment with GAs to 
+train them.
+
