@@ -5,6 +5,7 @@ from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
 from controller import Controller
+import acquire_model
 
 class AcquireUI(QMainWindow, Controller):
     def __init__(self):
@@ -106,10 +107,10 @@ class AcquireUI(QMainWindow, Controller):
 
     def setPlayers(self):
         players = []
-        players.append(acquire.Player('Bender', 'Robot'))
-        players.append(acquire.Player('C3P0', 'Robot'))
-        players.append(acquire.Player('Hal 9000', 'Robot'))
-        players.append(acquire.Player('Puny Human', 'Human'))
+        players.append(acquire_model.Player('Bender', 'Robot'))
+        players.append(acquire_model.Player('C3P0', 'Robot'))
+        players.append(acquire_model.Player('Hal 9000', 'Robot'))
+        players.append(acquire_model.Player('Puny Human', 'Human'))
 
         return players
 
