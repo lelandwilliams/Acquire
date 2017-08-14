@@ -175,7 +175,7 @@ class Controller:
             primary_bonus = self.game.corporations[corp].price() * 10 // len(primaries)
 
         if primary_bonus % 100 > 0:
-            bonux = bonus - (bonus % 100) + 100
+            primary_bonus = primary_bonus - (primary_bonus % 100) + 100
 
         for player in primaries:
             player.money += primary_bonus
@@ -186,7 +186,7 @@ class Controller:
         if len(secondaries) > 0:
             secondary_bonus = self.game.corporations[corp].price() * 5 // len(secondaries)
             if secondary_bonus % 100 > 0:
-                secondary_bonux = secondary_bonus - (secondary_bonus % 100) + 100
+                secondary_bonus = secondary_bonus - (secondary_bonus % 100) + 100
             for player in secondaries:
                 player.money += secondary_bonus
                 self.pb.updatePlayerMoney(player)
