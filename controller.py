@@ -1,4 +1,4 @@
-import acquire
+import acquire_model
 
 class Controller:
     def __init__(self):
