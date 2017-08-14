@@ -5,7 +5,6 @@ from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
 from controller import Controller
-import acquire 
 
 class AcquireUI(QMainWindow, Controller):
     def __init__(self):
