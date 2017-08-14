@@ -6,13 +6,16 @@ class TileChooserDialog(QDialog):
     def __init__(self, tileList):
         super().__init__()
         self.tile_list = tileList
+        print(tileList)
 
         self.tile_size = 40
 
         l = QHBoxLayout()
         l.addStretch()
         for tile in tileList:
-            newTile = QPushButton(str(tile[0])+"-"+tile[1])
+            tile_text = str(tile[0]) + '-' + tile[1]
+            print(tile_text)
+            newTile = QPushButton(tile_text)
             newTile.setStyleSheet("QPushButton {background-color: black;"
                         "color: white;"
                         "border: 2px outset white;}"
@@ -27,13 +30,18 @@ class TileChooserDialog(QDialog):
     def buttonClicked(self):
         sender = self.sender()
         print(sender.text())
-        txt = sender.text()
-        num = 0
-        if len(txt) ==4:
-            num = 10 + int(txt[1])
-        else:
-            num = int(txt[0])
-        tile = (num,txt[-1])
+        txt = ''.join(sender.text().split('&'))
+        print(txt)
+#       num = 0
+#        if len(txt) ==4:
+#            num = 10 + int(txt[1])
+#        else:
+#            num = int(txt[0])
+#       tile = (num,txt[-1])
+        txt = txt.split('-')
+        print(txt)
+        tile = (int(txt[0]),txt[1])
+        print(tile)
         self.done(self.tile_list.index(tile))
 
 
