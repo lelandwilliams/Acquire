@@ -196,7 +196,7 @@ class Controller:
 
     def setup(self):
         players = self.setPlayers()
-        self.game = acquire.Acquire(players)
+        self.game = acquire_model.Acquire(players)
         self.addPlayers(self.game.players)
 
         starters = self.game.setStarters()
