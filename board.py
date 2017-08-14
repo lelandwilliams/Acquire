@@ -39,4 +39,5 @@ class Board(QFrame):
         color = self.companycolors[company]
         item.setStyleSheet("QLabel {background-color: " + color + "; color: white;}")
         item.setFrameShadow(QFrame.Raised)
+        item.setToolTip(company)
 
