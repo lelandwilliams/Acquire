@@ -53,7 +53,7 @@ class Corp:
         return self.active
 
     def isSafe(self):
-        return self.isActive() and (self.size() >= 6)
+        return self.isActive() and (self.size() >= 11)
 
     def setActive(self, b):
         self.active = b
