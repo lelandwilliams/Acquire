@@ -12,7 +12,7 @@ class PlayerBoxGroup(QFrame):
         self.colors = colors
 
     def addPlayer(self, name, money):
-        new_player = PlayerBox(colors)
+        new_player = PlayerBox(self.colors)
         new_player.setName(name)
         new_player.setMoney(money)
         self.players[name] = new_player
