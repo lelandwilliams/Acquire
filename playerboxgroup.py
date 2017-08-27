@@ -34,3 +34,5 @@ class PlayerBoxGroup(QFrame):
     def updatePlayerMoney(self, player):
         self.players[player.name].setMoney(player.money)
 
+    def updatePlayerStock(self, player):
+        self.players[player.name].setStock(player.stock)
