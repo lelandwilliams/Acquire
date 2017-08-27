@@ -12,6 +12,8 @@ class Board(QFrame):
         self.setLayout(self.grid)
         self.tiles = {}
         self.companycolors = colors
+        self.setStyleSheet("QFrame {background-color: " + self.companycolors['Board'] +";}")
+        self.setAutoFillBackground(True)
 
         self.tile_size = 40
 
