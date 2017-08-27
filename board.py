@@ -15,7 +15,7 @@ class Board(QFrame):
         self.setStyleSheet("QFrame {background-color: " + self.companycolors['Board'] +";}")
         self.setAutoFillBackground(True)
 
-        self.tile_size = 40
+        self.tile_size = 50
 
         for i in string.ascii_uppercase[:9]:
             for j in range(1,13):
