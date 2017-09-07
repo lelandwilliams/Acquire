@@ -1,6 +1,6 @@
 import sys, queue
 from PyQt5 import QtNetwork
-from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArray
+from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArray, QTimer
 
 class AcquireServer(QObject):
     def __init__(self, master = None, port = 0):
@@ -68,6 +68,7 @@ class AcquireClient(QObject):
         self.net.readyRead.connect(self.receiveData)
 
         self.message_q = queue.PriorityQueue()
+        self.__acquireID = 0
 
     @pyqtSlot()
     def onStarted(self):
@@ -78,6 +79,30 @@ class AcquireClient(QObject):
         s = self.net.readLine().data().decode() 
         priority = s.split(';',1)[0]
         self.message_q.put(s)
+    
+    def set_id(self, acquire_id):
+        if self.__acquireID == 0:
+            self.__acquireID = acquire_id
+
+class AcquireLogger(AcquireClient):
+    def __init__(self):
+        super().__init__()
+        self.f = open('acquire.log', 'w')
+        self.timer = QTimer.timer
+        self.timer.timeout.connect(self.read_queue)
+        self.done = False
+        self.timer.start(1000)
+
+    @pyqtSlot()
+    def read_queue(self):
+        if self.done:
+            self.f.close()
+        else:
+            while not self.message_q.empty():
+                m = self.message_q.get()
+                self.f.write(m)
+                if m.split(';',2)[1] == "END":
+                    self.done = True
 
 if __name__ == "__main__":
     a = AcquireServer()
