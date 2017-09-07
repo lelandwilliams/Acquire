@@ -2,7 +2,7 @@ import acquire_model
 
 class Controller:
     def __init__(self):
-        self.gui = False
+        self.gui = True
 
     def liquidate(self):
         for corp in self.game.corporations:
@@ -78,6 +78,7 @@ class Controller:
         elif outcome == "NewCorp":
             newcorp = self.pickCorp(player,tile)
             self.game.setActive(newcorp,player,tile)
+            self.pb.updatePlayerStock(player) #gui related
             self.changeGroupColor(newcorp)
         elif outcome == "Addon":
             self.game.placeTile(tile)
