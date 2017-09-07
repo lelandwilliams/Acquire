@@ -8,45 +8,52 @@ class AcquireServer(QObject):
         self.app = QCoreApplication(sys.argv)
         self.thread = QThread()
         self.thread.started.connect(self.onStarted)
+        self.PORT = 65337
         
         self.server = QtNetwork.QTcpServer()
-        if not self.server.listen(QtNetwork.QHostAddress.LocalHost):
+        if not self.server.listen(QtNetwork.QHostAddress.LocalHost,65337):
             sys.exit("Error! Could not open server")
         self.server.newConnection.connect(self.newClientFound)
 
-        self.clients = list()
+        self.clients_raw = list()
         self.message_num = 0
-
-#        self.broadcast = QtNetwork.QUdpSocket()
+        self.clients = dict()
+        self.player_id = dict()
+        self.message_q = queue.PriorityQueue()
 
     @pyqtSlot()
     def newClientFound(self):
         print("A client has connected")
         client = self.server.nextPendingConnection()
         print(client.peerAddress())
-        self.clients.append(client)
+        self.clients_raw.append(client)
 
     @pyqtSlot()
     def onStarted(self):
         self.app.exec_()
 
-    def send_message(self, message):
+    def broadcast(self, message):
         data = QByteArray()
         data.append(str(self.message_num))
         data.append(";")
         data.append(message)
-        for c in self.clients:
+        for c in self.clients.values():
             c.write(data)
         self.message_num += 1
 
     def get_port(self):
         return self.server.serverPort()
 
+    @pyqtSlot()
+    def receiveData(self):
+        s = self.net.readLine().data().decode() 
+        self.message_q.put(s)
+
     def __del__(self):
         self.server.close()
 
 class AcquireClient(QObject):
-    def __init__(self, port):
+    def __init__(self, port=65337):
         super().__init__()
         self.app = QCoreApplication(sys.argv)
         self.thread = QThread()
