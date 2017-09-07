@@ -1,8 +1,10 @@
+import sys, uuid
 import acquire_model
+from network import AcquireServer
 
-class Controller:
-    def __init__(self):
-        self.gui = True
+class Controller(AcquireServer):
+    def __init__(self, master = None, port = 0):
+        super().__init__(master, port)
 
     def liquidate(self):
         for corp in self.game.corporations:
