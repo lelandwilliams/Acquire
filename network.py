@@ -94,8 +94,12 @@ class AcquireClient(QObject):
         if acquire_id != None:
             self.set_id(acquire_id)
         message = "AUTH;" + self.acquire_id + ";"
+        self.send_message(message)
+    
+    def send_message(self, message):
         data = QByteArray()
         data.append(message)
+        self.net.write(message)
 
 class AcquireLogger(AcquireClient):
     def __init__(self):
