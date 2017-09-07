@@ -3,15 +3,18 @@ from PyQt5 import QtNetwork
 from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArray
 
 class AcquireServer(QObject):
-    def __init__(self):
+    def __init__(self, master = None, port = 0):
         super().__init__()
         self.app = QCoreApplication(sys.argv)
         self.thread = QThread()
         self.thread.started.connect(self.onStarted)
-        self.PORT = 65337
+        if port == 0 :
+            self.PORT = 65337
+        else:
+            self.PORT = port
         
         self.server = QtNetwork.QTcpServer()
-        if not self.server.listen(QtNetwork.QHostAddress.LocalHost,65337):
+        if not self.server.listen(QtNetwork.QHostAddress.LocalHost, self.PORT):
             sys.exit("Error! Could not open server")
         self.server.newConnection.connect(self.newClientFound)
 
@@ -19,7 +22,8 @@ class AcquireServer(QObject):
         self.message_num = 0
         self.clients = dict()
         self.player_id = dict()
-        self.message_q = queue.PriorityQueue()
+        self.message_q = queue.Queue()
+        self.master = master
 
     @pyqtSlot()
     def newClientFound(self):
