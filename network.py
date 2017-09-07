@@ -2,6 +2,12 @@ import sys, queue
 from PyQt5 import QtNetwork
 from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArray, QTimer
 
+class ConnectionInfo:
+    def __init__(self):
+        self.role = None
+        self.acquire_id = None
+        self.master = False
+
 class AcquireServer(QObject):
     def __init__(self, master = None, port = 0):
         super().__init__()
@@ -18,19 +24,18 @@ class AcquireServer(QObject):
             sys.exit("Error! Could not open server")
         self.server.newConnection.connect(self.newClientFound)
 
-        self.clients_raw = list()
         self.message_num = 0
-        self.clients = dict()
+        self.clients = list()
         self.player_id = dict()
         self.message_q = queue.Queue()
         self.master = master
 
     @pyqtSlot()
     def newClientFound(self):
-        print("A client has connected")
+#       print("A client has connected")
         client = self.server.nextPendingConnection()
-        print(client.peerAddress())
-        self.clients_raw.append(client)
+#       print(client.peerAddress())
+        self.clients.append(client)
 
     @pyqtSlot()
     def onStarted(self):
@@ -41,7 +46,8 @@ class AcquireServer(QObject):
         data.append(str(self.message_num))
         data.append(";")
         data.append(message)
-        for c in self.clients.values():
+#       for c in self.clients.values():
+        for c in self.clients_raw:
             c.write(data)
         self.message_num += 1
 
@@ -83,6 +89,13 @@ class AcquireClient(QObject):
     def set_id(self, acquire_id):
         if self.__acquireID == 0:
             self.__acquireID = acquire_id
+
+    def authenticate(self, acquire_id = None):
+        if acquire_id != None:
+            self.set_id(acquire_id)
+        message = "AUTH;" + self.acquire_id + ";"
+        data = QByteArray()
+        data.append(message)
 
 class AcquireLogger(AcquireClient):
     def __init__(self):
