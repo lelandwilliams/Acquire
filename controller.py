@@ -15,9 +15,9 @@ class Controller(AcquireServer):
         while self.game.gameState != 'DONE' and not self.message_q.empty():
             m = self.message_q.get()
             m_parts = m.split(';')
-            if m_parts[0] = "ADDPLAYER" and m_parts[1] = self.master:
+            if m_parts[0] == "ADDPLAYER" and m_parts[1] == self.master:
                 self.players[m_parts[3]] = m_parts[2]
-            elif m_parts[0] = "KILL" and m_parts[1] = self.master:
+            elif m_parts[0] == "KILL" and m_parts[1] == self.master:
                 self.broadcast('DISCONNECT;;;')
                 self.game.gameState = 'DONE'
         if self.game.gameState != 'DONE':
