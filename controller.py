@@ -11,7 +11,7 @@ class Controller(AcquireServer):
         self.main()
 
     @pyqtSlot
-    def self.main(self):
+    def main(self):
         while self.game.gameState != 'DONE' and not self.message_q.empty():
             m = self.message_q.get()
             m_parts = m.split(';')
