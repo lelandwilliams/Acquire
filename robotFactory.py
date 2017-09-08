@@ -5,9 +5,9 @@
 # classes and distributes them to requesters
 #
 ##################################################
-import randomAI
+from randomAI import randomAI
 
 class robotFactory:
-    def __init__(self, robotType, name, acquire_id):
+    def getAI(self, robotType, name, acquire_id):
         return randomAI(name, acquire_id)
 
