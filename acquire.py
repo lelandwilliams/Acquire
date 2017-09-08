@@ -1,5 +1,5 @@
 import sys, uuid
-import controller
+from controller import Controller
 from network import AcquireClient
 from robotFactory import robotFactory
 
