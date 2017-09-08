@@ -96,6 +96,7 @@ class Acquire:
         while len(self.tilegroups) < 7:
             self.tilegroups.append([])
         self.corporations = self.initiate_corps()
+        self.gameState = "SETUP"
 
         self.fillHands()
         random.shuffle(self.players)
