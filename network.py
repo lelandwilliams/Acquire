@@ -11,6 +11,7 @@ class ConnectionInfo:
 class AcquireServer(QObject):
     def __init__(self, master = None, port = 0):
         super().__init__()
+        self.timer = QTimer.timer
         self.app = QCoreApplication(sys.argv)
         self.thread = QThread()
         self.thread.started.connect(self.onStarted)
