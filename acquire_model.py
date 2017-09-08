@@ -87,7 +87,7 @@ class Corp:
 class Acquire:
     corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
-    def __init__(self, players):
+    def __init__(self, players = list()):
         self.game_over = False
         self.players = players
         self.currentPlayerNumber = 0
