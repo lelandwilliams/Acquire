@@ -11,7 +11,6 @@ class ConnectionInfo:
 class AcquireServer(QObject):
     def __init__(self, master = None, port = 0):
         super().__init__()
-        self.timer = QTimer.timer
         self.app = QCoreApplication(sys.argv)
         self.thread = QThread()
         self.thread.started.connect(self.onStarted)
@@ -76,10 +75,8 @@ class AcquireClient(QObject):
 
         self.message_q = queue.PriorityQueue()
         self.__acquireID = 0
-        self.timer = QTimer.timer
-        self.timer.timeout.connect(self.read_queue)
         self.done = False
-        self.timer.start(1000)
+        QTimer.singleShot(500, self.read_queue)
 
     @pyqtSlot()
     def onStarted(self):
@@ -99,7 +96,7 @@ class AcquireClient(QObject):
                 self.parse_message(m)
                 if m.split(';',2)[1] == "DISCONNECT":
                     self.done = True
-            timer.start(500)
+            QTimer.singleShot(500, self.read_queue)
 
     @pyqtSlot()
     def receiveData(self):
