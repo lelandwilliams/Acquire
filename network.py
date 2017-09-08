@@ -91,6 +91,7 @@ class AcquireClient(QObject):
             self.__acquireID = acquire_id
 
     def authenticate(self, acquire_id = None):
+        # Not currently used
         if acquire_id != None:
             self.set_id(acquire_id)
         message = "AUTH;" + self.acquire_id + ";"
