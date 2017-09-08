@@ -5,7 +5,7 @@
 # classes and distributes them to requesters
 #
 ##################################################
-include randomAI
+import randomAI
 
 class robotFactory:
     def __init__(self, robotType, name, acquire_id):
