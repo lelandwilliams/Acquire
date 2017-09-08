@@ -76,10 +76,30 @@ class AcquireClient(QObject):
 
         self.message_q = queue.PriorityQueue()
         self.__acquireID = 0
+        self.timer = QTimer.timer
+        self.timer.timeout.connect(self.read_queue)
+        self.done = False
+        self.timer.start(1000)
 
     @pyqtSlot()
     def onStarted(self):
         self.app.exec_()
+
+    def parse_message(self, message):
+        # override me !
+        pass
+
+    @pyqtSlot()
+    def read_queue(self):
+        if self.done:
+            self.app.quit()
+        else:
+            while not self.message_q.empty():
+                m = self.message_q.get()
+                self.parse_message(m)
+                if m.split(';',2)[1] == "DISCONNECT":
+                    self.done = True
+            timer.start(500)
 
     @pyqtSlot()
     def receiveData(self):
@@ -107,22 +127,14 @@ class AcquireLogger(AcquireClient):
     def __init__(self):
         super().__init__()
         self.f = open('acquire.log', 'w')
-        self.timer = QTimer.timer
-        self.timer.timeout.connect(self.read_queue)
-        self.done = False
-        self.timer.start(1000)
+        self.app.aboutToQuit.connect(self.cleanup)
+
+    def parse_message(self, message):
+        self.f.write(m)
 
     @pyqtSlot()
-    def read_queue(self):
-        if self.done:
-            self.f.close()
-            self.app.quit()
-        else:
-            while not self.message_q.empty():
-                m = self.message_q.get()
-                self.f.write(m)
-                if m.split(';',2)[1] == "DISCONNECT":
-                    self.done = True
+    def cleanup():
+        f.close()
 
 if __name__ == "__main__":
     a = AcquireServer()
