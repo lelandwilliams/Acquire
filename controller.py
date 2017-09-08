@@ -1,11 +1,29 @@
 import sys, uuid
 import acquire_model
 from network import AcquireServer
+from PyQt5.QtCore import pyqtSlot
 
 class Controller(AcquireServer):
     def __init__(self, master = None, port = 0):
         super().__init__(master, port)
-        self.game = None
+        self.timer.timout.connect(self.main)
+        self.game = acquire_model.Acquire()
+        self.main()
+
+    @pyqtSlot
+    def self.main(self):
+        while self.game.gameState != 'DONE' and not self.message_q.empty():
+            m = self.message_q.get()
+            m_parts = m.split(';')
+            if m_parts[0] = "ADDPLAYER" and m_parts[1] = self.master:
+                self.players[m_parts[3]] = m_parts[2]
+            elif m_parts[0] = "KILL" and m_parts[1] = self.master:
+                self.broadcast('DISCONNECT;;;')
+                self.game.gameState = 'DONE'
+        if self.game.gameState != 'DONE':
+            timer.start(400)
+        else:
+            self.app.quit()
 
     def liquidate(self):
         for corp in self.game.corporations:
@@ -96,7 +114,7 @@ class Controller(AcquireServer):
         player.hand.sort()
 
 
-    def mainLoop(self):
+    def oldMainLoop(self):
         self.setup()
         while(not self.game.gameOver()):
             if self.debug:
