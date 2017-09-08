@@ -116,11 +116,12 @@ class AcquireLogger(AcquireClient):
     def read_queue(self):
         if self.done:
             self.f.close()
+            self.app.quit()
         else:
             while not self.message_q.empty():
                 m = self.message_q.get()
                 self.f.write(m)
-                if m.split(';',2)[1] == "END":
+                if m.split(';',2)[1] == "DISCONNECT":
                     self.done = True
 
 if __name__ == "__main__":
