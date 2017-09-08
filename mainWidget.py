@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
