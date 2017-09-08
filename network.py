@@ -118,7 +118,7 @@ class AcquireClient(QObject):
     def send_message(self, message):
         data = QByteArray()
         data.append(message)
-        self.net.write(message)
+        self.net.write(data)
 
 class AcquireLogger(AcquireClient):
     def __init__(self):
