@@ -10,7 +10,7 @@ class Controller(AcquireServer):
         self.game = acquire_model.Acquire()
         self.main()
 
-    @pyqtSlot
+    @pyqtSlot()
     def main(self):
         while self.game.gameState != 'DONE' and not self.message_q.empty():
             m = self.message_q.get()
