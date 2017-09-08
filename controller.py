@@ -1,12 +1,11 @@
 import sys, uuid
 import acquire_model
 from network import AcquireServer
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QTimer
 
 class Controller(AcquireServer):
     def __init__(self, master = None, port = 0):
         super().__init__(master, port)
-        self.timer.timout.connect(self.main)
         self.game = acquire_model.Acquire()
         self.main()
 
@@ -21,7 +20,7 @@ class Controller(AcquireServer):
                 self.broadcast('DISCONNECT;;;')
                 self.game.gameState = 'DONE'
         if self.game.gameState != 'DONE':
-            timer.start(400)
+            QTimer.singleShot(400, self.main)
         else:
             self.app.quit()
 
