@@ -1,6 +1,6 @@
 import sys, uuid
 from controller import Controller
-from network import AcquireClient
+from network import AcquireClient, AcquireLogger
 from robotFactory import robotFactory
 
 if __name__ == "__main__":
@@ -9,6 +9,7 @@ if __name__ == "__main__":
     a = Controller(master)
     b = AcquireClient()
     b.set_id(master)
+    logger = AcquireLogger()
     player1 = uuid.uuid4().hex
     b.send_message("ADDPLAYER;" + master + ";Bender;" + player1) 
     player2 = uuid.uuid4().hex
@@ -18,5 +19,6 @@ if __name__ == "__main__":
     player1class = factory.getAI(None, "Bender", player1)
     player2class = factory.getAI(None, "C3PO", player1)
     player3class = factory.getAI(None, "Hal", player1)
-    b.send_message("BEGIN;" + master) 
+#   b.send_message("BEGIN;" + master) 
+    b.send_message("KILL;" + master) 
 
