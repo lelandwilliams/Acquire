@@ -5,6 +5,7 @@ from network import AcquireServer
 class Controller(AcquireServer):
     def __init__(self, master = None, port = 0):
         super().__init__(master, port)
+        self.game = None
 
     def liquidate(self):
         for corp in self.game.corporations:
@@ -95,7 +96,7 @@ class Controller(AcquireServer):
         player.hand.sort()
 
 
-    def newGame(self):
+    def mainLoop(self):
         self.setup()
         while(not self.game.gameOver()):
             if self.debug:
