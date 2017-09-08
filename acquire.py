@@ -1,6 +1,7 @@
 import sys, uuid
 import controller
 from network import AcquireClient
+from robotFactory import robotFactory
 
 if __name__ == "__main__":
     master = uuid.uuid4().hex
