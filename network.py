@@ -76,7 +76,7 @@ class AcquireClient(QObject):
         self.message_q = queue.PriorityQueue()
         self.__acquireID = 0
         self.done = False
-        QTimer.singleShot(500, self.read_queue)
+        QTimer.singleShot(500, self.main)
 
     @pyqtSlot()
     def onStarted(self):
@@ -87,7 +87,7 @@ class AcquireClient(QObject):
         pass
 
     @pyqtSlot()
-    def read_queue(self):
+    def main(self):
         if self.done:
             self.app.quit()
         else:
