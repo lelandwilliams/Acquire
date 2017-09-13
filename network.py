@@ -2,212 +2,114 @@ import sys, queue
 from PyQt5 import QtNetwork
 from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArray, QTimer
 
-class ConnectionInfo:
-    def __init__(self):
-        self.role = None
-        self.acquire_id = None
-        self.master = False
+DEFAULTPORT = 65337
 
-class AcquireServer(QObject):
-    def __init__(self, master = None, port = 0):
-        self.message_num = 0
-        self.clients = list()
-        self.player_id = dict()
-        self.message_q = queue.Queue()
-        self.master = master
-
+class ClientConnection(QObject):
+    """ Used by AcquireServer to interact with clients """
+    def __init__(self, client, message_q):
         super().__init__()
-
-#        self.app = QCoreApplication(sys.argv)
-        if port == 0 :
-            self.PORT = 65337
-        else:
-            self.PORT = port
-        self.server = QtNetwork.QTcpServer()
-        #self.thread = QThread()
-        #self.thread.started.connect(self.onStarted)
-        self.onStarted()
-        
-    @pyqtSlot()
-    def newClientFound(self):
-        print("Server: A client has connected")
-        client = self.server.nextPendingConnection()
-        client.setTextModeEnabled(True)
-#       print(client.peerAddress())
-        if len(self.clients) == 0:
-            client.readyRead.connect(self.receiveData0)
-        elif len(self.clients) == 1:
-            client.readyRead.connect(self.receiveData1)
-        elif len(self.clients) == 2:
-            client.readyRead.connect(self.receiveData2)
-        elif len(self.clients) == 3:
-            client.readyRead.connect(self.receiveData3)
-        elif len(self.clients) == 4:
-            client.readyRead.connect(self.receiveData4)
-        elif len(self.clients) == 5:
-            client.readyRead.connect(self.receiveData5)
-        elif len(self.clients) == 6:
-            client.readyRead.connect(self.receiveData6)
-
-        self.clients.append(client)
-        QTimer.singleShot(500, self.main)
+        self.client = client
+        self.client.setTextModeEnabled(True)
+        self.message_q = message_q
+        client.readyRead.connect(self.receiveData)
 
     @pyqtSlot()
-    def onStarted(self):
-        if not self.server.listen(QtNetwork.QHostAddress.LocalHost, self.PORT):
-            sys.exit("Server: Error! Could not open server")
-        else:
-            print("Server: server listening to port " + str(self.PORT))
-        self.server.newConnection.connect(self.newClientFound)
-        QTimer.singleShot(500, self.main)
+    def receiveData(self):
+        print("Server: A message has been recieved from client 0")
+        m = self.client.readLine().data().decode() 
+        self.message_q.put(m)
 
-    def broadcast(self, message):
-        data = QByteArray()
-        data.append(str(self.message_num))
-        data.append(";")
-        data.append(message)
-#       for c in self.clients.values():
-        for c in self.clients_raw:
-            c.write(data)
-        self.message_num += 1
+    def write(self, m):
+        self.client.write(m)
 
-    def get_port(self):
-        return self.server.serverPort()
-
-    @pyqtSlot()
-    def disconnected(self):
-        print("Server: disconnected")
-
-    @pyqtSlot()
-    def receiveData0(self):
-        print("Server: A message has been recieved from client0")
-        s = self.clients[0].readLine().data().decode() 
-        self.message_q.put(s)
-
-    @pyqtSlot()
-    def receiveData1(self):
-        print("Server: A message has been recieved")
-        s = self.clients[1].readLine().data().decode() 
-        self.message_q.put(s)
-
-    @pyqtSlot()
-    def receiveData2(self):
-        print("Server: A message has been recieved")
-        s = self.clients[2].readLine().data().decode() 
-        self.message_q.put(s)
-
-    @pyqtSlot()
-    def receiveData3(self):
-        print("Server: A message has been recieved")
-        s = self.clients[3].readLine().data().decode() 
-        self.message_q.put(s)
-
-    @pyqtSlot()
-    def receiveData4(self):
-        print("Server: A message has been recieved")
-        s = self.clients[4].readLine().data().decode() 
-        self.message_q.put(s)
-
-    @pyqtSlot()
-    def receiveData5(self):
-        print("Server: A message has been recieved")
-        s = self.clients[5].readLine().data().decode() 
-        self.message_q.put(s)
-
-    @pyqtSlot()
-    def receiveData6(self):
-        print("Server: A message has been recieved")
-        s = self.clients[6].readLine().data().decode() 
-        self.message_q.put(s)
-
-    def __del__(self):
-        self.server.close()
-
-class AcquireClient(QObject):
-    def __init__(self, port=65337):
-        self.__acquireID = 0
-        self.done = False
-        self.message_q = queue.PriorityQueue()
-
+class ClientServerBaseClass(QObject):
+    def __init__(self, port = 65337):
         super().__init__()
-#        self.app = QCoreApplication(sys.argv)
-        if port == 0 or port == 65337:
-            self.PORT = 65337
-        else:
-            self.PORT = port
-        self.net = QtNetwork.QTcpSocket()
-#        self.thread = QThread()
-#        self.thread.started.connect(self.onStarted)
-#       self.onStarted()
-        QTimer.singleShot(500, self.startNet)
-
-    @pyqtSlot()
-    def startNet(self):
-        self.net.connected.connect(self.onConnect)
-        self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.PORT)
-        if self.net.waitForConnected(5000):
-            print("Client: connected")
-        else:
-            print("Client: connection Failed")
-            QCoreApplication.quit()
-        self.net.setTextModeEnabled(True)
-
-
-
-    @pyqtSlot()
-    def onStarted(self):
-        self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.PORT)
-        self.net.connected.connect(self.onConnect)
-#       self.app.exec_()
-
-    @pyqtSlot()
-    def onConnect(self):
-        self.net.setTextModeEnabled(True)
-        self.net.readyRead.connect(self.receiveData)
-        QTimer.singleShot(500, self.main)
-        self.send_message("Howdy")
+        self.port = port
+        self.incoming_message_q = queue.Queue()
+        self.outgoing_message_q = queue.Queue()
+        self.read_incoming_next = True
+        self.gameDone = False
+        self.name = ""
+        self.read_incoming_next  = True
 
     @pyqtSlot()
     def main(self):
-        if self.done:
-            self.app.quit()
+        self.read_incoming_next = not self.read_incoming_next
+
+        if self.gameDone:
+            QCoreApplication.quit()
+        elif self.read_incoming_next and \
+                not self.incoming_message_q.empty():
+            self.parse_message(self.incoming_message_q.get())
+            self.incoming_message_q.task_done()
+        elif not self.read_incoming_next and \
+                not self.outgoing_message_q.empty():
+            self.send_message(self.outgoing_message_q.get())
+            self.outgoing_message_q.task_done()
+            QTimer.singleShot(250, self.main)
         else:
-            while not self.message_q.empty():
-                m = self.message_q.get()
-                self.parse_message(m)
-                m_type = m.split(';',2)[1] 
-                if  m_type == "INFO":
-                    self.report_info(m)
-                elif m_type == "DISCONNECT":
-                    self.report_disconnect(m)
-                elif m_type == "":
-                    pass
-                elif m_type == "":
-                    pass
-                elif m_type == "":
-                    pass
-                elif m_type == "":
-                    pass
+            QTimer.singleShot(250, self.main)
+
+class AcquireServer(ClientServerBaseClass):
+    def __init__(self, port = DEFAULTPORT):
+        super().__init__(port)
+        self.mainStarted = False
+        self.clients = list()
+        self.server = QtNetwork.QTcpServer()
+        self.message_num = 1
+        if not self.server.listen(QtNetwork.QHostAddress.LocalHost, self.port):
+            sys.exit("Server: Error! Could not open server")
+        else:
+            print("Server: server listening to port " + str(self.port))
+        self.server.newConnection.connect(self.newClientConnected)
+
+    @pyqtSlot()
+    def newClientConnected(self):
+        print("Server: A client has connected")
+        client = self.server.nextPendingConnection()
+        self.clients.append(ClientConnection(client, self.outgoing_message_q))
+        if not self.mainStarted:
+            self.mainStarted = True
             QTimer.singleShot(500, self.main)
+        
+    def send_message(self, message):
+        data = QByteArray()
+        data = data.append(str(self.message_num))
+        data = data.append(";")
+        data = data.append(message)
+        for c in self.clients:
+            c.write(data)
+        self.message_num += 1
+
+class AcquireClient(ClientServerBaseClass):
+    def __init__(self, port = DEFAULTPORT):
+        super().__init__(port)
+        self.mainStarted = False
+        self.name = "Client"
+        self.incoming_message_q = queue.PriorityQueue()
+        self.net = QtNetwork.QTcpSocket()
+#       self.net.connected.connect(self.onConnect)
+        self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
+        if self.net.waitForConnected(5000):
+            print(self.name + ": connected")
+            self.net.setTextModeEnabled(True)
+            QTimer.singleShot(500, self.main)
+            self.net.readyRead.connect(self.receiveData)
+            if not self.mainStarted:
+                self.mainStarted = True
+                QTimer.singleShot(500, self.main)
+        else:
+            print(self.name + ": connection Failed")
+            QCoreApplication.quit()
 
     @pyqtSlot()
     def receiveData(self):
         s = self.net.readLine().data().decode() 
         priority = s.split(';',1)[0]
-        self.message_q.put(s)
-        print("message recieved")
-    
-    def set_id(self, acquire_id):
-        if self.__acquireID == 0:
-            self.__acquireID = acquire_id
-
-    def authenticate(self, acquire_id = None):
-        # Not currently used
-        if acquire_id != None:
-            self.set_id(acquire_id)
-        message = "AUTH;" + self.acquire_id + ";"
-        self.send_message(message)
-    
+        self.incoming_message_q.put([priority, s])
+        print(self.name + ": message recieved")
+ 
     def send_message(self, message):
         data = QByteArray()
         data.append(message)
@@ -216,23 +118,12 @@ class AcquireClient(QObject):
         else:
             print("client: message sent")
 
-class AcquireLogger(AcquireClient):
-    def __init__(self, port=0):
+class AcquireSimpleLogger(AcquireClient):
+    def __init__(self, port = DEFAULTPORT):
         super().__init__(port)
-        self.f = open('acquire.log', 'w')
-        self.app.aboutToQuit.connect(self.cleanup)
-        self.report_info = self.parse_message
+        self.name = "Logger"
 
-    def parse_message(self, message):
-        self.f.write(message)
+    def parse_message(self, m):
+        print(self.name + ": " + m[1])
+        QTimer.singleShot(250, self.main)
 
-    def report_disconnect(self,message):
-         self.parse_message(message)
-
-    @pyqtSlot()
-    def cleanup(self):
-        self.f.close()
-
-if __name__ == "__main__":
-#   a = AcquireServer()
-    b = AcquireClient()
