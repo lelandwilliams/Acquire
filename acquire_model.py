@@ -378,17 +378,6 @@ class Acquire:
     def setGameOver(self):
         self.game_over = True
 
-    def setStarters(self):
-        starters = []
-        for i in range(len(self.players)):
-            starters.append(self.tiles.pop())
-
-        for tile in starters:
-            self.placeStarter(tile)
-
-        self.currentPlayerNumber = self.determineStartingPlayer(starters)
-        return starters
-
     def tileToStr(self, tile):
         return str(tile[0]) + "-" + tile[1]
 
