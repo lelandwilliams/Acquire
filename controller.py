@@ -1,22 +1,18 @@
 import sys, uuid
 import acquire_model
-from network import AcquireServer
+from network import AcquireServer, DEFAULTPORT
 from PyQt5.QtCore import pyqtSlot, QTimer, QCoreApplication
 
 class Controller(AcquireServer):
-    def __init__(self, argv, port = 0):
+    def __init__(self, port = DEFAULTPORT):
         self.game = acquire_model.Acquire()
-        master = 0
-        if '-m' in argv:
-            master = argv[argv.index("-m") +1]
-        super().__init__(master, port)
-#        self.main()
+        super().__init__(port)
 
     @pyqtSlot()
     def parse_message(m):
         m = self.parse_message.get()
-        m_parts = m.split(';')
-        if m_parts[0] == "ADDPLAYER" and m_parts[1] == self.master:
+        command,  parameter = m.split(';')
+        if command == "REGISTER":
             self.players[m_parts[3]] = m_parts[2]
             # this makes it so that the uuid given will be recognized as part of player
             self.broadcast('INFO;' + m_parts[2] + ";ADDED;")
@@ -227,7 +223,3 @@ class Controller(AcquireServer):
         self.game.fillHands()
 
 
-if __name__ == "__main__":
-    app = QCoreApplication(sys.argv)
-    a = Controller(sys.argv)
-    sys.exit(app.exec_())
