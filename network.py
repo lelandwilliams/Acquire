@@ -9,6 +9,7 @@ class ClientConnection(QObject):
     def __init__(self, client, message_q):
         super().__init__()
         self.client = client
+        self.client_id = str(uuid.uuid4())
         self.client.setTextModeEnabled(True)
         self.message_q = message_q
         client.readyRead.connect(self.receiveData)
@@ -56,6 +57,7 @@ class AcquireServer(ClientServerBaseClass):
         super().__init__(port)
         self.mainStarted = False
         self.clients = list()
+        self.master_id = None
         self.server = QtNetwork.QTcpServer()
         self.message_num = 1
         if not self.server.listen(QtNetwork.QHostAddress.LocalHost, self.port):
@@ -69,6 +71,8 @@ class AcquireServer(ClientServerBaseClass):
         print("Server: A client has connected")
         client = self.server.nextPendingConnection()
         self.clients.append(ClientConnection(client, self.outgoing_message_q))
+        if self.master_id == None:
+            self.master_id = clients[0].client_id
         if not self.mainStarted:
             self.mainStarted = True
             QTimer.singleShot(500, self.main)
