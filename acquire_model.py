@@ -388,12 +388,6 @@ class Acquire:
     def tileToStr(self, tile):
         return str(tile[0]) + "-" + tile[1]
 
-players = []
-players.append(Player('Bender', 'Robot'))
-players.append(Player('C3P0', 'Robot'))
-players.append(Player('Hal 9000', 'Robot'))
-players.append(Player('Puny Human', 'Human'))
-
 def play():
     game = Game()
     starters = []
