@@ -86,7 +86,7 @@ class Corp:
 class Acquire:
     corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
-    def __init__(self, players = list()):
+    def __init__(self):
         self.game_over = False
         self.players = players
         self.currentPlayerNumber = 0
@@ -114,6 +114,10 @@ class Acquire:
             self.tilegroups[newgroup].append(self.tilegroups[oldgroup].pop()) 
         if oldgroup > 6:
             del self.tilegroups[oldgroup]
+
+    def addPlayer(self, name):
+        self.Players = Player(name)
+        self.Players.name.append(self.tiles.pop())
 
     def addTiletoCorp(self, tile, corp):
         self.tilegroups[self.corporations[corp].groupIndex].append(tile)
