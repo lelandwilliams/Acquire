@@ -66,6 +66,10 @@ class AcquireServer(ClientServerBaseClass):
             print("Server: server listening to port " + str(self.port))
         self.server.newConnection.connect(self.newClientConnected)
 
+    def broadcast(self, message):
+        for c in self.clients:
+            self.send_message(message, client)
+
     @pyqtSlot()
     def newClientConnected(self):
         print("Server: A client has connected")
@@ -77,13 +81,12 @@ class AcquireServer(ClientServerBaseClass):
             self.mainStarted = True
             QTimer.singleShot(500, self.main)
         
-    def send_message(self, message):
+    def send_message(self, message, client):
         data = QByteArray()
         data = data.append(str(self.message_num))
         data = data.append(";")
         data = data.append(message)
-        for c in self.clients:
-            c.write(data)
+        client.write(data)
         self.message_num += 1
 
 class AcquireClient(ClientServerBaseClass):
