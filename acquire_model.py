@@ -1,9 +1,8 @@
 import sys, string, random
 
 class Player:
-    def __init__(self, name, playerType):
+    def __init__(self, name):
         self.name = name
-        self.playerType = playerType
         self.playerSubtype = None
         self.hand = []
         self.money = 6000
