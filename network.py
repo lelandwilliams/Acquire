@@ -1,4 +1,4 @@
-import sys, queue
+import sys, queue, uuid
 from PyQt5 import QtNetwork
 from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArray, QTimer
 
@@ -87,9 +87,9 @@ class AcquireClient(ClientServerBaseClass):
         super().__init__(port)
         self.mainStarted = False
         self.name = "Client"
+        self.client_id = str(uuid.uuid4())
         self.incoming_message_q = queue.PriorityQueue()
         self.net = QtNetwork.QTcpSocket()
-#       self.net.connected.connect(self.onConnect)
         self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
         if self.net.waitForConnected(5000):
             print(self.name + ": connected")
