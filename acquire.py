@@ -1,6 +1,6 @@
 import sys, uuid, subprocess
 from controller import Controller
-from network import AcquireClient, AcquireLogger
+from network import AcquireClient, AcquireSimpleLogger
 from robotFactory import robotFactory
 from PyQt5.QtCore import QCoreApplication, pyqtSlot, QTimer
 
@@ -25,7 +25,6 @@ class myClient(AcquireClient):
 if __name__ == "__main__":
     app = QCoreApplication(sys.argv)
     print("starting server")
-    master = str(uuid.uuid4())
     print("starting client")
     subprocess.Popen(["python", "controller.py", "-m", master])
 #   factory = robotFactory()
