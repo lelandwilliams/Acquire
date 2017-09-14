@@ -11,14 +11,24 @@ class Controller(AcquireServer):
     @pyqtSlot()
     def parse_message(m):
         m = self.parse_message.get()
-        command,  parameter = m.split(';')
+        clientid, command,  parameter = m.split(';')
         if command == "REGISTER":
-            self.players[m_parts[3]] = m_parts[2]
-            # this makes it so that the uuid given will be recognized as part of player
-            self.broadcast('INFO;' + m_parts[2] + ";ADDED;")
-        elif m_parts[0] == "KILL" and m_parts[1] == self.master:
+            if len(self.game.players) < 7:
+                self.game.addPlayer(parameter)
+                self.outgoing_message_q("NOTICE;" + parameter + ";ADDED;")
+            else:
+                self.outgoing_message_q("ERROR;" + parameter + ";CAN'T JOIN - GAME IS FULL;")
+        elif command == "KILL":
             self.broadcast('DISCONNECT;;;')
             self.game.gameState = 'DONE'
+            self.gameDone = False
+        elif command == "BEGIN":
+            if len(self.game.players) < 3:
+                self.outgoing_message_q("ERROR;" + parameter + ";CAN'T START - NOT ENOUGH PLAYERS;")
+            else:
+                self.broadcast('BEGIN;;;')
+
+                self.game.gameState = 'DONE'
 
     def liquidate(self):
         for corp in self.game.corporations:
