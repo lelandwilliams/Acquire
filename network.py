@@ -11,6 +11,7 @@ class ClientConnection(QObject):
         self.client = client
         self.client_id = str(uuid.uuid4())
         self.client.setTextModeEnabled(True)
+        self.name = None
         self.message_q = message_q
         client.readyRead.connect(self.receiveData)
 
