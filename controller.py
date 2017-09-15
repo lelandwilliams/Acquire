@@ -10,25 +10,70 @@ class Controller(AcquireServer):
 
     @pyqtSlot()
     def parse_message(m):
-        m = self.parse_message.get()
         clientid, command,  parameter = m.split(';')
         if command == "REGISTER":
-            if len(self.game.players) < 7:
-                self.game.addPlayer(parameter)
-                self.outgoing_message_q("NOTICE;" + parameter + ";ADDED;")
-            else:
+            if len(self.game.players) > 6:
                 self.outgoing_message_q("ERROR;" + parameter + ";CAN'T JOIN - GAME IS FULL;")
+            elif self.game.state != "SETUP":
+                self.outgoing_message_q("ERROR;" + parameter + ";CAN'T JOIN - GAME HAS STARTED;")
+            elif parameter in self.name.players:
+                self.outgoing_message_q("ERROR;" + parameter + ";NAME UNAVAILABLE;")
+            elif self.get_name_of_id(clientid) != None:
+                self.outgoing_message_q("ERROR;" + parameter + ";PLAYER ALREADY NAMED;")
+            else:
+                self.outgoing_message_q("NOTICE;" + parameter + ";ADDED;")
         elif command == "KILL":
-            self.broadcast('DISCONNECT;;;')
+            self.outgoing_message_q.put('DISCONNECT;;;')
             self.game.gameState = 'DONE'
-            self.gameDone = False
         elif command == "BEGIN":
             if len(self.game.players) < 3:
-                self.outgoing_message_q("ERROR;" + parameter + ";CAN'T START - NOT ENOUGH PLAYERS;")
+                self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T START - NOT ENOUGH PLAYERS;")
             else:
-                self.broadcast('BEGIN;;;')
+                self.outgoing_message_q.put('BEGIN;;;')
+                self.gameState = 'PLACESTARTERS'
+                self.outgoing_message_q.put(self.build_request(self.starterPlayer),'PLACESTARTER')
+        elif command == "PLACESTARTER":
+            if self.gameState != 'PLACESTARTERS':
+                self.outgoing_message_q.put("ERROR;" + parameter + ";NOT STARTER PHASE;")
+            elif clientid != self.get_id_of_name(self.game.players[self.starterPlayer].name):
+                self.outgoing_message_q.put("ERROR;" + parameter + ";PLAYER ID != NAME;")
+            elif parameter not in self.game.players[self.starterPlayer].hand:
+                self.outgoing_message_q.put("ERROR;" + parameter + ";YOU DON'T HAVE THAT TILE;")
+            else:
+                self.game.placeStarter(parameter)
+                self.game.players[self.starterPlayer].hand.remove(tile)
+                self.outgoing_message_q.put("PLAY;" + self.get_name_of_id(clientid)
+                        + ";PLACESTARTER" + parameter)
+                self.starterPlayer += 1
+                if self.starterPlayer >= len(self.game.players):
+                    start = self.determineStartingPlayer()
+                    self.game.currentPlayerNumber = start
+                    self.outgoing_message_q.put("INFO;" + self.game.players[start].name + ";STARTS")
+                    self.game.gameState = 'DONE'
+                    self.outgoing_message_q.put('DISCONNECT;;;')
 
-                self.game.gameState = 'DONE'
+    def build_request(self, player_num, request_type):
+        message = 'REQUEST;'
+        message += self.game.players[player_num].name
+        messsage += ';' + request_type + ';'
+        return message
+
+    def get_name_of_id(self, clientid):
+        for client in self.clients:
+            if client.client_id == clientid:
+                return client.name
+        sys.exit("Error: (get_name_of_id) uuid does not match any client")
+
+    def get_id_of_name(self, name):
+        for client in self.clients:
+            if client.name == name:
+                return client.client_id
+        sys.exit("Error: (get_id_of_name) name does not match any client")
+
+    def set_name_of_id(self, clientid, name):
+        for client in self.clients:
+            if client.client_id == clientid:
+                client.name = name
 
     def liquidate(self):
         for corp in self.game.corporations:
