@@ -88,17 +88,17 @@ class Acquire:
 
     def __init__(self):
         self.game_over = False
-        self.players = players
+        self.players = dict()
         self.currentPlayerNumber = 0
         self.tiles = self.initiate_tiles()
-        self.tilegroups = []
+        self.tilegroups = list()
+        self.starters = list()
         while len(self.tilegroups) < 7:
             self.tilegroups.append([])
         self.corporations = self.initiate_corps()
         self.gameState = "SETUP"
-
-        self.fillHands()
-        random.shuffle(self.players)
+        self.starterPlayer = 0
+        self.currentMergerPlayer = 0
 
     def __repr__(self):
         s = "Players\n"
@@ -116,8 +116,10 @@ class Acquire:
             del self.tilegroups[oldgroup]
 
     def addPlayer(self, name):
-        self.Players = Player(name)
-        self.Players.name.append(self.tiles.pop())
+        self.Players[name] = Player(name)
+        start_tile = self.tiles.pop()
+        self.Players[name].append(start_tile)
+        self.starters.append(start_tile)
 
     def addTiletoCorp(self, tile, corp):
         self.tilegroups[self.corporations[corp].groupIndex].append(tile)
@@ -169,19 +171,15 @@ class Acquire:
     def corpSize(self, corp):
         return len(self.tilegroups[self.corporations[corp].groupIndex])
 
-    def determineStartingPlayer(self, arr, start=0, current=1):
-        if current >= len(arr):
-            return start
-
-        if arr[start][1] < arr[current][1]:
-            return self.determineStartingPlayer(arr, start, current +1)
-        elif arr[start][1] > arr[current][1]:
-            return self.determineStartingPlayer(arr, current, current +1)
-        else:
-            if arr[start][0] < arr[current][0]:
-                return self.determineStartingPlayer(arr, start, current +1)
-            elif arr[start][0] > arr[current][0]:
-                return self.determineStartingPlayer(arr, current, current +1)
+    def determineStartingPlayer(self):
+        best_so_far = 0
+        for i in range(1, len(self.starters)):
+            if self.starters[i][1] < self.starters[best_so_far][1]:
+                best_so_far = i
+            elif self.starters[i][1] == self.starters[best_so_far][1] and\
+                relf.starters[i][0] < self.starters[best_so_far][0]:
+                best_so_far = i
+        return best_so_far
 
     def endGameConditionsMet(self):
         activecorps = []
