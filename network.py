@@ -13,6 +13,7 @@ class ClientConnection(QObject):
         self.client.setTextModeEnabled(True)
         self.name = None
         self.message_q = message_q
+        self.outgoing_message_q = queue.Queue
         client.readyRead.connect(self.receiveData)
 
     @pyqtSlot()
@@ -20,9 +21,18 @@ class ClientConnection(QObject):
         print("Server: A message has been recieved from client 0")
         m = self.client.readLine().data().decode() 
         self.message_q.put(m)
+        Qtimer.singleShot(250, self.main)
+
+    @pyqtSlot()
+    def main(self):
+        if not self.outgoing_message_q.empty():
+            if self.client.write(self.outgoing_message_q.get()) != -1:
+                self.outgoing_message_q.task_done()
+        QTimer.singleShot(250, self.main)
 
     def write(self, m):
-        self.client.write(m)
+#        self.client.write(m)
+        self.message_q.put(m)
 
 class ClientServerBaseClass(QObject):
     def __init__(self, port = 65337):
@@ -77,18 +87,19 @@ class AcquireServer(ClientServerBaseClass):
         client = self.server.nextPendingConnection()
         self.clients.append(ClientConnection(client, self.outgoing_message_q))
         if self.master_id == None:
-            self.master_id = clients[0].client_id
+            self.master_id = self.clients[0].client_id
         if not self.mainStarted:
             self.mainStarted = True
             QTimer.singleShot(500, self.main)
         
-    def send_message(self, message, client):
-        data = QByteArray()
-        data = data.append(str(self.message_num))
-        data = data.append(";")
-        data = data.append(message)
-        client.write(data)
-        self.message_num += 1
+    def send_message(self, message):
+        for client in self.clients:
+            data = QByteArray()
+            data = data.append(str(self.message_num))
+            data = data.append(";")
+            data = data.append(message)
+            client.client.write(data)
+            self.message_num += 1
 
 class AcquireClient(ClientServerBaseClass):
     def __init__(self, port = DEFAULTPORT):
