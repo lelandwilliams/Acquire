@@ -1,8 +1,9 @@
 ##################################################
 #          r o b o t F a c t o r y
 #
-# This class helps manage the various AI agents
-# classes and distributes them to requesters
+# This class manage the various AI agent classes
+# and instantiates them with given parameters
+# upon request
 #
 ##################################################
 from randomAI import randomAI
