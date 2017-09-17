@@ -108,18 +108,27 @@ class AcquireClient(ClientServerBaseClass):
         self.client_id = str(uuid.uuid4())
         self.incoming_message_q = queue.PriorityQueue()
         self.net = QtNetwork.QTcpSocket()
+        self.net.setTextModeEnabled(True)
         self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
-        if self.net.waitForConnected(5000):
-            print(self.name + ": connected")
-            self.net.setTextModeEnabled(True)
-            QTimer.singleShot(500, self.main)
-            self.net.readyRead.connect(self.receiveData)
-            if not self.mainStarted:
-                self.mainStarted = True
+        self.connected = False
+        self.attempts = 0
+        self.attachToServer()
+
+    @pyqtSlot()
+    def attachToServer(self):
+        while not self.connected and self.attempts < 5:
+            print(self.name + ": Connection Attempt " + str(self.attempts))
+            if self.net.waitForConnected(5000):
+                print(self.name + ": connected")
                 QTimer.singleShot(500, self.main)
-        else:
-            print(self.name + ": connection Failed")
-            QCoreApplication.quit()
+                self.net.readyRead.connect(self.receiveData)
+                if not self.mainStarted:
+                    self.mainStarted = True
+                    QTimer.singleShot(500, self.main)
+                connected = True
+            else:
+                self.attempts += 1
+                QTimer.singleShot(500, self.attachToServer)
 
     @pyqtSlot()
     def receiveData(self):
