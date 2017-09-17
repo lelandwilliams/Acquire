@@ -6,9 +6,12 @@
 #
 ##################################################
 from randomAI import randomAI
-import subprocess 
+import subprocess, random, robotNames 
 
 class robotFactory:
+    def __init__(self):
+        self.taken = list()
+
     def getAI(self, robotType, name, acquire_id):
         return randomAI(name, acquire_id)
 
@@ -16,11 +19,19 @@ class robotFactory:
         process_list = ["python"]
         if robotType == 'Random':
             arg_list.append("randomAI.py")
-        if not name == None:
-            arg_list.append("-n")
+        arg_list.append("-n")
+        if name == None:
+            arg_list.append(self.getName())
+        else:
             arg_list.append(name)
         if not acquire_id == None:
             arg_list.append("-i")
             arg_list.append(acquire_id)
         subprocess.Popen(arg_list)
+
+    def getName():
+        name = random.choice(robotNames.names)
+        while name in self.taken:
+            name = random.choice(robotNames.names)
+        return name
 
