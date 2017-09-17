@@ -42,7 +42,6 @@ class ClientServerBaseClass(QObject):
         self.outgoing_message_q = queue.Queue()
         self.read_incoming_next = True
         self.gameDone = False
-        self.name = ""
         self.read_incoming_next  = True
 
     @pyqtSlot()
@@ -108,27 +107,30 @@ class AcquireClient(ClientServerBaseClass):
         self.client_id = str(uuid.uuid4())
         self.incoming_message_q = queue.PriorityQueue()
         self.net = QtNetwork.QTcpSocket()
-        self.net.setTextModeEnabled(True)
-        self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
-        self.connected = False
         self.attempts = 0
-        self.attachToServer()
+        QTimer.singleShot(500, self.attachToServer)
 
     @pyqtSlot()
     def attachToServer(self):
-        while not self.connected and self.attempts < 5:
-            print(self.name + ": Connection Attempt " + str(self.attempts))
-            if self.net.waitForConnected(5000):
-                print(self.name + ": connected")
+        print(self.name + ": Connection Attempt " + str(self.attempts))
+        self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
+        if self.net.waitForConnected(5000):
+            self.net.setTextModeEnabled(True)
+            print(self.name + ": connected")
+            QTimer.singleShot(500, self.main)
+            self.net.readyRead.connect(self.receiveData)
+            if not self.mainStarted:
+                self.mainStarted = True
                 QTimer.singleShot(500, self.main)
-                self.net.readyRead.connect(self.receiveData)
-                if not self.mainStarted:
-                    self.mainStarted = True
-                    QTimer.singleShot(500, self.main)
-                connected = True
-            else:
-                self.attempts += 1
+            connected = True
+        else:
+            self.attempts += 1
+            if self.attempts < 5:
                 QTimer.singleShot(500, self.attachToServer)
+            else:
+                print(self.name + ": Too many attempts. Exiting")
+                QCoreApplication.quit()
+                
 
     @pyqtSlot()
     def receiveData(self):
