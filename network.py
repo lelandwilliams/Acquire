@@ -13,15 +13,15 @@ class ClientConnection(QObject):
         self.client.setTextModeEnabled(True)
         self.name = None
         self.message_q = message_q
-        self.outgoing_message_q = queue.Queue
+        self.outgoing_message_q = queue.Queue()
         client.readyRead.connect(self.receiveData)
 
     @pyqtSlot()
     def receiveData(self):
-        print("Server: A message has been recieved from client 0")
+#       print("Server: A message has been recieved from client 0")
         m = self.client.readLine().data().decode() 
         self.message_q.put(m)
-        Qtimer.singleShot(250, self.main)
+        QTimer.singleShot(250, self.main)
 
     @pyqtSlot()
     def main(self):
@@ -57,7 +57,7 @@ class ClientServerBaseClass(QObject):
         elif not self.read_incoming_next and \
                 not self.outgoing_message_q.empty():
             self.send_message(self.outgoing_message_q.get())
-            self.outgoing_message_q.task_done()
+#           self.outgoing_message_q.task_done()
             QTimer.singleShot(250, self.main)
         else:
             QTimer.singleShot(250, self.main)
@@ -72,17 +72,18 @@ class AcquireServer(ClientServerBaseClass):
         self.message_num = 1
         if not self.server.listen(QtNetwork.QHostAddress.LocalHost, self.port):
             sys.exit("Server: Error! Could not open server")
-        else:
-            print("Server: server listening to port " + str(self.port))
+#       else:
+#           print("Server: server listening to port " + str(self.port))
         self.server.newConnection.connect(self.newClientConnected)
 
     def broadcast(self, message):
+        # deprecated. should be removed
         for c in self.clients:
             self.send_message(message, client)
 
     @pyqtSlot()
     def newClientConnected(self):
-        print("Server: A client has connected")
+#       print("Server: A client has connected")
         client = self.server.nextPendingConnection()
         self.clients.append(ClientConnection(client, self.outgoing_message_q))
         if self.master_id == None:
@@ -92,13 +93,15 @@ class AcquireServer(ClientServerBaseClass):
             QTimer.singleShot(500, self.main)
         
     def send_message(self, message):
+        self.outgoing_message_q.task_done()
+        data = QByteArray()
+        data = data.append(str(self.message_num))
+        data = data.append(";")
+        data = data.append(message)
+        self.message_num += 1
         for client in self.clients:
-            data = QByteArray()
-            data = data.append(str(self.message_num))
-            data = data.append(";")
-            data = data.append(message)
             client.client.write(data)
-            self.message_num += 1
+#           client.outgoing_message_q.put(data, False)
 
 class AcquireClient(ClientServerBaseClass):
     def __init__(self, port = DEFAULTPORT):
@@ -112,11 +115,11 @@ class AcquireClient(ClientServerBaseClass):
 
     @pyqtSlot()
     def attachToServer(self):
-        print(self.name + ": Connection Attempt " + str(self.attempts))
+#       print(self.name + ": Connection Attempt " + str(self.attempts))
         self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
         if self.net.waitForConnected(5000):
             self.net.setTextModeEnabled(True)
-            print(self.name + ": connected")
+#           print(self.name + ": connected")
             QTimer.singleShot(500, self.main)
             self.net.readyRead.connect(self.receiveData)
             if not self.mainStarted:
@@ -137,15 +140,16 @@ class AcquireClient(ClientServerBaseClass):
         s = self.net.readLine().data().decode() 
         priority = s.split(';',1)[0]
         self.incoming_message_q.put([priority, s])
-        print(self.name + ": message recieved")
+#       print(self.name + ": message recieved")
  
     def send_message(self, message):
         data = QByteArray()
         data.append(message)
-        if self.net.write(data) == -1:
-            print("Error sending message")
-        else:
-            print("client: message sent")
+        if self.net.write(data) != -1:
+            self.outgoing_message_q.task_done()
+#           print("Error sending message")
+#       else:
+#           print("client: message sent")
 
 class AcquireSimpleLogger(AcquireClient):
     def __init__(self, port = DEFAULTPORT):
