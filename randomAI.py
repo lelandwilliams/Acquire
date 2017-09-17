@@ -4,9 +4,9 @@ import sys, random
 
 class randomAI(AcquireClient):
     def __init__(self, name, acquire_id = None):
-        super().__init__()
         self.name = name
-
+        super().__init__()
+        self.outgoing_message_q.put("REGISTER;"+self.name)
 
 
 if __name__ == "__main__":
