@@ -105,7 +105,6 @@ class AcquireClient(ClientServerBaseClass):
     def __init__(self, port = DEFAULTPORT):
         super().__init__(port)
         self.mainStarted = False
-        self.name = "Client"
         self.client_id = str(uuid.uuid4())
         self.incoming_message_q = queue.PriorityQueue()
         self.net = QtNetwork.QTcpSocket()
@@ -139,8 +138,8 @@ class AcquireClient(ClientServerBaseClass):
 
 class AcquireSimpleLogger(AcquireClient):
     def __init__(self, port = DEFAULTPORT):
-        super().__init__(port)
         self.name = "Logger"
+        super().__init__(port)
 
     def parse_message(self, m):
         print(self.name + ": " + m[1])
