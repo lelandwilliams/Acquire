@@ -1,5 +1,7 @@
 # Acquire
 An implementation of the Sid Sackson 3M Classic for purposes of exploring Artificial Intelligence
+## Now Playable !!
+clone the master branch, and type `python3 mainWidgent.py` and enjoy !!
 ## Background
 Acquire is a long-time favorite board game of mine. When I'm hosting a game night, I find this game to be a good one to teach persons new to gaming as the rules are simple, and the goal (make money) is more concrete than victory point schemes, and the game has suspense, and a sense of history.
 
@@ -22,12 +24,16 @@ parallel, with the 'AI' only making random choices, which is enough to test M-V-
 
 ## Status
 The UI is nearly complete, and is generally playable, albeit only against agents that choose their 
-actions randomly. However, the close integration of view and controller that greatly helped me 
+actions randomly, and the actions complete virtually instantaneously. 
+
+However, the close integration of view and controller that greatly helped me 
 to get the UI up and running is now in the way, 
-and I am writing working to seperate them, allowing them to communicate via network sockets. 
-This way the view will have it's own event loop, which is necesary to add animations and other visual 
+and I am writing working to seperate them, allowing them to communicate via network sockets a la the 
+client-server model. This work can be seen in the unstable branch.
+This way the gui view will have it's own event loop, which is necesary to 
+add animations and other visual 
 enhancements; likewise the controller will have it's own loop, and can broadcast game event 
-notifications to all clients, human and AI, in the same way. Once this
-is done I want to explore the construction of a variety of agents, particularly neural nets, and 
-experiment with using GAs to train them.
+notifications to all clients, human and AI, in the same way. Once this is done the game
+will play the same, with or without human players.
+This will allow for experimention with a variet of agent construction techniques.
 
