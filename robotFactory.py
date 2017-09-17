@@ -17,7 +17,7 @@ class robotFactory:
         return randomAI(name, acquire_id)
 
     def startAI(self, robotType='Random', name = None, acquire_id = None):
-        process_list = ["python"]
+        arg_list = ["python"]
         if robotType == 'Random':
             arg_list.append("randomAI.py")
         arg_list.append("-n")
@@ -30,7 +30,7 @@ class robotFactory:
             arg_list.append(acquire_id)
         subprocess.Popen(arg_list)
 
-    def getName():
+    def getName(self):
         name = random.choice(robotNames.names)
         while name in self.taken:
             name = random.choice(robotNames.names)
