@@ -11,7 +11,6 @@ class randomAI(AcquireClient):
 
 if __name__ == "__main__":
     app = QCoreApplication(sys.argv)
-    print(sys.argv)
     name = sys.argv[2]
     ai = randomAI(name)
     sys.exit(app.exec_())
