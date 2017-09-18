@@ -49,8 +49,9 @@ class Controller(AcquireServer):
                     start = self.determineStartingPlayer()
                     self.game.currentPlayerNumber = start
                     self.outgoing_message_q.put("INFO;" + self.game.players[start].name + ";STARTS")
+                    self.build_request(start, 'PLACETILE')
                     self.game.gameState = 'DONE'
-                    self.outgoing_message_q.put('DISCONNECT;;;')
+                    self.outgoing_message_q.put('DISCONNECT;;')
 
     def build_request(self, player_num, request_type):
         message = 'REQUEST;'
