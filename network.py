@@ -136,24 +136,23 @@ class AcquireClient(ClientServerBaseClass):
                 
     def parse_message(self, m):
         command, player, parameter = m[1].split(';')
+        if command == 'REGISTER':
+            self.process_register(player, parameter)
+        elif command == 'DISCONNECT':
+            self.process_disconnect(player, parameter)
+        elif command == 'PLACESTARTER':
+            self.process_placestarter(player, parameter)
+        elif command == 'PLACETILE':
+            self.process_placetile(player, parameter)
+        elif command == 'REQUEST':
+            self.process_requesT(player, parameter)
+        elif command == 'ERROR':
+            self.process_error(player, parameter)
+        elif command == 'INFO':
+            self.process_info(player, parameter)
+        elif command == 'PRIVATE':
+            self.process_private(player, parameter)
         QTimer.singleShot(250, self.main)
-        if command = 'REGISTER':
-            self.process_register(player, parameter):
-        elif command = 'DISCONNECT':
-            self.process_disconnect(player, parameter):
-        elif command = 'PLACESTARTER':
-            self.process_placestarter(player, parameter):
-        elif command = 'PLACETILE':
-            self.process_placetile(player, parameter):
-        elif command = 'REQUEST':
-            self.process_requesT(player, parameter):
-        elif command = 'ERROR':
-            self.process_error(player, parameter):
-        elif command = 'INFO':
-            self.process_info(player, parameter):
-        elif command = 'PRIVATE':
-            self.process_private(player, parameter):
-
 
     def process_register(self, player, parameter):
         pass
@@ -202,5 +201,8 @@ class AcquireSimpleLogger(AcquireClient):
 
     def parse_message(self, m):
         print(self.name + ": " + m[1])
+        command, player, parameter = m[1].split(';')
+        if command == 'DISCONNECT':
+            QCoreApplication.quit()
         QTimer.singleShot(250, self.main)
 
