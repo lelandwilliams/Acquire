@@ -32,7 +32,7 @@ class ClientConnection(QObject):
 
     def write(self, m):
 #        self.client.write(m)
-        self.message_q.put(m)
+        self.outgoing_message_q.put(m)
 
 class ClientServerBaseClass(QObject):
     def __init__(self, port = 65337):
@@ -85,7 +85,10 @@ class AcquireServer(ClientServerBaseClass):
     def newClientConnected(self):
 #       print("Server: A client has connected")
         client = self.server.nextPendingConnection()
-        self.clients.append(ClientConnection(client, self.outgoing_message_q))
+        self.clients.append(ClientConnection(client, self.incoming_message_q))
+        data = QByteArray()
+        data.append("-1;UUID;" + self.clients[-1].client_id)
+        client.write(data)
         if self.master_id == None:
             self.master_id = self.clients[0].client_id
         if not self.mainStarted:
@@ -94,14 +97,23 @@ class AcquireServer(ClientServerBaseClass):
         
     def send_message(self, message):
         self.outgoing_message_q.task_done()
+        print("Server.send_message() received: " + message)
         data = QByteArray()
         data = data.append(str(self.message_num))
         data = data.append(";")
         data = data.append(message)
         self.message_num += 1
         for client in self.clients:
-            client.client.write(data)
-#           client.outgoing_message_q.put(data, False)
+            client.write((self.message_num,data))
+
+    def send_private_message(self, message, player):
+        data = QByteArray()
+        data = data.append(str(-1))
+        data = data.append(";")
+        data = data.append(message)
+        for client in self.clients:
+            if client.name == player:
+                client.write(data)
 
 class AcquireClient(ClientServerBaseClass):
     def __init__(self, port = DEFAULTPORT):
@@ -135,6 +147,7 @@ class AcquireClient(ClientServerBaseClass):
                 QCoreApplication.quit()
                 
     def parse_message(self, m):
+        print("Client.parse_message() received: " + str(m))
         command, player, parameter = m[1].split(';')
         if command == 'REGISTER':
             self.process_register(player, parameter)
