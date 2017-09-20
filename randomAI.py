@@ -6,8 +6,10 @@ class randomAI(AcquireClient):
     def __init__(self, name, acquire_id = None):
         self.name = name
         super().__init__()
-        self.outgoing_message_q.put("REGISTER;"+self.name)
+        self.outgoing_message_q.put("REGISTER;"+self.name+';')
 
+    def process_private(self, player, parameter):
+        print(name +": received a private message")
 
 if __name__ == "__main__":
     app = QCoreApplication(sys.argv)
