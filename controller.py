@@ -9,19 +9,21 @@ class Controller(AcquireServer):
         super().__init__(port)
 
     @pyqtSlot()
-    def parse_message(m):
+    def parse_message(self, m):
+        print("Controller.parse_message received: " + m)
         clientid, command,  parameter = m.split(';')
         if command == "REGISTER":
             if len(self.game.players) > 6:
-                self.outgoing_message_q("ERROR;" + parameter + ";CAN'T JOIN - GAME IS FULL;")
+                self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T JOIN - GAME IS FULL;")
             elif self.game.state != "SETUP":
-                self.outgoing_message_q("ERROR;" + parameter + ";CAN'T JOIN - GAME HAS STARTED;")
+                self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T JOIN - GAME HAS STARTED;")
             elif parameter in self.name.players:
-                self.outgoing_message_q("ERROR;" + parameter + ";NAME UNAVAILABLE;")
+                self.outgoing_message_q.put("ERROR;" + parameter + ";NAME UNAVAILABLE;")
             elif self.get_name_of_id(clientid) != None:
-                self.outgoing_message_q("ERROR;" + parameter + ";PLAYER ALREADY NAMED;")
+                self.outgoing_message_q.put("ERROR;" + parameter + ";PLAYER ALREADY NAMED;")
             else:
-                self.outgoing_message_q("NOTICE;" + parameter + ";ADDED;")
+                self.outgoing_message_q.put("NOTICE;" + parameter + ";ADDED;")
+                self.send_private_message('PRIVATE;;', parameter)
         elif command == "KILL":
             self.outgoing_message_q.put('DISCONNECT;;;')
             self.game.gameState = 'DONE'
@@ -42,6 +44,7 @@ class Controller(AcquireServer):
             else:
                 self.game.placeStarter(parameter)
                 self.game.players[self.starterPlayer].hand.remove(tile)
+                self.game.players[self.starterPlayer].lastPlay = tile
                 self.outgoing_message_q.put("PLAY;" + self.get_name_of_id(clientid)
                         + ";PLACESTARTER" + parameter)
                 self.starterPlayer += 1
