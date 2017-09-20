@@ -3,7 +3,6 @@ import sys, string, random
 class Player:
     def __init__(self, name):
         self.name = name
-        self.playerSubtype = None
         self.hand = []
         self.money = 6000
         self.stock = {}
@@ -11,7 +10,6 @@ class Player:
         self.stockAcquired = []
         for name in Acquire.corpNames:
             self.stock[name] = 0
-
 
     def __repr__(self):
         s = "\t"
