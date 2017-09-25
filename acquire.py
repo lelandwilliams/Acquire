@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 import subprocess
 from controller import Controller
 from robotFactory import robotFactory
