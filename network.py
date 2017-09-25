@@ -5,34 +5,39 @@ from PyQt5.QtCore import QObject, pyqtSlot, QCoreApplication, QThread, QByteArra
 DEFAULTPORT = 65337
 
 class ClientConnection(QObject):
-    """ Used by AcquireServer to interact with clients """
+    """ An Instance of this class is created by AcquireServer 
+    for each client upon connection"""
     def __init__(self, client, message_q):
         super().__init__()
         self.client = client
         self.client_id = str(uuid.uuid4())
-        self.client.setTextModeEnabled(True)
+        self.client.setTextModeEnabled(False)
         self.name = None
         self.message_q = message_q
         self.outgoing_message_q = queue.Queue()
         client.readyRead.connect(self.receiveData)
+        QTimer.singleShot(750, self.main)
 
     @pyqtSlot()
     def receiveData(self):
-#       print("Server: A message has been recieved from client 0")
         m = self.client.readLine().data().decode() 
         self.message_q.put(m)
-        QTimer.singleShot(250, self.main)
+#        QTimer.singleShot(250, self.main)
 
     @pyqtSlot()
     def main(self):
         if not self.outgoing_message_q.empty():
-            if self.client.write(self.outgoing_message_q.get()) != -1:
-                self.outgoing_message_q.task_done()
-        QTimer.singleShot(250, self.main)
+            message = self.outgoing_message_q.get()
+#           self.outgoing_message_q.task_done()
+            if self.client.write(message) == -1:
+                sys.exit("error writing to client " + self.name)
+        QTimer.singleShot(750, self.main)
 
     def write(self, m):
+#       print("ClientConnection.write() recieved message: " + str(m))
 #        self.client.write(m)
         self.outgoing_message_q.put(m)
+        return 0
 
 class ClientServerBaseClass(QObject):
     def __init__(self, port = 65337):
@@ -40,13 +45,24 @@ class ClientServerBaseClass(QObject):
         self.port = port
         self.incoming_message_q = queue.Queue()
         self.outgoing_message_q = queue.Queue()
-        self.read_incoming_next = True
         self.gameDone = False
-        self.read_incoming_next  = True
 
     @pyqtSlot()
     def main(self):
-        self.read_incoming_next = not self.read_incoming_next
+        if not self.outgoing_message_q.empty():
+            self.send_message(self.outgoing_message_q.get())
+#           self.outgoing_message_q.task_done()
+        elif not self.incoming_message_q.empty():
+            message = self.incoming_message_q.get()
+#           self.incoming_message_q.task_done()
+            self.parse_message(message)
+
+        QTimer.singleShot(399, self.main)
+
+    @pyqtSlot()
+    def oldmain(self):
+        self.read_incoming_next = (not self.read_incoming_next)
+        print(self.name + ": in main():")
 
         if self.gameDone:
             QCoreApplication.quit()
@@ -54,13 +70,12 @@ class ClientServerBaseClass(QObject):
                 not self.incoming_message_q.empty():
             self.parse_message(self.incoming_message_q.get())
             self.incoming_message_q.task_done()
-        elif not self.read_incoming_next and \
+        elif (not self.read_incoming_next) and \
                 not self.outgoing_message_q.empty():
             self.send_message(self.outgoing_message_q.get())
-#           self.outgoing_message_q.task_done()
-            QTimer.singleShot(250, self.main)
-        else:
-            QTimer.singleShot(250, self.main)
+            self.outgoing_message_q.task_done()
+
+        QTimer.singleShot(450, self.main)
 
 class AcquireServer(ClientServerBaseClass):
     def __init__(self, port = DEFAULTPORT):
@@ -83,7 +98,6 @@ class AcquireServer(ClientServerBaseClass):
 
     @pyqtSlot()
     def newClientConnected(self):
-#       print("Server: A client has connected")
         client = self.server.nextPendingConnection()
         self.clients.append(ClientConnection(client, self.incoming_message_q))
         data = QByteArray()
@@ -96,15 +110,16 @@ class AcquireServer(ClientServerBaseClass):
             QTimer.singleShot(500, self.main)
         
     def send_message(self, message):
-        self.outgoing_message_q.task_done()
-        print("Server.send_message() received: " + message)
+#       self.outgoing_message_q.task_done()
+#       print("Server.send_message() received: " + message)
         data = QByteArray()
         data = data.append(str(self.message_num))
         data = data.append(";")
         data = data.append(message)
+#       data = data.append('\n')
         self.message_num += 1
         for client in self.clients:
-            client.write((self.message_num,data))
+            client.write(data)
 
     def send_private_message(self, message, player):
         data = QByteArray()
@@ -130,7 +145,7 @@ class AcquireClient(ClientServerBaseClass):
 #       print(self.name + ": Connection Attempt " + str(self.attempts))
         self.net.connectToHost(QtNetwork.QHostAddress.LocalHost, self.port)
         if self.net.waitForConnected(5000):
-            self.net.setTextModeEnabled(True)
+            self.net.setTextModeEnabled(False)
 #           print(self.name + ": connected")
             QTimer.singleShot(500, self.main)
             self.net.readyRead.connect(self.receiveData)
@@ -147,31 +162,37 @@ class AcquireClient(ClientServerBaseClass):
                 QCoreApplication.quit()
                 
     def parse_message(self, m):
-        print("Client.parse_message() received: " + str(m))
-        command, player, parameter = m[1].split(';')
+ #      print(self.name + ".parse_message() received: " + str(m))
+        priority, command, parameter = m[1].split(';')
+ #      print(self.name + " priorty: " + priority)
+ #      print(self.name + " command: " + command)
+ #      print(self.name + " parameter: " + parameter)
         if command == 'REGISTER':
-            self.process_register(player, parameter)
+            self.process_register(parameter)
         elif command == 'DISCONNECT':
-            self.process_disconnect(player, parameter)
+            self.process_disconnect(parameter)
         elif command == 'PLACESTARTER':
-            self.process_placestarter(player, parameter)
+            self.process_placestarter(parameter)
         elif command == 'PLACETILE':
-            self.process_placetile(player, parameter)
+            self.process_placetile(parameter)
         elif command == 'REQUEST':
-            self.process_requesT(player, parameter)
+            self.process_requesT(parameter)
         elif command == 'ERROR':
-            self.process_error(player, parameter)
+            self.process_error(parameter)
         elif command == 'INFO':
-            self.process_info(player, parameter)
+            self.process_info(parameter)
         elif command == 'PRIVATE':
-            self.process_private(player, parameter)
-        QTimer.singleShot(250, self.main)
+            self.process_private(parameter)
+        elif command == 'UUID':
+            self.process_uuid(parameter)
+#       self.outgoing_message_q.task_done()
+#        QTimer.singleShot(250, self.main)
 
     def process_register(self, player, parameter):
         pass
     
     def process_disconnect(self, player, parameter):
-        pass
+        QCoreApplication.quit()
 
     def process_placestarter(self, player, parameter):
         pass
@@ -191,6 +212,9 @@ class AcquireClient(ClientServerBaseClass):
     def process_private(self, player, parameter):
         pass
 
+    def process_uuid(self, parameter):
+        pass
+
     @pyqtSlot()
     def receiveData(self):
         s = self.net.readLine().data().decode() 
@@ -200,10 +224,12 @@ class AcquireClient(ClientServerBaseClass):
  
     def send_message(self, message):
         data = QByteArray()
+        data.append(self.client_id)
+        data.append(';')
         data.append(message)
-        if self.net.write(data) != -1:
-            self.outgoing_message_q.task_done()
-#           print("Error sending message")
+        if self.net.write(data) == -1:
+#           self.outgoing_message_q.task_done()
+            sys.exit(self.name + ": Error sending message")
 #       else:
 #           print("client: message sent")
 
@@ -214,8 +240,9 @@ class AcquireSimpleLogger(AcquireClient):
 
     def parse_message(self, m):
         print(self.name + ": " + m[1])
-        command, player, parameter = m[1].split(';')
+        priority, command, parameter = m[1].split(';')
         if command == 'DISCONNECT':
             QCoreApplication.quit()
-        QTimer.singleShot(250, self.main)
+#       self.outgoing_message_q.task_done()
+#       QTimer.singleShot(250, self.main)
 
