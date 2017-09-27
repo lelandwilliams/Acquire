@@ -49,6 +49,8 @@ class ClientServerBaseClass(QObject):
 
     @pyqtSlot()
     def main(self):
+        if self.name == "Logger":
+            print("Logger: main()")
         if not self.outgoing_message_q.empty():
             self.send_message(self.outgoing_message_q.get())
 #           self.outgoing_message_q.task_done()
@@ -57,7 +59,8 @@ class ClientServerBaseClass(QObject):
 #           self.incoming_message_q.task_done()
             self.parse_message(message)
 
-        QTimer.singleShot(399, self.main)
+        if not self.gameDone :
+            QTimer.singleShot(799, self.main)
 
     @pyqtSlot()
     def oldmain(self):
@@ -162,7 +165,7 @@ class AcquireClient(ClientServerBaseClass):
                 QCoreApplication.quit()
                 
     def parse_message(self, m):
- #      print(self.name + ".parse_message() received: " + str(m))
+        print(self.name + ".parse_message() received: " + str(m))
         priority, command, parameter = m[1].split(';')
  #      print(self.name + " priorty: " + priority)
  #      print(self.name + " command: " + command)
@@ -170,7 +173,7 @@ class AcquireClient(ClientServerBaseClass):
         if command == 'REGISTER':
             self.process_register(parameter)
         elif command == 'DISCONNECT':
-            self.process_disconnect(parameter)
+            self.process_disconnect()
         elif command == 'PLACESTARTER':
             self.process_placestarter(parameter)
         elif command == 'PLACETILE':
@@ -192,6 +195,8 @@ class AcquireClient(ClientServerBaseClass):
         pass
     
     def process_disconnect(self, player, parameter):
+        print(self.name + ": received a DISCONNECT")
+        self.gameDone = True
         QCoreApplication.quit()
 
     def process_placestarter(self, player, parameter):
