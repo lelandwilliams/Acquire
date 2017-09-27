@@ -14,10 +14,12 @@ class randomAI(AcquireClient):
 
     def process_register(self, player):
         print(name +": received a registration message")
-        QTimer.singleShot(250, self.main)
+        self.outgoing_message_q.put("KILL;"+self.name)
+#       QTimer.singleShot(250, self.main)
 
-    def process_disconnect(self, player, parameter):
+    def process_disconnect(self):
         print(name +": received a disconnect message")
+        self.gameDone = True
         QCoreApplication.quit()
 
     def process_uuid(self, parameter):
