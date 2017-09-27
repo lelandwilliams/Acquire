@@ -19,8 +19,8 @@ class Controller(AcquireServer):
         if command == "REGISTER":
             self.process_register(clientid, parameter)
         elif command == "KILL":
-            self.outgoing_message_q.put('DISCONNECT;;;')
-            self.game.gameState = 'DONE'
+            print("Server: in disconnect()")
+            self.outgoing_message_q.put('DISCONNECT;')
             self.gameDone = True
             QCoreApplication.quit()
         elif command == "BEGIN":
@@ -53,7 +53,6 @@ class Controller(AcquireServer):
                     self.outgoing_message_q.put('DISCONNECT;;')
 
     def process_register(self, clientid, parameter):
-#       print("SERVER: IN REGISTER")
         if len(self.game.players) > 6:
             self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T JOIN - GAME IS FULL;")
 #       elif self.game.gameState != "SETUP":
