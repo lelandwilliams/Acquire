@@ -1,4 +1,4 @@
-import sys, collections, uuid
+import sys, collections, uuid, argparse
 #from PyQt5.QtNetwork import  
 from PyQt5.QtCore import QObject, QUrl, QTimer, QCoreApplication, pyqtSlot
 from PyQt5.QtWebSockets import QWebSocket, QWebSocketProtocol
@@ -9,9 +9,14 @@ class AcquireClient(QObject):
     def __init__(self, 
             client_id = None, 
             port = DEFAULTPORT, 
-            address = 'localhost'):
+            address = 'localhost',
+            name = 'Noname',
+            client_type = None):
         super().__init__()
         self.socket = QWebSocket()
+        self.name = name
+        self.client_type = client_type
+
         url = QUrl()
         url.setScheme("ws")
         url.setHost(address)
@@ -29,6 +34,7 @@ class AcquireClient(QObject):
     def onConnected(self):
         print('Client Connected')
         self.socket.textMessageReceived.connect(self.processTextMessage)
+        self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
 #        QTimer.singleShot(500, a.send_message)
 
     def processTextMessage(self, message):
@@ -52,8 +58,13 @@ class AcquireClient(QObject):
 
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
-    a = AcquireClient()
-    QTimer.singleShot(1000, a.send_message)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--playerType', type = str, 
+            choices = ['GM','LOGGER', 'PLAYER'])
+    parser.add_argument('-n', '--playerName', type = str)
+    args = parser.parse_args()
+    a = AcquireClient(name = args.playerName, client_type = args.playerType)
+#   QTimer.singleShot(1000, a.send_message)
 
     QTimer.singleShot(9000, a.quit_app)
     app.exec_()

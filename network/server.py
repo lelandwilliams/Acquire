@@ -1,4 +1,4 @@
-import sys, queue, uuid
+import sys, queue, uuid, argparse
 from PyQt5 import QtNetwork, QtWebSockets
 from PyQt5.QtCore import QObject, QDataStream, pyqtSlot, QCoreApplication, QTimer, QMutex
 
@@ -8,7 +8,8 @@ class AcquireWebSocketServer(QObject):
     def __init__(self, 
             my_id = None, 
             port = DEFAULTPORT, 
-            address = QtNetwork.QHostAddress.LocalHost):
+            address = QtNetwork.QHostAddress.LocalHost,
+            numPlayers = 3):
         super().__init__()
         self.server = QtWebSockets.QWebSocketServer('',QtWebSockets.QWebSocketServer.NonSecureMode)
         self.port = port
@@ -18,7 +19,7 @@ class AcquireWebSocketServer(QObject):
         self.clients_mutex = QMutex()
         self.GM = None
         self.gameInProgress = False
-        self.numPlayersNeeded = 3
+        self.numPlayersNeeded = numPlayers
 
         attempts = 0
         max_attempts = 10
@@ -44,7 +45,7 @@ class AcquireWebSocketServer(QObject):
         print("server recieved message: {}".format(message))
         sender= self.sender()
 #       self.clients_mutex.lock()
-        if len(message.split(';') != 3):
+        if len(message.split(';')) != 3:
                 return
         m_type,m_subtype,m_val = message.split(';')
 
@@ -54,7 +55,9 @@ class AcquireWebSocketServer(QObject):
         elif m_type == 'REGISTER' and m_subtype == 'GM' and self.GM is None:
             self.GM = sender
             self.clients[sender] = 'GM'
-        elif m_type == 'REGISTER' and m_subtype == 'PLAYER' and not self.gameInProgress:
+            if not self.numPlayersNeeded:
+                self.startGame()
+        elif m_type == 'REGISTER' and m_subtype == 'PLAYER' and self.numPlayersNeeded:
             self.clients[sender] = m_val
             print( "player {} registered".format(m_val))
             self.numPlayersNeeded -= 1
@@ -62,6 +65,8 @@ class AcquireWebSocketServer(QObject):
                 # start the game
                 if self.GM is None:
                     self.startGM()
+                else:
+                    self.startGame()
 
         elif m_type == 'REGISTER' and m_subtype == 'Logger' and self.clients[sender] == 'Undefined':
             self.clients[sender] = 'Logger'
@@ -80,5 +85,12 @@ class AcquireWebSocketServer(QObject):
 
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
-    a = AcquireWebSocketServer()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-cp', '--conciergePort', type = int) 
+    parser.add_argument('-n', '--numPlayers', type = int)
+    args = parser.parse_args()
+    if args.numPlayers is None:
+        a = AcquireWebSocketServer()
+    else:
+        a = AcquireWebSocketServer()
     app.exec_()
