@@ -1,6 +1,5 @@
 import sys, collections, uuid, argparse
-#from PyQt5.QtNetwork import  
-from PyQt5.QtCore import QObject, QUrl, QTimer, QCoreApplication, pyqtSlot
+from PyQt5.QtCore import QObject, QUrl, QTimer, QCoreApplication, pyqtSlot, QThread
 from PyQt5.QtWebSockets import QWebSocket, QWebSocketProtocol
 
 DEFAULTPORT = 64337
@@ -16,20 +15,28 @@ class AcquireClient(QObject):
         self.socket = QWebSocket()
         self.name = name
         self.client_type = client_type
+        self.failed_attempts = 0
+        self.max_attempts = 5
 
-        url = QUrl()
-        url.setScheme("ws")
-        url.setHost(address)
-        url.setPort(port)
-        
+        self.url = QUrl()
+        self.url.setScheme("ws")
+        self.url.setHost(address)
+        self.url.setPort(port)
         self.socket.error.connect(self.error)
         self.socket.connected.connect(self.onConnected)
-        self.socket.open(url)
+        
+        self.openSocket()
+
+    def openSocket(self):
+        self.socket.open(self.url)
         print('attempting connection...')
 
     def error(self, errorcode):
         print("Client Error #{}: ".format(errorcode))
         print(self.socket.errorString())
+        self.failed_attempts += 1
+        if errorcode == 0 and self.failed_attempts < self.max_attempts:
+            QTimer.singleShot(2000, self.openSocket)
 
     def onConnected(self):
         print('Client Connected')
