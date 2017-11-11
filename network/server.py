@@ -20,6 +20,7 @@ class AcquireWebSocketServer(QObject):
         self.GM = None
         self.gameInProgress = False
         self.numPlayersNeeded = numPlayers
+        self.consecutive_timeouts = 0
 
         attempts = 0
         max_attempts = 10
@@ -29,11 +30,14 @@ class AcquireWebSocketServer(QObject):
             else:
                 print(' now listening')
                 self.server.newConnection.connect(self.newClient)
-                QTimer.singleShot(20000, QCoreApplication.quit)
+                self.timeout_timer = QTimer()
+                self.timeout_timer.timeout.connect(self.timout)
+                self.timeout_timer.start(500)
 #        print(self.server.isListening())
 
     def newClient(self):
         print('server recieved a connection')
+        self.consecutive_timeouts = 0
         client = self.server.nextPendingConnection()
         self.clients_mutex.lock()
         self.clients[client] = 'Undefined'
@@ -43,6 +47,7 @@ class AcquireWebSocketServer(QObject):
 
     def processTextMessage(self,message):
         print("server recieved message: {}".format(message))
+        self.consecutive_timeouts = 0
         sender= self.sender()
 #       self.clients_mutex.lock()
         if len(message.split(';')) != 3:
@@ -77,11 +82,23 @@ class AcquireWebSocketServer(QObject):
     def sendMessage(self):
         self.client.sendTextMessage("wazzup")
 
+    def startGame(self):
+        p_list = [v for v in self.clients.values() if not v in ['Logger','GM','Undefined']]
+        self.GM.sendTextMessage("Server;Start;{}".format(str(p_list)[1:-1]))
+
     def socketDisconnected(self):
         print('server lost connection to client')
         sender= self.sender()
         sender.deleteLater()
-#        QCoreApplication.quit()
+#        QCoreApplication.quit()    
+
+    def timout(self):
+        print('Server: timeout')
+        self.consecutive_timeouts += 1
+        if self.consecutive_timeouts > 3:
+            self.server.close()
+            QCoreApplication.quit()
+
 
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
