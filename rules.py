@@ -13,17 +13,17 @@ def new_game(playerNames, shuffle = True, seed = None):
     return state,hands
 
 def getActions(state, hand):
-    if state['Turn']['Action'] is None:
+    if state['Turn']['Tile'] is None:
         return ('Place',[t for t in hand[state['Turn']['Player']] if isLegal(state, t)])
-    elif state['Turn']['NewCorp']:
-        return ('Found',[c for c in state['Group'] if len(state['Group']) == 0])
+    elif state['Turn']['NewCorp'] == 'Choose':
+        return ('Found',[c for c in model.corporations if len(state['Group'][c]) == 0])
     elif state['Turn']['Merger']:
         raise('Not Yet Implemented')
     elif len(state['Turn']['Buy']) < 3:
         possibles = [c for c in model.corporations\
                 if len(state['Group'][c]) != 0\
-                and state['Player']['Bank'][c] > 0\
-                and stockPrice(c) <= state['Player'][state['Turn']['Player']]['money']]
+                and state['Players']['Bank'][c] > 0\
+                and stockPrice(state, c) <= state['Players'][state['Turn']['Player']]['money']]
         return ('Buy', possibles + ['Done']) if len(possibles) else None
     elif state['Turn']['Call Game']:
         return('Call', ['Yes', 'No'])
@@ -46,15 +46,17 @@ def succ(state, hands, action, history = None):
         return None
     s = copy.deepcopy(state)
     h = copy.deepcopy(hands)
-    s['Turn']['Action'] = action
-    h[s['Turn']['Player']].remove(action)
 
     # Below we resolve the possible actions
 
-    # Place a tile on the board
+# --- Place a tile on the board ---------------------
     if actions[0] == 'Place': 
+        s['Turn']['Tile'] = action
+        h[s['Turn']['Player']].remove(action)
         s['Players'][s['Turn']['Player']]['Last Play'] = action
-        # first see if there are any Anon groups to merge/attach
+
+        # First assign the tile to an Anon group
+        # see if there are any existing Anon groups to merge/attach
         t_group = None # the 'Group' key that the tile is being added to
         anons = getAdjacentAnons(state,action)
         if len(anons) > 0:
@@ -65,16 +67,18 @@ def succ(state, hands, action, history = None):
                     s['Group'][anons[0]].append(s['Group'][a].pop())
             # If we have merged some anon tiles and playing starters is over,
             # then set 'NewCorp' so that actions will be to choose a new Corp
-            s['Turn']['NewCorp'] = (s['Phase'] == 'Place')
+            s['Turn']['NewCorp'] = 'Choose' if (s['Phase'] == 'Place') else False
         else:
+            # create a new Anon group for the tile
             t_group = assignAnon(s, action)
 
         # Now add tiles to an adjacent corporation
         adj_c = getAdjacentCorps(state, action) 
         if len(adj_c) == 1:
             s['Turn']['NewCorp'] = False
-            while len(h['Group'][t_group]):
-                s[adj_c[0]].append(h['Group'][t_group].pop())
+            s['Turn']['Merger'] = False
+            while len(s['Group'][t_group]) > 0:
+                s['Group'][adj_c[0]].append(s['Group'][t_group].pop())
         if len(adj_c) > 1:
             s['Turn']['NewCorp'] = False
             pass ## Not Implemented Yet
@@ -83,15 +87,41 @@ def succ(state, hands, action, history = None):
         while len(h[s['Turn']['Player']]) < 6 and len(h['Bank']) > 0:
             h[s['Turn']['Player']].append(h['Bank'].pop())
 
+# --------- Create a New Corporation ---------------------
+    elif actions[0] == 'Found':
+        s['Turn']['NewCorp'] = action
+        # Find the tile group that contains the last played tile
+        group = [g for g in s['Group'] if s['Turn']['Tile'] in s['Group'][g]][0]
+        # Move all tiles from that group to the new corporation
+        while len(s['Group'][group]) > 0:
+            s['Group'][action].append(s['Group'][group].pop())
+        # Award the founder a free share of stock
+        s['Players'][s['Turn']['Player']][action] +=1
+        s['Players']['Bank'][action] -= 1
 
-    # some final evaluation of the successor state
+# ------------- Buy A Share of Stock ---------------------
+
+    elif actions[0] == 'Buy':
+        if action == 'None':
+            while len(s['Turn']['Buy']) < 3:
+                s['Turn']['Buy'].append('None')
+        else:
+            s['Turn']['Buy'].append(action)
+            s['Players']['Bank'][action] -= 1
+            s['Players'][s['Turn']['Player']][action] +=1
+
+# ------------- Final Housekeepng of the succ state ---------------------
     if s['Turn']['Call Game'] is None: 
         s['Turn']['Call Game'] = endGameConditionsMet(s)
     if getActions(s,h) is None: 
         # None signals the end of a turn
-        # so we should create a new one with the next player
+        # so we should create a new Turn dict() with the next player
+
+        # first append current turn to history, if history is given
         if not history is None:
             history.append(s['Turn'])
+
+        # Now figure out who the next player should be
         players = list(s['Players'].keys())
         players.remove('Bank')
         if s['Turn']['Player'] == players[-1] and s['Phase']=='Place Starters':
@@ -117,7 +147,7 @@ def succ(state, hands, action, history = None):
 
     return s,h
     
-# ------------------------------------------------------------
+# ------------------------ Helper Functions --------------------
 
 def assignAnon(state, t):
     anons = [g for g in state['Group'] if g not in model.corporations]
@@ -128,6 +158,7 @@ def assignAnon(state, t):
 
     new_name = "Anon{}".format(int(anons[-1][-1]) + 1)
     state['Group'][new_name] = [t]
+    return new_name
 
 def build_hands(state, shuffle = False, seed = None):
     hands= dict()
@@ -143,7 +174,11 @@ def build_hands(state, shuffle = False, seed = None):
     return hands
 
 def endGameConditionsMet(state):
-    print ('endGameConditionsMet is undefined !!!')
+    sizes = [len(state['Group'][c]) for c in model.corporations if len(state['Group'][c]) > 0]
+    if len(sizes) == 0:
+        return False
+    if max(sizes) > 40 or min(sizes) > 10:
+        return True
     return False
 
 def getAdjacentAnons(state, t):
@@ -165,7 +200,7 @@ def isLegal(state, t):
     if state['Phase'] == 'Place Starters':
         return True
     # Test for condition A
-    if len( [c for c in getAdjacentCorps(state,t) if len(state['Group'][c] >= 11)]) > 1:
+    if len( [c for c in getAdjacentCorps(state,t) if len(state['Group'][c]) >= 11]) > 1:
         return False
     # Test for condition B
     numActive =  len([c for c in model.corporations if len(state['Group'][c]) > 0]) 
@@ -188,3 +223,24 @@ def isAdjacent(tile, group):
 def isSafe(state, corp):
     return len(state['Group'][corp]) >= 11
 
+def stockPrice(state, corp):
+    corp_size = len(state['Group'][corp])
+    price = 0
+    if corp in ["Worldwide", "American", "Festival"]:
+        price += 100
+    if corp in ["Imperial", "Continental"]:
+        price += 200
+    if corp_size > 40:
+        price += 1000
+    elif corp_size > 30:
+        price += 900
+    elif corp_size > 20:
+        price += 800
+    elif corp_size > 10:
+        price += 700
+    elif corp_size > 5:
+        price += 600
+    else:
+        price += corp_size * 100
+
+    return price
