@@ -39,7 +39,7 @@ def new_game(playerNames):
 
 def new_turn(current_player = None):
     turn = dict()
-    for phase in ['Player', 'Action', 'Merger', 'Buy', 'NewCorp', 'Call Game']:
+    for phase in ['Player', 'Tile', 'Merger', 'Buy', 'NewCorp', 'Call Game']:
         turn[phase] = None if phase != 'Buy' else list()
     turn['Player'] = current_player
     return turn
