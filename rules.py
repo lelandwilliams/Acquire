@@ -72,7 +72,11 @@ def succ(state, hands, action, history = None):
             # create a new Anon group for the tile
             t_group = assignAnon(s, action)
 
-        # Now add tiles to an adjacent corporation
+        # Now add the tiles from an Anon group to
+        # a corporation adjacent to the placed tile.
+        # This handles the case that a tile connects other unconneted tiles
+        # to a corporation, as well as the tile is a simple addition to an
+        # existing corporation
         adj_c = getAdjacentCorps(state, action) 
         if len(adj_c) == 1:
             s['Turn']['NewCorp'] = False
