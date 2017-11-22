@@ -170,7 +170,11 @@ def print_turn(turn):
     if turn['NewCorp']:
         player_line += "\n{} founded {}".format(turn['Player'], turn['NewCorp'])
     if type(turn['Merger']) is dict:
-        player_line += "A MERGER"
+        player_line += "A MERGER\n"
+        player_line += turn['Merger']['OldCorps'][0]
+        for corp in turn['Merger']['OldCorps'][1:]:
+            player_line += ", {}".format(corp)
+        player_line += " merger into {}".format(turn['Merger']['NewCorps'][0])
         for bonus in turn['Merger']['Bonus']:
             player_line += "\n{} was the {} holder of {} and recieved $ {}".format(
                     bonus['Player'],
