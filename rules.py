@@ -80,7 +80,7 @@ def succ(state, hands, action, history = None):
                     s['Group'][anons[0]].append(s['Group'][a].pop())
             # If we have merged some anon tiles and playing starters is over,
             # then set 'NewCorp' so that actions will be to choose a new Corp
-            s['Turn']['NewCorp'] = 'Choose' if (s['Phase'] == 'Place') else False
+            s['Turn']['NewCorp'] = 'Choose' if (s['Phase'] == 'Place') else None
         else:
             # create a new Anon group for the tile
             t_group = assignAnon(s, action)
