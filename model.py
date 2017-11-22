@@ -103,7 +103,43 @@ def print_state(state, hands= None):
     print()
 
 def print_turn(turn):
-    pass
+    player_line = "{} placed {} ".format(turn['Player'], turn['Tile'])
+
+    if turn['Merger'] is None and not turn['NewCorp']:
+        if len(turn['Buy']) > 0:
+            player_line += "and bought "
+            if turn['Buy'][0] != 'Done':
+                player_line += "{}".format(turn['Buy'][0])
+                for c in turn['Buy'][1:]:
+                    if c != 'Done':
+                        player_line += ", {}".format(c)
+        print(player_line)
+        return None
+
+    if turn['NewCorp']:
+        player_line += "\n{} founded {}".format(turn['Player'], turn['NewCorp'])
+    if type(turn['Merger']) is dict:
+        player_line += "A MERGER"
+        for sale in turn['Merger']['Sales']:
+            if sale['Trade'] > 0:
+                player_line += "\n{:3}{:10} Traded in {:2d} shares of {:12} for {:2d} {}"\
+                        .format(sale['Player'],
+                        sale['Trade'],
+                        sale['Corporation'],
+                        (sale['Trade']/2),
+                        turn['Merger']['NewCorps'][0])
+            if sale['Sell'] > 0:
+                player_line += "\n{:3}{:10} Sold {:2d} shares of {:12}".format(\
+                        sale['Player'],
+                        sale['Sell'],
+                        sale['Corporation'])
+    if turn['Buy'][0] != 'Done':
+        player_line += "\n{} bought {}".format(turn['Player'], turn['Buy'][0])
+        for c in turn['Buy'][1:]:
+            if c != 'Done':
+                player_line += ", {}".format(c)
+    print(player_line)
+
 
 def save_state(s,h):
     of = open('savegame.txt', 'w')
