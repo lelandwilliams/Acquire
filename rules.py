@@ -36,7 +36,7 @@ def getActions(state, hand):
         possibles = [c for c in model.corporations\
                 if len(state['Group'][c]) != 0\
                 and state['Players']['Bank'][c] > 0\
-                and stockPrice(state, c) <= state['Players'][state['Turn']['Player']]['money']]
+                and model.stockPrice(state, c) <= state['Players'][state['Turn']['Player']]['money']]
         return ('Buy', possibles + ['Done']) if len(possibles) else None
     elif state['Turn']['Call Game']:
         return('Call', ['Yes', 'No'])
@@ -163,7 +163,7 @@ def succ(state, hands, action, history = None):
             sale['Sell'] += 1
             s['Players'][sale['Player']][sale['Corporation']] -= 1
             s['Players']['Bank'][sale['Corporation']] += 1
-            s['Players'][sale['Player']]['money'] += stockPrice(s, sale['Corporation'])
+            s['Players'][sale['Player']]['money'] += model.stockPrice(s, sale['Corporation'])
             if s['Players'][sale['Player']][sale['Corporation']] <= 0:
                 sale['Done'] = True
 
@@ -256,10 +256,6 @@ def getAdjacentAnons(state, t):
 def getAdjacentCorps(state, t):
     return [c for c in model.corporations if isAdjacent(t,state['Group'][c])]
 
-def getBonuses(state):
-    print("getBonus() not implemented yet")
-    return []
-
 def isLegal(state, t):
     """ Method to see if a tile is legal to lay
     Acquire stipulates that a tile may not be placed when
@@ -299,7 +295,7 @@ def isSafe(state, corp):
     return len(state['Group'][corp]) >= 11
 
 def resolveMerger(state):
-    bonuses = getBonuses(state)
+    bonuses = model.getBonuses(state)
 #   print('*** Bonus *** ')
 #   print(bonuses)
     for bonus in bonuses:
@@ -313,24 +309,3 @@ def resolveMerger(state):
             if state['Players'][player][corp] > 0 and player != 'Bank':
                 state['Turn']['Merger']['Sales'].append(model.new_mergerSale(player,corp))
 
-def stockPrice(state, corp):
-    corp_size = len(state['Group'][corp])
-    price = 0
-    if corp in ["Worldwide", "American", "Festival"]:
-        price += 100
-    if corp in ["Imperial", "Continental"]:
-        price += 200
-    if corp_size > 40:
-        price += 1000
-    elif corp_size > 30:
-        price += 900
-    elif corp_size > 20:
-        price += 800
-    elif corp_size > 10:
-        price += 700
-    elif corp_size > 5:
-        price += 600
-    else:
-        price += corp_size * 100
-
-    return price

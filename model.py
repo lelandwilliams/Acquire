@@ -2,6 +2,28 @@ import random, string
 
 corporations = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
+def stockPrice(state, corp):
+    corp_size = len(state['Group'][corp])
+    price = 0
+    if corp in ["Worldwide", "American", "Festival"]:
+        price += 100
+    if corp in ["Imperial", "Continental"]:
+        price += 200
+    if corp_size > 40:
+        price += 1000
+    elif corp_size > 30:
+        price += 900
+    elif corp_size > 20:
+        price += 800
+    elif corp_size > 10:
+        price += 700
+    elif corp_size > 5:
+        price += 600
+    else:
+        price += corp_size * 100
+
+    return price
+
 def new_player(bank = False):
     p_dict = dict()
     p_dict['money'] = 6000
@@ -123,13 +145,14 @@ def print_turn(turn):
         for sale in turn['Merger']['Sales']:
             if sale['Trade'] > 0:
                 player_line += "\n{:3}{:10} Traded in {:2d} shares of {:12} for {:2d} {}"\
-                        .format(sale['Player'],
+                        .format("", sale['Player'],
                         sale['Trade'],
                         sale['Corporation'],
                         (sale['Trade']/2),
                         turn['Merger']['NewCorps'][0])
             if sale['Sell'] > 0:
                 player_line += "\n{:3}{:10} Sold {:2d} shares of {:12}".format(\
+                        "",
                         sale['Player'],
                         sale['Sell'],
                         sale['Corporation'])
