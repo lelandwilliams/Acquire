@@ -17,8 +17,21 @@ def getActions(state, hand):
         return ('Place',[t for t in hand[state['Turn']['Player']] if isLegal(state, t)])
     elif state['Turn']['NewCorp'] == 'Choose':
         return ('Found',[c for c in model.corporations if len(state['Group'][c]) == 0])
-    elif state['Turn']['Merger']:
-        raise('Not Yet Implemented')
+    elif type(state['Turn']['Merger']) is dict and len(state['Turn']['Merger']['NewCorps'])>1:
+        return ('Choose Survivor', state['Turn']['Merger']['NewCorps'])
+    elif type(state['Turn']['Merger']) is dict\
+            and len(state['Turn']['Merger']['NewCorps'])==1\
+            and len(state['Turn']['Merger']['Sales']) > 0\
+            and not state['Turn']['Merger']['Sales'][-1]['Done']:
+        actions = ['Sell', 'Keep']
+        idx = 0
+        while state['Turn']['Merger']['Sales'][idx]['Done']:
+            idx += 1
+        sale = state['Turn']['Merger']['Sales'][idx]
+        if state['Players'][sale['Player']][sale['Corporation']] > 1 and\
+                state['Players']['Bank'][state['Turn']['Merger']['NewCorps'][0]] > 0:
+            actions.append('Trade')
+        return('Liquidate', sale['Player'], actions) #Note that this is a triple
     elif len(state['Turn']['Buy']) < 3:
         possibles = [c for c in model.corporations\
                 if len(state['Group'][c]) != 0\
@@ -42,7 +55,7 @@ def succ(state, hands, action, history = None):
         or a reference to a list, to be added onto if a new turn is created
     """
     actions = getActions(state,hands)
-    if not action in actions[1]:
+    if not action in actions[-1]:
         return None
     s = copy.deepcopy(state)
     h = copy.deepcopy(hands)
@@ -80,14 +93,30 @@ def succ(state, hands, action, history = None):
         adj_c = getAdjacentCorps(state, action) 
         if len(adj_c) == 1:
             s['Turn']['NewCorp'] = False
-            s['Turn']['Merger'] = False
+            s['Turn']['Merger'] = None
             while len(s['Group'][t_group]) > 0:
                 s['Group'][adj_c[0]].append(s['Group'][t_group].pop())
-        if len(adj_c) > 1:
-            s['Turn']['NewCorp'] = False
-            pass ## Not Implemented Yet
 
-        # Fill hand
+        # OR, if the newly placed tile connects corporations to each other,
+        # then a merger occurs
+        # So create a new merger structure. The largest corporations are
+        # added to 'NewCorps' and the smalles to 'OldCorps'
+        # If len(NewCorps) > 1 then the succ action will be to choose one to stay
+        elif len(adj_c) > 1:
+            s['Turn']['NewCorp'] = False
+            s['Turn']['Merger'] = model.new_merger()
+            largest_corp_size = max([len(s['Group'][corp]) for corp in adj_c])
+            # Determine which corporations are dissolved, and which lives on
+            for corp in adj_c:
+                if len(s['Group'][corp]) < largest_corp_size:
+                    s['Turn']['Merger']['OldCorps'].append(corp)
+                else:
+                    s['Turn']['Merger']['NewCorps'].append(corp)
+            # If survivor fully determined, then assign bonuses, start sales
+            if len(s['Turn']['Merger']['NewCorps']) == 1:
+                resolveMerger(s)
+
+        # Fill hand at end of turn
         while len(h[s['Turn']['Player']]) < 6 and len(h['Bank']) > 0:
             h[s['Turn']['Player']].append(h['Bank'].pop())
 
@@ -103,7 +132,42 @@ def succ(state, hands, action, history = None):
         s['Players'][s['Turn']['Player']][action] +=1
         s['Players']['Bank'][action] -= 1
 
-# ------------- Buy A Share of Stock ---------------------
+# ---------- Choose Which Corporation survives a Merger -----------------
+    elif actions[0] == 'Choose Survivor':
+        for corp in s['Turn']['Merger']['NewCorps']:
+            if corp != action:
+                s['Turn']['Merger']['OldCorps'].append(corp)
+        for corp in s['Turn']['Merger']['OldCorps']:
+            if corp in s['Turn']['Merger']['NewCorps']:
+               s['Turn']['Merger']['NewCorps'].remove(corp) 
+#       print(s['Turn']['Merger']['NewCorps'])
+        resolveMerger(s)
+
+# ---------- After a merger, shareholders choose what to do with stock -----------------
+    elif actions[0] == 'Liquidate':
+        idx = 0
+        while s['Turn']['Merger']['Sales'][idx]['Done']:
+           idx += 1 
+        sale  = s['Turn']['Merger']['Sales'][idx]
+        if action == 'Keep':
+            sale['Done'] = True
+        elif action == 'Trade':
+            sale['Trade'] += 2
+            s['Players'][sale['Player']][sale['Corporation']] -= 2
+            s['Players']['Bank'][sale['Corporation']] += 2
+            s['Players'][sale['Player']][s['Turn']['Merger']['NewCorps'][0]] +=1
+            s['Players']['Bank'][s['Turn']['Merger']['NewCorps'][0]] -=1
+            if s['Players'][sale['Player']][sale['Corporation']] <= 0:
+                sale['Done'] = True
+        elif action == 'Sell':
+            sale['Sell'] += 1
+            s['Players'][sale['Player']][sale['Corporation']] -= 1
+            s['Players']['Bank'][sale['Corporation']] += 1
+            s['Players'][sale['Player']]['money'] += stockPrice(s, sale['Corporation'])
+            if s['Players'][sale['Player']][sale['Corporation']] <= 0:
+                sale['Done'] = True
+
+# ------------- Buy A Share of Stock --------------------
 
     elif actions[0] == 'Buy':
         if action == 'None':
@@ -114,7 +178,7 @@ def succ(state, hands, action, history = None):
             s['Players']['Bank'][action] -= 1
             s['Players'][s['Turn']['Player']][action] +=1
 
-# ------------- Final Housekeepng of the succ state ---------------------
+# ---------- Final Housekeepng of the succ state ------------------
     if s['Turn']['Call Game'] is None: 
         s['Turn']['Call Game'] = endGameConditionsMet(s)
     if getActions(s,h) is None: 
@@ -192,6 +256,10 @@ def getAdjacentAnons(state, t):
 def getAdjacentCorps(state, t):
     return [c for c in model.corporations if isAdjacent(t,state['Group'][c])]
 
+def getBonuses(state):
+    print("getBonus() not implemented yet")
+    return []
+
 def isLegal(state, t):
     """ Method to see if a tile is legal to lay
     Acquire stipulates that a tile may not be placed when
@@ -203,12 +271,15 @@ def isLegal(state, t):
     # These rules don't apply when placing starter tiles
     if state['Phase'] == 'Place Starters':
         return True
+    if len(getAdjacentCorps(state, t)) == 1:
+        return True
+
     # Test for condition A
     if len( [c for c in getAdjacentCorps(state,t) if len(state['Group'][c]) >= 11]) > 1:
         return False
     # Test for condition B
     numActive =  len([c for c in model.corporations if len(state['Group'][c]) > 0]) 
-    if numActive == len(model.corporations) and getAdjacentAnons(state, t) > 0:
+    if numActive == len(model.corporations) and len(getAdjacentAnons(state, t)) > 0:
         return False
     # Passed Tests, so return True
     return True
@@ -226,6 +297,21 @@ def isAdjacent(tile, group):
 
 def isSafe(state, corp):
     return len(state['Group'][corp]) >= 11
+
+def resolveMerger(state):
+    bonuses = getBonuses(state)
+#   print('*** Bonus *** ')
+#   print(bonuses)
+    for bonus in bonuses:
+        state[bonus['Player']]['money'] += bonus['Bonus']
+#   print(state['Turn']['Merger']['Bonus'])
+    state['Turn']['Merger']['Bonus'] = bonuses
+    # generate Merger Sales: 
+    # append to the list all players that have stock in a merged company
+    for corp in state['Turn']['Merger']['OldCorps']:
+        for player in list(state['Players'].keys()):
+            if state['Players'][player][corp] > 0 and player != 'Bank':
+                state['Turn']['Merger']['Sales'].append(model.new_mergerSale(player,corp))
 
 def stockPrice(state, corp):
     corp_size = len(state['Group'][corp])
