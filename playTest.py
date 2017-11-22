@@ -19,7 +19,7 @@ def step(s,h,print_moves = False, history = None):
         model.print_turn(history[-1])
     return s,h
 
-for _ in range(80):
+for _ in range(200):
     s,h = step(s,h,False, history)
 
 model.print_state(s,h)
