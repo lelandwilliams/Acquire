@@ -50,24 +50,51 @@ def new_merger():
     merger['NewCorps'] = list()
     merger['Bonus'] = list()
     merger['Sales'] = list()
+    return merger
+
+def new_mergerSale(player = None, corp = None):
+    sale = dict()
+    sale['Player'] = player
+    sale['Corporation'] = corp
+    sale['Trade'] = 0
+    sale['Sell'] = 0
+    sale['Done']= False
+    return sale
+
+def new_bonus(player = None, bonusType = None, corp = None, amount = 0):
+    bonus = dict()
+    bonus['Player'] = player
+    bonus['Type'] = bonusType
+    bonus['Corp'] = corp
+    bonus['Bonus'] = amount
+    return bonus
 
 def tiletostr(t):
     return "{}-{}".format(t[0],t[1])
 
 def print_state(state, hands= None):
+    print()
+    print('-' * 80)
+    print()
     for p in state['Players']:
-        if not hands is None:
+        corp_str = ""
+        for c in corporations:
+            if c == 'American':
+                corp_str += '\n'
+            corp_str += "  {:12} : {:2d}".format(c, state['Players'][p][c])
+        if not hands is None and p != 'Bank':
             playerHand = [tiletostr(t) for t in hands[p]]
         else:
             playerHand = ""
-        print("{:20} ${:5d} {:7} {} {}".format( p, 
+        print("{:10} ${:5d} {:3} {} {}".format( p, 
             state['Players'][p]['money'],
             "",
             state['Players'][p]['Last Play'],
             playerHand))
-        for c in corporations:
-            if state['Players'][p][c] > 0:
-                print("{:>15} : {:2d}".format(c, state['Players'][p][c]))
+        print("{}\n".format(corp_str))
+#       for c in corporations:
+#           if state['Players'][p][c] > 0:
+#               print("{:>15} : {:2d}".format(c, state['Players'][p][c]))
     for g in state['Group']:
         if len(state['Group'][g]):
             print("{} {}".format(g, state['Group'][g]))
@@ -75,4 +102,16 @@ def print_state(state, hands= None):
     print(state['Turn'])
     print()
 
+def print_turn(turn):
+    pass
 
+def save_state(s,h):
+    of = open('savegame.txt', 'w')
+    of.write(str((s,h)))
+    of.close()
+
+def read_state():
+    f = open('savegame.txt', 'r')
+    stuff = f.read()
+    f.close()
+    return eval(stuff)
