@@ -166,6 +166,9 @@ def succ(state, hands, action, history = None):
             s['Players'][sale['Player']]['money'] += model.stockPrice(s, sale['Corporation'])
             if s['Players'][sale['Player']][sale['Corporation']] <= 0:
                 sale['Done'] = True
+        # Finally, if all sales are Done, lump all the tiles together into one group
+        if sale == s['Turn']['Merger']['Sales'][-1] and sale['Done']:
+            mergeGroups(s)
 
 # ------------- Buy A Share of Stock --------------------
 
@@ -294,18 +297,31 @@ def isAdjacent(tile, group):
 def isSafe(state, corp):
     return len(state['Group'][corp]) >= 11
 
+def mergeGroups(state):
+    for corp in state['Turn']['Merger']['OldCorps']:
+        while len(state['Group'][corp]) > 0:
+            state['Group'][state['Turn']['Merger']['NewCorps'][0]].append(
+                state['Group'][corp].pop())
+    for group in state['Group']:
+        if group not in model.corporations and state['Turn']['Tile'] in state['Group'][group]:
+            while len(state['Group'][group]) > 0:
+                state['Group'][state['Turn']['Merger']['NewCorps'][0]].append(
+                    state['Group'][group].pop())
+
+
 def resolveMerger(state):
     bonuses = model.getBonuses(state)
-#   print('*** Bonus *** ')
-#   print(bonuses)
     for bonus in bonuses:
         state['Players'][bonus['Player']]['money'] += bonus['Bonus']
-#   print(state['Turn']['Merger']['Bonus'])
     state['Turn']['Merger']['Bonus'] = bonuses
+
     # generate Merger Sales: 
     # append to the list all players that have stock in a merged company
     for corp in state['Turn']['Merger']['OldCorps']:
         for player in list(state['Players'].keys()):
             if state['Players'][player][corp] > 0 and player != 'Bank':
                 state['Turn']['Merger']['Sales'].append(model.new_mergerSale(player,corp))
+    if len(state['Turn']['Merger']['Sales']) == 0:
+        mergeGroups(state)
+
 
