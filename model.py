@@ -4,27 +4,27 @@ corporations = ["Tower","Luxor","Worldwide","Festival","American", "Continental"
 
 def getBonuses(state):
     bonuses = list()
+    players = list(state['Players'].keys())
+    players.remove('Bank')
     for corp in state['Turn']['Merger']['OldCorps']:
-        holdings = [state['Players'][p][corp] for p in state['Players'].keys()]
-#       if len([x for x in holdings if x > 0]) == 0:
-#           continue
+        holdings = [state['Players'][p][corp] for p in players]
         if len([x for x in holdings if x > 0]) == 1:
-            for p in state['Players'].keys():
+            for p in players:
                 if state['Players'][p][corp] > 0:
                     bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
                     bonuses.append(new_bonus(p, 'Secondary', corp, stockPrice(state,corp) * 5))
         elif holdings.count(max(holdings)) == 1:
-            for p in state['Players'].keys():
+            for p in players:
                 if state['Players'][p][corp] == max(holdings) and max(holdings) > 0:
                     bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
             holdings.remove(max(holdings))
-            for p in state['Players'].keys():
+            for p in players:
                 if state['Players'][p][corp] == max(holdings):
                     bonuses.append(new_bonus(p, 'Secondary', corp, 
                             stockPrice(state,corp) * 5 // holdings.count(max(holdings))\
                                     // 100 * 100))
         else:
-            for p in state['Players'.keys()]:
+            for p in players:
                 if state['Players'][p][corp] == max(holdings):
                     bonuses.append(new_bonus(p, 'Primary', corp, 
                             stockPrice(state,corp) * 10 // holdings.count(max(holdings))\
@@ -171,6 +171,12 @@ def print_turn(turn):
         player_line += "\n{} founded {}".format(turn['Player'], turn['NewCorp'])
     if type(turn['Merger']) is dict:
         player_line += "A MERGER"
+        for bonus in turn['Merger']['Bonus']:
+            player_line += "\n{} was the {} holder of {} and recieved $ {}".format(
+                    bonus['Player'],
+                    bonus['Type'],
+                    bonus['Corp'],
+                    bonus['Bonus'])
         for sale in turn['Merger']['Sales']:
             if sale['Trade'] > 0:
                 player_line += "\n{:3}{:10} Traded in {:2d} shares of {:12} for {:2d} {}"\
