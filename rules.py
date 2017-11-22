@@ -299,7 +299,7 @@ def resolveMerger(state):
 #   print('*** Bonus *** ')
 #   print(bonuses)
     for bonus in bonuses:
-        state[bonus['Player']]['money'] += bonus['Bonus']
+        state['Players'][bonus['Player']]['money'] += bonus['Bonus']
 #   print(state['Turn']['Merger']['Bonus'])
     state['Turn']['Merger']['Bonus'] = bonuses
     # generate Merger Sales: 
