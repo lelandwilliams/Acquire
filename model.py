@@ -2,6 +2,35 @@ import random, string
 
 corporations = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
+def getBonuses(state):
+    bonuses = list()
+    for corp in state['Turn']['Merger']['OldCorps']:
+        holdings = [state['Players'][p][corp] for p in state['Players'].keys()]
+#       if len([x for x in holdings if x > 0]) == 0:
+#           continue
+        if len([x for x in holdings if x > 0]) == 1:
+            for p in state['Players'].keys():
+                if state['Players'][p][corp] > 0:
+                    bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
+                    bonuses.append(new_bonus(p, 'Secondary', corp, stockPrice(state,corp) * 5))
+        elif holdings.count(max(holdings)) == 1:
+            for p in state['Players'].keys():
+                if state['Players'][p][corp] == max(holdings) and max(holdings) > 0:
+                    bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
+            holdings.remove(max(holdings))
+            for p in state['Players'].keys():
+                if state['Players'][p][corp] == max(holdings):
+                    bonuses.append(new_bonus(p, 'Secondary', corp, 
+                            stockPrice(state,corp) * 5 // holdings.count(max(holdings))\
+                                    // 100 * 100))
+        else:
+            for p in state['Players'.keys()]:
+                if state['Players'][p][corp] == max(holdings):
+                    bonuses.append(new_bonus(p, 'Primary', corp, 
+                            stockPrice(state,corp) * 10 // holdings.count(max(holdings))\
+                                    //100 * 100))
+    return bonuses
+
 def stockPrice(state, corp):
     corp_size = len(state['Group'][corp])
     price = 0
