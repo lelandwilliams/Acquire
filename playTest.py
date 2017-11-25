@@ -9,27 +9,16 @@ def step(s,h,print_moves = False, history = None):
     a = getActions(s,h)
     move = random.choice(a[-1])
 
-    if print_moves and len(a) == 2:
-        print("{:12} {:5} {}".format(s['Turn']['Player'], a[0], a[-1][0]))
-    elif print_moves:
-        print("{:12} {:5} {}".format(a[1], a[0], a[-1][0]))
-
     s, h = succ(s, h, a[-1][0], history)
     if s['Turn']['Tile'] is None:
         model.print_turn(history[-1])
     return s,h
 
-for _ in range(200):
+while not type(s['Turn']['Call Game']) is str or s['Turn']['Call Game'] == 'No':
     s,h = step(s,h,False, history)
 
+model.print_turn(s['Turn'])
 model.print_state(s,h)
-    
-def foo():
-    a = getActions(s,h)
-    if len(a) == 2:
-        print("{:12} {:5} {}".format(s['Turn']['Player'], a[0], a[-1][0]))
-    else:
-        print("{:12} {:5} {}".format(a[1], a[0], a[-1][0]))
-    s, h = succ(s, h, a[-1][0])
+for p in [p for p in s['Players'] if p != 'Bank']:
+    print("{}: $ {}".format(p, model.netWorth(p,s)))
 
-    return succ(s, h, a[1][0])
