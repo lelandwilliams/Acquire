@@ -7,28 +7,35 @@ def getBonuses(state):
     players = list(state['Players'].keys())
     players.remove('Bank')
     for corp in state['Turn']['Merger']['OldCorps']:
-        holdings = [state['Players'][p][corp] for p in players]
-        if len([x for x in holdings if x > 0]) == 1:
-            for p in players:
-                if state['Players'][p][corp] > 0:
-                    bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
-                    bonuses.append(new_bonus(p, 'Secondary', corp, stockPrice(state,corp) * 5))
-        elif holdings.count(max(holdings)) == 1:
-            for p in players:
-                if state['Players'][p][corp] == max(holdings) and max(holdings) > 0:
-                    bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
-            holdings.remove(max(holdings))
-            for p in players:
-                if state['Players'][p][corp] == max(holdings):
-                    bonuses.append(new_bonus(p, 'Secondary', corp, 
-                            stockPrice(state,corp) * 5 // holdings.count(max(holdings))\
-                                    // 100 * 100))
-        else:
-            for p in players:
-                if state['Players'][p][corp] == max(holdings):
-                    bonuses.append(new_bonus(p, 'Primary', corp, 
-                            stockPrice(state,corp) * 10 // holdings.count(max(holdings))\
-                                    //100 * 100))
+        bonuses += getBonus(state, corp)
+    return bonuses
+
+def getBonus(state, corp):
+    bonuses = list()
+    players = list(state['Players'].keys())
+    players.remove('Bank')
+    holdings = [state['Players'][p][corp] for p in players]
+    if len([x for x in holdings if x > 0]) == 1:
+        for p in players:
+            if state['Players'][p][corp] > 0:
+                bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
+                bonuses.append(new_bonus(p, 'Secondary', corp, stockPrice(state,corp) * 5))
+    elif holdings.count(max(holdings)) == 1:
+        for p in players:
+            if state['Players'][p][corp] == max(holdings) and max(holdings) > 0:
+                bonuses.append(new_bonus(p, 'Primary', corp, stockPrice(state,corp) * 10))
+        holdings.remove(max(holdings))
+        for p in players:
+            if state['Players'][p][corp] == max(holdings):
+                bonuses.append(new_bonus(p, 'Secondary', corp, 
+                        stockPrice(state,corp) * 5 // holdings.count(max(holdings))\
+                                // 100 * 100))
+    else:
+        for p in players:
+            if state['Players'][p][corp] == max(holdings):
+                bonuses.append(new_bonus(p, 'Primary', corp, 
+                        stockPrice(state,corp) * 10 // holdings.count(max(holdings))\
+                                //100 * 100))
     return bonuses
 
 def stockPrice(state, corp):
@@ -52,6 +59,15 @@ def stockPrice(state, corp):
         price += corp_size * 100
 
     return price
+
+def netWorth(player, s):
+    networth = s['Players'][player]['money']
+    for corp in corporations:
+        networth += s['Players'][player][corp] * stockPrice(s, corp)
+        for bonus in getBonus(s, corp):
+            if bonus['Player'] == player:
+                networth += bonus['Bonus']
+    return networth
 
 def new_player(bank = False):
     p_dict = dict()
@@ -150,20 +166,26 @@ def print_state(state, hands= None):
         if len(state['Group'][g]):
             print("{} {}".format(g, state['Group'][g]))
     print("Phase = {}".format(state['Phase']))
-    print(state['Turn'])
+#   print(state['Turn'])
+    print()
+    print('-' * 80)
     print()
 
 def print_turn(turn):
     player_line = "{} placed {} ".format(turn['Player'], turn['Tile'])
 
     if turn['Merger'] is None and not turn['NewCorp']:
-        if len(turn['Buy']) > 0:
+        if len(turn['Buy']) and turn['Buy'][0] !=  'Done':
             player_line += "and bought "
             if turn['Buy'][0] != 'Done':
                 player_line += "{}".format(turn['Buy'][0])
                 for c in turn['Buy'][1:]:
                     if c != 'Done':
                         player_line += ", {}".format(c)
+        if type(turn['Call Game']) is str and turn['Call Game'] == 'No':
+            player_line += "\n{} chose not to end the game".format(turn['Player'])
+        if type(turn['Call Game']) is str and turn['Call Game'] == 'Yes':
+            player_line += "\n{} called the game".format(turn['Player'])
         print(player_line)
         return None
 
@@ -195,11 +217,17 @@ def print_turn(turn):
                         sale['Player'],
                         sale['Sell'],
                         sale['Corporation'])
-    if turn['Buy'][0] != 'Done':
+    if len(turn['Buy']) > 0 and turn['Buy'][0] != 'Done':
         player_line += "\n{} bought {}".format(turn['Player'], turn['Buy'][0])
         for c in turn['Buy'][1:]:
             if c != 'Done':
                 player_line += ", {}".format(c)
+
+    if type(turn['Call Game']) is str and turn['Call Game'] == 'No':
+        player_line += "\n{} chose not to end the game".format(turn['Player'])
+    if type(turn['Call Game']) is str and turn['Call Game'] == 'Yes':
+        player_line += "\n{} called the game".format(turn['Player'])
+
     print(player_line)
 
 
