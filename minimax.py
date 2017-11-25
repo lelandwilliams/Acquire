@@ -1,10 +1,6 @@
 from rules import *
 import random
 
-players = ['Max', 'Min1', 'Min2', 'Min3']
-original = new_game(players, shuffle = True)
-s,h = original
-timeline = []
 
 def new_node(a, s, h):
     node = dict()
@@ -44,12 +40,13 @@ def bore(timeline):
     print("{}: $ {}".format('Max', model.netWorth('Max',timeline[-1]['s'])))
 
 def backtrack(timeline):
+    if len(timeline) < 2:
+        return
     node = timeline[-2]
     if timeline[-1]['Type'] == 'max':
         node['scores'].append(max(timeline[-1]['scores']))
     else:
         node['scores'].append(min(timeline[-1]['scores']))
-#   node['scores'].append(model.netWorth('Max',timeline[-1]['s']))
     del(timeline[-1])
     if len(node['actions']):
         node['action'] = node['actions'].pop()
@@ -58,8 +55,11 @@ def backtrack(timeline):
         else:
             bore(timeline)
         
+players = ['Max', 'Min1', 'Min2', 'Min3']
+s,h = new_game(players, shuffle = True)
+timeline = []
 
 timeline.append(new_node(getActions(s,h), s, h))
 bore(timeline)
-#while len(timeline) > 350:
-#    backtrack(timeline)
+while len(timeline[0]['actions']) > 1:
+    backtrack(timeline)
