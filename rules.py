@@ -14,7 +14,10 @@ def new_game(playerNames, shuffle = True, seed = None):
 
 def getActions(state, hand):
     if state['Turn']['Tile'] is None:
-        return ('Place',[t for t in hand[state['Turn']['Player']] if isLegal(state, t)])
+        options =  [t for t in hand[state['Turn']['Player']] if isLegal(state, t)]
+        if len(options) == 0:
+            options = ['Nothing']
+        return ('Place', options)
     elif state['Turn']['NewCorp'] == 'Choose':
         return ('Found',[c for c in model.corporations if len(state['Group'][c]) == 0])
     elif type(state['Turn']['Merger']) is dict and len(state['Turn']['Merger']['NewCorps'])>1:
@@ -37,8 +40,9 @@ def getActions(state, hand):
                 if len(state['Group'][c]) != 0\
                 and state['Players']['Bank'][c] > 0\
                 and model.stockPrice(state, c) <= state['Players'][state['Turn']['Player']]['money']]
-        return ('Buy', possibles + ['Done']) if len(possibles) else None
-    elif state['Turn']['Call Game']:
+#       return ('Buy', possibles + ['Done']) if len(possibles) else None
+        return ('Buy', possibles + ['Done'])
+    elif state['Turn']['Call Game'] and type(state['Turn']['Call Game']) is bool:
         return('Call', ['Yes', 'No'])
     else:
         return None
@@ -63,7 +67,12 @@ def succ(state, hands, action, history = None):
     # Below we resolve the possible actions
 
 # --- Place a tile on the board ---------------------
-    if actions[0] == 'Place': 
+    if actions[0] == 'Place' and action == 'Nothing': 
+        # This happens in the rare case that a player has no valid move
+        # necessary to push the turn forward.
+        s['Turn']['Tile'] = action
+
+    elif actions[0] == 'Place' and action != 'Nothing': 
         s['Turn']['Tile'] = action
         h[s['Turn']['Player']].remove(action)
         s['Players'][s['Turn']['Player']]['Last Play'] = action
@@ -116,9 +125,6 @@ def succ(state, hands, action, history = None):
             if len(s['Turn']['Merger']['NewCorps']) == 1:
                 resolveMerger(s)
 
-        # Fill hand at end of turn
-        while len(h[s['Turn']['Player']]) < 6 and len(h['Bank']) > 0:
-            h[s['Turn']['Player']].append(h['Bank'].pop())
 
 # --------- Create a New Corporation ---------------------
     elif actions[0] == 'Found':
@@ -173,18 +179,27 @@ def succ(state, hands, action, history = None):
 # ------------- Buy A Share of Stock --------------------
 
     elif actions[0] == 'Buy':
-        if action == 'None':
+        if action == 'Done':
             while len(s['Turn']['Buy']) < 3:
-                s['Turn']['Buy'].append('None')
+                s['Turn']['Buy'].append('Done')
         else:
             s['Turn']['Buy'].append(action)
             s['Players']['Bank'][action] -= 1
             s['Players'][s['Turn']['Player']][action] +=1
 
+# ---------- Determine whether to end the game -----------------
+    elif actions[0] == 'Call':
+        s['Turn']['Call Game'] = action
+
 # ---------- Final Housekeepng of the succ state ------------------
+    # Fill hand at end of turn
+    while len(h[s['Turn']['Player']]) < 6 and len(h['Bank']) > 0:
+        h[s['Turn']['Player']].append(h['Bank'].pop())
+
     if s['Turn']['Call Game'] is None: 
         s['Turn']['Call Game'] = endGameConditionsMet(s)
-    if getActions(s,h) is None: 
+
+    if getActions(s,h) is None and not s['Turn']['Call Game'] == 'Yes': 
         # None signals the end of a turn
         # so we should create a new Turn dict() with the next player
 
