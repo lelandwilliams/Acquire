@@ -172,6 +172,9 @@ def print_state(state, hands= None):
     print()
 
 def print_turn(turn):
+    if turn['Tile'] is None:
+        player_line =  str("{}'s turn".format(turn['Player']))
+        return player_line
     player_line = "{} placed {} ".format(turn['Player'], turn['Tile'])
 
     if turn['Merger'] is None and not turn['NewCorp']:
