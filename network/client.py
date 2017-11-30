@@ -10,7 +10,7 @@ class AcquireClient(QObject):
             port = DEFAULTPORT, 
             address = 'localhost',
             name = 'Noname',
-            client_type = None):
+            client_type = 'PLAYER'):
         super().__init__()
         self.socket = QWebSocket()
         self.name = name

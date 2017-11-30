@@ -26,7 +26,8 @@ class AcquireWebSocketServer(QObject):
         max_attempts = 10
         while attempts < max_attempts and not self.server.isListening():
             if not self.server.listen(self.address, self.port):
-                raise('failed to open server')
+                self.port += 1
+#               raise('failed to open server')
             else:
                 print(' now listening')
                 self.server.newConnection.connect(self.newClient)
@@ -109,5 +110,5 @@ if __name__ == '__main__':
     if args.numPlayers is None:
         a = AcquireWebSocketServer()
     else:
-        a = AcquireWebSocketServer()
+        a = AcquireWebSocketServer(numPlayers = args.numPlayers)
     app.exec_()
