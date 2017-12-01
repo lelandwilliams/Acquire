@@ -24,12 +24,13 @@ class AcquireClient(QObject):
         self.url.setPort(port)
         self.socket.error.connect(self.error)
         self.socket.connected.connect(self.onConnected)
+        self.socket.disconnected.connect(self.onDisconnected)
         
         self.openSocket()
 
     def openSocket(self):
+        print('{} attempting connection...'.format(self.name))
         self.socket.open(self.url)
-        print('attempting connection...')
 
     def error(self, errorcode):
         print("Client Error #{}: ".format(errorcode))
@@ -42,7 +43,10 @@ class AcquireClient(QObject):
         print('Client Connected')
         self.socket.textMessageReceived.connect(self.processTextMessage)
         self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
-#        QTimer.singleShot(500, a.send_message)
+
+    def onDisconnected(self):
+        self.socket.close()
+        QCoreApplication.quit()
 
     def processTextMessage(self, message):
         print("client recieved message: {}".format(message))
