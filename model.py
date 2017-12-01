@@ -212,7 +212,7 @@ def print_turn(turn):
                         .format("", sale['Player'],
                         sale['Trade'],
                         sale['Corporation'],
-                        (sale['Trade']/2),
+                        (sale['Trade']//2),
                         turn['Merger']['NewCorps'][0])
             if sale['Sell'] > 0:
                 player_line += "\n{:3}{:10} Sold {:2d} shares of {:12}".format(\
