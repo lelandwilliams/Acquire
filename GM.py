@@ -17,7 +17,8 @@ class GM(GameClient):
             return
         sender, m_type, m_body = message.split(';')
         if not self.cur_actions is None and self.cur_actions[0] == 'Place':
-            m_body = eval(m_body)
+            m_body = eval(m_body) if m_body != 'Nothing' else 'Nothing'
+
         if sender == 'Server' and m_type == 'Start':
             self.startGame(eval(m_body))
         elif sender == self.cur_player and m_type == 'PLAY' and m_body in self.cur_actions[-1]:
@@ -27,14 +28,14 @@ class GM(GameClient):
             sys.exit()
 
     def startGame(self, players):
-        print(players)
+#       print(players)
         players.sort()
         if self.game_in_progress:
             return
         self.game_in_progress = True
         self.players = players
         self.state, self.hands = new_game(players, True, self.seed)
-        model.print_turn(self.state['Turn'])
+#       model.print_turn(self.state['Turn'])
         self.socket.sendTextMessage('BROADCAST;INFO;Game Begins') 
         self.nextAction()
 
