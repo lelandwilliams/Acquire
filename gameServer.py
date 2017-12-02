@@ -24,9 +24,9 @@ class GameServer(QObject):
         attempts = 0
         max_attempts = 10
         while attempts < max_attempts and not self.server.isListening():
+            self.port += 1
             if not self.server.listen(self.address, self.port):
-                self.port += 1
-#               raise('failed to open server')
+                attempts +=1
             else:
                 print('Game Server now listening')
                 self.server.newConnection.connect(self.newClient)
@@ -49,7 +49,7 @@ class GameServer(QObject):
         sys.exit()
 
     def newClient(self):
-        print('Game server recieved a connection')
+#       print('Game server recieved a connection')
         self.consecutive_timeouts = 0
         client = self.server.nextPendingConnection()
         self.clients[client] = 'Undefined'
@@ -58,8 +58,11 @@ class GameServer(QObject):
 
     def processConciergeMessage(self,message):
         if message == 'DISCONNECT':
+            self.sendDisconnectMessage()
             QCoreApplication.quit()
             sys.exit()
+        elif message == 'RESET':
+            self.startGame()
 
     def processTextMessage(self,message):
 #       print("server recieved message: {}".format(message))
@@ -79,7 +82,7 @@ class GameServer(QObject):
         elif m_type == 'REGISTER' and m_subtype == 'PLAYER' and self.numPlayersNeeded:
             self.clients[sender] = m_val
             self.players[m_val] = sender
-            print( "player {} registered".format(m_val))
+#           print( "player {} registered".format(m_val))
             self.numPlayersNeeded -= 1
             if self.numPlayersNeeded == 0 and self.GM is not None:
                 self.startGame()
@@ -87,19 +90,21 @@ class GameServer(QObject):
             self.players[m_subtype].sendTextMessage("REQUEST;PLAY;{}".format(m_val))
         elif self.clients[sender] == 'GM' and m_type == 'SERVER' and m_subtype == 'END':
             self.c_socket.sendTextMessage("DONE;{}".format(m_val))
-            for c in self.clients:
-                c.sendTextMessage("DISCONNECT;;")
-            self.GM.sendTextMessage("SERVER;DISCONNECT;")
-
         elif sender == self.players[m_type] and m_subtype == 'PLAY':
             self.GM.sendTextMessage(message)
+
+    def sendDisconnectMessage():
+        for c in self.clients:
+            c.disconnect.disconnect(self.socketDisconnected)
+            c.sendTextMessage("DISCONNECT;;")
+        self.GM.sendTextMessage("SERVER;DISCONNECT;")
 
     def startGame(self):
         p_list = [v for v in self.clients.values() if not v in ['Logger','GM','Undefined']]
         self.GM.sendTextMessage("Server;Start;{}".format(str(p_list)))
 
     def socketDisconnected(self):
-        print('server lost connection to client')
+#       print('server lost connection to client')
         sender= self.sender()
         sender.deleteLater()
 #        QCoreApplication.quit()    
