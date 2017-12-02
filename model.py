@@ -208,7 +208,7 @@ def print_turn(turn):
                     bonus['Bonus'])
         for sale in turn['Merger']['Sales']:
             if sale['Trade'] > 0:
-                player_line += "\n{:3}{:10} Traded in {:2d} shares of {:12} for {:2d} {}"\
+                player_line += "\n{:3}{:10} Traded in {:2d} shares of {} for {:2d} {}"\
                         .format("", sale['Player'],
                         sale['Trade'],
                         sale['Corporation'],
