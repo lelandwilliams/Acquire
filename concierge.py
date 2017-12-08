@@ -68,6 +68,9 @@ class Concierge(QObject):
         self.num_games += 1
         if len(self.readyServers) < self.max_servers:
             subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 
     def serverDone(self, game, server):
 #       print("Server Done ")
@@ -79,9 +82,9 @@ class Concierge(QObject):
         scores = [model.netWorth(player, s) for player in s['Players'] if player != "Bank"]
         self.highscores.append(max(scores))
         self.scores += scores
-        if self.num_games < 10:
+        if self.num_games < 100:
             self.num_games += 1
-            print("\rRunning game # {}".format(self.num_games))
+            print("\rRunning game # {}".format(self.num_games), end = '')
             server.sendTextMessage("RESET")
 #           self.serverReady(self.serverPort)
         else:
@@ -94,7 +97,7 @@ class Concierge(QObject):
                     statistics.stdev(self.highscores)))
             self.of.close()
             server.sendTextMessage("DISCONNECT")
-            if self.game_seed < 1:
+            if self.game_seed < 99:
                 self.num_games = 0
                 self.scores = list()
                 self.highscores = list()
