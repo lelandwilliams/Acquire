@@ -36,7 +36,7 @@ class GM(GameClient):
         self.players = players
         self.state, self.hands = new_game(players, True, self.seed)
 #       model.print_turn(self.state['Turn'])
-        self.socket.sendTextMessage('BROADCAST;INFO;Game Begins') 
+        self.socket.sendTextMessage('BROADCAST;BEGIN;{}'.format(players)) 
         self.nextAction()
 
     def nextAction(self):
@@ -54,6 +54,7 @@ class GM(GameClient):
             self.socket.sendTextMessage("{};{};{}".format('SERVER', 'END', (self.state,self.history)))
             self.game_in_progress = False
         else:
+            self.socket.sendTextMessage("BROADCAST;PLAY;{}".format(a) 
             self.nextAction()
 
     def quit(self):
