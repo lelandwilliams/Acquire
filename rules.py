@@ -58,11 +58,13 @@ def succ(state, hands, action, history = None):
     param @history: either None, in which case it is ignored,
         or a reference to a list, to be added onto if a new turn is created
     """
-    actions = getActions(state,hands)
-    if not action in actions[-1]:
-        return None
+    if not hands is None:
+        actions = getActions(state,hands)
+        if not action in actions[-1]:
+            return None
+        h = copy.deepcopy(hands)
+
     s = copy.deepcopy(state)
-    h = copy.deepcopy(hands)
 
     # Below we resolve the possible actions
 
@@ -74,7 +76,8 @@ def succ(state, hands, action, history = None):
 
     elif actions[0] == 'Place' and action != 'Nothing': 
         s['Turn']['Tile'] = action
-        h[s['Turn']['Player']].remove(action)
+        if not hands is None:
+            h[s['Turn']['Player']].remove(action)
         s['Players'][s['Turn']['Player']]['Last Play'] = action
 
         # First assign the tile to an Anon group
@@ -193,8 +196,9 @@ def succ(state, hands, action, history = None):
 
 # ---------- Final Housekeepng of the succ state ------------------
     # Fill hand at end of turn
-    while len(h[s['Turn']['Player']]) < 6 and len(h['Bank']) > 0:
-        h[s['Turn']['Player']].append(h['Bank'].pop())
+    if not hands is None:
+        while len(h[s['Turn']['Player']]) < 6 and len(h['Bank']) > 0:
+            h[s['Turn']['Player']].append(h['Bank'].pop())
 
     if s['Turn']['Call Game'] is None: 
         s['Turn']['Call Game'] = endGameConditionsMet(s)
