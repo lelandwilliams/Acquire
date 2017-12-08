@@ -2,6 +2,20 @@ import random, string
 
 corporations = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
+def dummy_hand(state, hand):
+    """ This function allows a player to create a hands
+    data structrure to be used in succ() only from the state
+    and from knowing the player's own hand, which is given
+    via get_actions(). """
+    h = dict()
+    cur_player = state['Turn']['Player']
+    for p in state['Players']:
+        if p = cur_player:
+            h[cur_player] = hand
+        else:
+            h[p] = []
+    return p
+
 def getBonuses(state):
     bonuses = list()
     players = list(state['Players'].keys())
