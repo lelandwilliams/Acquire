@@ -49,8 +49,7 @@ class RandomClient(QObject):
             choice =  self.chooseAction(eval(m_body))
             self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
         elif m_type == 'DISCONNECT':
-            QCoreApplication.quit()
-            sys.exit()
+            self.quit()
 
     def chooseAction(self, actions):
 #       choices = actions[-1][0]
@@ -59,6 +58,10 @@ class RandomClient(QObject):
             return choices[0]
         else:
             return random.choice(choices)
+
+    def quit(self):
+        QCoreApplication.quit()
+        sys.exit()
 
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
