@@ -93,9 +93,9 @@ class GameServer(QObject):
         elif sender == self.players[m_type] and m_subtype == 'PLAY':
             self.GM.sendTextMessage(message)
 
-    def sendDisconnectMessage():
+    def sendDisconnectMessage(self):
         for c in self.clients:
-            c.disconnect.disconnect(self.socketDisconnected)
+            c.disconnected.disconnect(self.socketDisconnected)
             c.sendTextMessage("DISCONNECT;;")
         self.GM.sendTextMessage("SERVER;DISCONNECT;")
 
