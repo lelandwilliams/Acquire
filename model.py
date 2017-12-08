@@ -10,7 +10,7 @@ def dummy_hand(state, hand):
     h = dict()
     cur_player = state['Turn']['Player']
     for p in state['Players']:
-        if p = cur_player:
+        if p == cur_player:
             h[cur_player] = hand
         else:
             h[p] = []
