@@ -19,7 +19,7 @@ class Concierge(QObject):
         self.serverPort = 0
         self.serverPorts = dict()
         self.servers = list() # A place to store obj references so the garbarge collector
-                            # wont' take them away
+                            # won't take them away
 
         attempts = 0
         max_attempts = 10
@@ -68,12 +68,11 @@ class Concierge(QObject):
         self.num_games += 1
         if len(self.readyServers) < self.max_servers:
             subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
-            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
-            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
-            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+#           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+#           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+#           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 
     def serverDone(self, game, server):
-#       print("Server Done ")
         s, hist = eval(game)
 #       for h in hist:
 #           model.print_turn(h)
@@ -82,22 +81,22 @@ class Concierge(QObject):
         scores = [model.netWorth(player, s) for player in s['Players'] if player != "Bank"]
         self.highscores.append(max(scores))
         self.scores += scores
-        if self.num_games < 100:
+        if self.num_games < 1:
             self.num_games += 1
             print("\rRunning game # {}".format(self.num_games), end = '')
             server.sendTextMessage("RESET")
 #           self.serverReady(self.serverPort)
         else:
-            self.of = open('results.txt', 'a')
-            self.of.write("{:3d}, {:6.2f}, {:6.2f}, {:5}, {:6.2f}, {:6.2f}\n".format(self.game_seed,
-                    statistics.mean(self.scores),
-                    statistics.stdev(self.scores),
-                    max(self.highscores),
-                    statistics.mean(self.highscores),
-                    statistics.stdev(self.highscores)))
-            self.of.close()
+#           self.of = open('results.txt', 'a')
+#           self.of.write("{:3d}, {:6.2f}, {:6.2f}, {:5}, {:6.2f}, {:6.2f}\n".format(self.game_seed,
+#                   statistics.mean(self.scores),
+#                   statistics.stdev(self.scores),
+#                   max(self.highscores),
+#                   statistics.mean(self.highscores),
+#                   statistics.stdev(self.highscores)))
+#           self.of.close()
             server.sendTextMessage("DISCONNECT")
-            if self.game_seed < 99:
+            if self.game_seed < 1:
                 self.num_games = 0
                 self.scores = list()
                 self.highscores = list()
