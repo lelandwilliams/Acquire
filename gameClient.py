@@ -29,7 +29,7 @@ class GameClient(QObject):
         self.socket.open(url)
 
     def error(self, errorcode):
-        print("Client Error #{}: ".format(errorcode))
+        print("{}: Error #{}: ".format(self.name, errorcode))
         print(self.socket.errorString())
 
     def onConnected(self):
