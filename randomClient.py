@@ -16,6 +16,9 @@ class RandomClient(QObject):
         self.name = name
         self.client_type = client_type
         self.connectToServer(serverAddress, serverPort)
+        self.state = None
+        self.hand = None
+        self.history = None
 
     def connectToServer(self, address, port):
         self.socket = QWebSocket()
@@ -37,6 +40,8 @@ class RandomClient(QObject):
         self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
 
     def onDisconnected(self):
+        if self.name == "Min1":
+            print(self.state)
         self.socket.close()
         QCoreApplication.quit()
 
@@ -48,10 +53,17 @@ class RandomClient(QObject):
         if m_type == 'REQUEST' and m_subtype == 'PLAY':
             choice =  self.chooseAction(eval(m_body))
             self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+        elif m_type == 'BROADCAST' and m_subtype == 'BEGIN':
+            self.state = model.new_game(eval(m_body))
+        elif m_type == 'BROADCAST' and m_subtype == 'PLAY':
+            if m_body[0] == '(':
+                m_body = eval(m_body)
+            self.state, self.hands = succ(self.state, None, m_body, self.history)
         elif m_type == 'DISCONNECT':
             self.quit()
 
     def chooseAction(self, actions):
+        """ This is the good candidate to be overidden by subclasses """
 #       choices = actions[-1][0]
         choices = actions[-1]
         if len(choices) == 1:
@@ -60,6 +72,8 @@ class RandomClient(QObject):
             return random.choice(choices)
 
     def quit(self):
+        if self.name == "Min1":
+            print(self.state)
         QCoreApplication.quit()
         sys.exit()
 
