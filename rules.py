@@ -14,7 +14,9 @@ def new_game(playerNames, shuffle = True, seed = None):
 
 def getActions(state, hand):
     if state['Turn']['Tile'] is None:
-        options =  [t for t in hand[state['Turn']['Player']] if isLegal(state, t)]
+        options = []
+        if not hand is None:
+            options =  [t for t in hand[state['Turn']['Player']] if isLegal(state, t)]
         if len(options) == 0:
             options = ['Nothing']
         return ('Place', options)
@@ -58,13 +60,11 @@ def succ(state, hands, action, history = None):
     param @history: either None, in which case it is ignored,
         or a reference to a list, to be added onto if a new turn is created
     """
-    if not hands is None:
-        actions = getActions(state,hands)
-        if not action in actions[-1]:
-            return None
-        h = copy.deepcopy(hands)
-
+    actions = getActions(state,hands)
+    if not action in actions[-1] and not hands is None:
+        return None
     s = copy.deepcopy(state)
+    h = copy.deepcopy(hands)
 
     # Below we resolve the possible actions
 
