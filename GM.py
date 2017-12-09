@@ -54,7 +54,7 @@ class GM(GameClient):
             self.socket.sendTextMessage("{};{};{}".format('SERVER', 'END', (self.state,self.history)))
             self.game_in_progress = False
         else:
-            self.socket.sendTextMessage("BROADCAST;PLAY;{}".format(a) 
+            self.socket.sendTextMessage("BROADCAST;PLAY;{}".format(a))
             self.nextAction()
 
     def quit(self):
