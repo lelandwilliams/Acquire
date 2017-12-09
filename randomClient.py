@@ -51,8 +51,27 @@ class RandomClient(QObject):
             return
         m_type, m_subtype, m_body = message.split(';')
         if m_type == 'REQUEST' and m_subtype == 'PLAY':
-            choice =  self.chooseAction(eval(m_body))
-            self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+#           choice =  self.chooseAction(eval(m_body))
+#           self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+            actions = eval(m_body)
+            if actions[0] == 'Place':
+                choice = self.chooseTile(actions[-1])
+                self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+            elif actions[0] == 'Found':
+                choice = self.chooseNewCompany(actions[-1])
+                self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+            elif actions[0] == 'Choose Survivor':
+                choice = self.chooseSurvivor(actions[-1])
+                self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+            elif actions[0] == 'Liquidate':
+                choice = self.chooseLiquidate(actions[-1])
+                self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+            elif actions[0] == 'Buy':
+                choice = self.chooseStock(actions[-1])
+                self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
+            elif actions[0] == 'Call':
+                choice = self.chooseEndGame(actions[-1])
+                self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
         elif m_type == 'BROADCAST' and m_subtype == 'BEGIN':
             self.state = model.new_game(eval(m_body))
         elif m_type == 'BROADCAST' and m_subtype == 'PLAY':
@@ -62,14 +81,12 @@ class RandomClient(QObject):
         elif m_type == 'DISCONNECT':
             self.quit()
 
-    def chooseAction(self, actions):
-        """ This is the good candidate to be overidden by subclasses """
-#       choices = actions[-1][0]
-        choices = actions[-1]
-        if len(choices) == 1:
-            return choices[0]
-        else:
-            return random.choice(choices)
+    def chooseTile(self, actions): return random.choice(actions)
+    def chooseNewCompany(self, actions): return random.choice(actions)
+    def chooseSurvivor(self, actions): return random.choice(actions)
+    def chooseLiquidate(self, actions): return random.choice(actions)
+    def chooseStock(self, actions): return random.choice(actions)
+    def chooseEndGame(self, actions): return "Yes"
 
     def quit(self):
         if self.name == "Min1":
