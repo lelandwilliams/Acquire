@@ -28,7 +28,7 @@ class GameServer(QObject):
             if not self.server.listen(self.address, self.port):
                 attempts +=1
             else:
-                print('Game Server now listening')
+#               print('Game Server now listening')
                 self.server.newConnection.connect(self.newClient)
                 self.c_socket = QtWebSockets.QWebSocket()
                 self.url = QUrl()
@@ -39,7 +39,7 @@ class GameServer(QObject):
                 self.c_socket.open(self.url)
 
     def onConnected(self):
-        print('Game Server connected to concierge')
+#       print('Game Server connected to concierge')
         self.c_socket.textMessageReceived.connect(self.processConciergeMessage)
         self.c_socket.disconnected.connect(self.conciergeDisconnected)
         self.c_socket.sendTextMessage("READY;{}".format(self.port))
