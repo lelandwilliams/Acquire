@@ -12,7 +12,7 @@ class RandomClient(QObject):
             client_type = 'PLAYER'):
 
         super().__init__()
-        self.client_id = client_id
+#        self.client_id = client_id
         self.name = name
         self.client_type = client_type
         self.connectToServer(serverAddress, serverPort)
@@ -32,16 +32,17 @@ class RandomClient(QObject):
         self.socket.open(url)
 
     def error(self, errorcode):
-        print("{}: Error #{}: ".format(self.name, errorcode))
-        print(self.socket.errorString())
+        if errorcode != 1:
+            print("{}: Error #{}: ".format(self.name, errorcode))
+            print(self.socket.errorString())
 
     def onConnected(self):
         self.socket.textMessageReceived.connect(self.processTextMessage)
         self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
 
     def onDisconnected(self):
-        if self.name == "Min1":
-            print(self.state)
+#       if self.name == "Min1":
+#           print(self.state)
         self.socket.close()
         QCoreApplication.quit()
 
@@ -75,7 +76,7 @@ class RandomClient(QObject):
         elif m_type == 'BROADCAST' and m_subtype == 'BEGIN':
             self.state = model.new_game(eval(m_body))
         elif m_type == 'BROADCAST' and m_subtype == 'PLAY':
-            if m_body[0] == '(':
+            if m_body[0] in ['(','[']:
                 m_body = eval(m_body)
             self.state, self.hands = succ(self.state, None, m_body, self.history)
         elif m_type == 'DISCONNECT':
@@ -89,8 +90,8 @@ class RandomClient(QObject):
     def chooseEndGame(self, actions): return "Yes"
 
     def quit(self):
-        if self.name == "Min1":
-            print(self.state)
+#       if self.name == "Min1":
+#           print(self.state)
         QCoreApplication.quit()
         sys.exit()
 
