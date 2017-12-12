@@ -16,6 +16,15 @@ def dummy_hand(state, hand):
             h[p] = []
     return p
 
+def getBonusPlayers(state, corp):
+    """
+    Provides some syntactic sugar. Returns a list of players
+    that stand to currently earn holder bonuses """
+    b_list = getBonus(state, corp)
+    p_list = [p[0] for p in b_list]
+    return p_list
+
+
 def getBonuses(state):
     bonuses = list()
     players = list(state['Players'].keys())
