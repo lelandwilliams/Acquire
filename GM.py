@@ -1,13 +1,13 @@
 from gameClient import GameClient
 from rules import *
 from PyQt5.QtCore import QCoreApplication
-import sys, argparse
+import sys, argparse, random
 
 class GM(GameClient):
     def __init__(self, client_id = None, serverPort = 0, serverAddress = 'localhost', seed = None):
         super().__init__(client_id, serverPort, serverAddress, 'GM', 'GM')
         self.game_in_progress = False
-        self.seed = seed
+        self.seed = seed if seed is not None else random.randrange(sys.maxsize)
         self.history = []
         self.cur_actions = None
 

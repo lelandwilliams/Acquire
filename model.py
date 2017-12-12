@@ -117,6 +117,7 @@ def new_game(playerNames):
     state['Group'] = dict()
     state['Phase'] = 'Place Starters'
     state['Turn'] = new_turn(playerNames[0])
+    state['Seed'] = None
 
     for player in playerNames + ['Bank']:
         state['Players'][player] = new_player(player == 'Bank')

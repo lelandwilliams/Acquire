@@ -9,6 +9,7 @@ provides the new_game(), getActions() and succ() methods
 
 def new_game(playerNames, shuffle = True, seed = None):
     state = model.new_game(playerNames)
+    state['seed'] = seed
     hands = build_hands(state, shuffle = shuffle, seed = seed)
     return state,hands
 
