@@ -9,12 +9,14 @@ class Concierge(QObject):
     def __init__(self, 
             my_id = None, 
             port = DEFAULTPORT, 
-            address = QtNetwork.QHostAddress.LocalHost):
+            address = QtNetwork.QHostAddress.LocalHost,
+            num_servers = 1):
         super().__init__()
         self.server = QtWebSockets.QWebSocketServer('',QtWebSockets.QWebSocketServer.NonSecureMode)
         self.port = port
         self.address = address
         self.readyServers = list()
+        self.num_servers = num_servers
         self.max_servers = 1
         self.serverPort = 0
         self.serverPorts = dict()
@@ -37,14 +39,11 @@ class Concierge(QObject):
         self.num_games = 0
         self.scores = list()
         self.highscores = list()
-        self.of = open('results.txt', 'w')
-        self.of.write("{:^3}, {:^8}, {:^8}, {:^5}, {:^8}, {:^8}\n".format('num','avg','std','max','w_avg','w_std'))
-        self.of.close()
 
-        self.runGames()
+#       self.runGames()
 
     def newClient(self):
-        print('a new server connected to concierge')
+#       print('a new server connected to concierge')
         client = self.server.nextPendingConnection()
         client.textMessageReceived.connect(self.processTextMessage)
         client.disconnected.connect(self.socketDisconnected)
@@ -65,8 +64,12 @@ class Concierge(QObject):
             self.serverDone(m_body, sender)
 
     def runGames(self):
+#       self.of = open('results.txt', 'w')
+#       self.of.write("{:^3}, {:^8}, {:^8}, {:^5}, {:^8}, {:^8}\n".format('num','avg','std','max','w_avg','w_std'))
+#       self.of.close()
         self.num_games += 1
-        if len(self.readyServers) < self.max_servers:
+#       if len(self.readyServers) < self.max_servers:
+        for i in range(self.num_servers):
             subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 #           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 #           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
@@ -76,8 +79,8 @@ class Concierge(QObject):
         s, hist = eval(game)
 #       for h in hist:
 #           model.print_turn(h)
-#       for player in s['Players']:
-#           print("{}: {}".format(player, model.netWorth(player, s)))
+        for player in [p for p in s['Players'] if p != 'Bank']:
+            print("{}: {}".format(player, model.netWorth(player, s)))
         scores = [model.netWorth(player, s) for player in s['Players'] if player != "Bank"]
         self.highscores.append(max(scores))
         self.scores += scores
@@ -96,7 +99,7 @@ class Concierge(QObject):
 #                   statistics.stdev(self.highscores)))
 #           self.of.close()
             server.sendTextMessage("DISCONNECT")
-            if self.game_seed < 1:
+            if self.game_seed == 1000:
                 self.num_games = 0
                 self.scores = list()
                 self.highscores = list()
@@ -111,12 +114,12 @@ class Concierge(QObject):
 #               statistics.mean(self.highscores), statistics.stdev(self.highscores)))
 
     def serverReady(self, port):
-        print("Concierge: a server said it is ready")
+#       print("Concierge: a server said it is ready")
         process_list = list()
-        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Max"])
-        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Min1"])
-        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Min2"])
-        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Min3"])
+        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Random1"])
+        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Random2"])
+        process_list.append(["python", "reflexAgent.py", "-p", port, "-n", "Flex1"])
+        process_list.append(["python", "reflexAgent2.py", "-p", port, "-n", "Flex2"])
         process_list.append(["python", "GM.py", "-p", port, "-s", str(self.game_seed)])
 
         for args in process_list:
@@ -131,4 +134,5 @@ if __name__ == '__main__':
 #   parser.add_argument('-cp', '--conciergePort', type = int) 
 #   args = parser.parse_args()
     c = Concierge()
+    c.runGames()
     app.exec_()
