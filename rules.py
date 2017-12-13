@@ -161,16 +161,20 @@ def succ(state, hands, action, history = None):
         sale  = s['Turn']['Merger']['Sales'][idx]
         if action == 'Keep':
             sale['Done'] = True
+            sale['Types'].append('Keep')
         elif action == 'Trade':
-            sale['Trade'] += 2
+#           sale['Trade'] += 2
+            sale['Types'].append('Trade')
             s['Players'][sale['Player']][sale['Corporation']] -= 2
             s['Players']['Bank'][sale['Corporation']] += 2
             s['Players'][sale['Player']][s['Turn']['Merger']['NewCorps'][0]] +=1
             s['Players']['Bank'][s['Turn']['Merger']['NewCorps'][0]] -=1
             if s['Players'][sale['Player']][sale['Corporation']] <= 0:
                 sale['Done'] = True
+    
         elif action == 'Sell':
-            sale['Sell'] += 1
+#           sale['Sell'] += 1
+            sale['Types'].append('Sell')
             s['Players'][sale['Player']][sale['Corporation']] -= 1
             s['Players']['Bank'][sale['Corporation']] += 1
             s['Players'][sale['Player']]['money'] += model.stockPrice(s, sale['Corporation'])

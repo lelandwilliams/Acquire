@@ -150,6 +150,7 @@ def new_mergerSale(player = None, corp = None):
     sale['Trade'] = 0
     sale['Sell'] = 0
     sale['Done']= False
+    sale['Types'] = [] # New feature !!
     return sale
 
 def new_bonus(player = None, bonusType = None, corp = None, amount = 0):
@@ -231,19 +232,20 @@ def print_turn(turn):
                     bonus['Corp'],
                     bonus['Bonus'])
         for sale in turn['Merger']['Sales']:
-            if sale['Trade'] > 0:
-                player_line += "\n{:3}{:10} Traded in {:2d} shares of {} for {:2d} {}"\
-                        .format("", sale['Player'],
-                        sale['Trade'],
-                        sale['Corporation'],
-                        (sale['Trade']//2),
-                        turn['Merger']['NewCorps'][0])
-            if sale['Sell'] > 0:
-                player_line += "\n{:3}{:10} Sold {:2d} shares of {:12}".format(\
-                        "",
-                        sale['Player'],
-                        sale['Sell'],
+            for sale_type in sale['Types']:
+                if sale_type == 'Trade':
+                    player_line += "\n{:3}{:10} Traded in two shares of {} for one {}"\
+                            .format("", sale['Player'],
+                            sale['Corporation'],
+                            turn['Merger']['NewCorps'][0])
+                elif sale_type == 'Sell':
+                    player_line += "\n{:3}{:10} Sold a share of {:12}".format(\
+                            "",
+                            sale['Player'],
                         sale['Corporation'])
+                elif sale_type == 'Keep':
+                    player_line += "\n{:3}{:10} Kept the rest".format(\
+                            "", sale['Player'])
     if len(turn['Buy']) > 0 and turn['Buy'][0] != 'Done':
         player_line += "\n{} bought {}".format(turn['Player'], turn['Buy'][0])
         for c in turn['Buy'][1:]:
