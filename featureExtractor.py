@@ -15,11 +15,18 @@ def feature_extractor(state, corpname):
             else:
                 phi["dist{}smallercorp".format(i)] = len(cn[1])
 
+    # Add in the number of tiles that could potentially
+    # (if improbably) be added onto the company
     fn = freeNeighbors(state, state['Group'][corpname])
     for i in range(1, len(fn)):
         if len(fn[i]):
             phi["dist{}freetiles".format(i)] = len(fn[1])
+
+    # Next the number of unbought shares
+
     phi["BankShares"] = state['Players']['Bank'][corpname]
+
+    # The type of corporation
     if corpname in ['Tower','Luxor']:
         phi['Cheap'] = 1
     elif corpname in ['Worldwide', 'Festival', 'American']:
@@ -27,6 +34,7 @@ def feature_extractor(state, corpname):
     else:
         phi['Expensive'] = 1
 
+    # Whether of not the corporation's shares are affordable to the player
     if state['Players']['Bank'][corpname] >= 3 and\
             state['Players'][cur_player]['money'] >= 3 * stockPrice(state, corpname):
         phi['CanAfford3'] = 1
@@ -37,6 +45,7 @@ def feature_extractor(state, corpname):
             state['Players'][cur_player]['money'] >= 1 * stockPrice(state, corpname):
         phi['CanAfford1'] = 1
 
+    # The size of the corporation
     corp_size = len(state['Group'][corpname])
     if corp_size < 6:
         phi['Size[]'.format(corp_size)] = 1
@@ -57,6 +66,9 @@ def feature_extractor(state, corpname):
         phi['Size41]'.format(corp_size)] = 1
         phi['safe'] = 1
 
+    # The number of rounds played
+
+    phi['rounds'] = num_rounds(state)
 
     return phi
 
@@ -177,7 +189,7 @@ def freeNeighbors(state, g):
     return n
 
 
-def num_turns(state):
+def num_rounds(state):
     tiles_played = sum([len(state['Group'][x]) for x in state['Group']])
     return math.ceil(tiles_played/(len(state['Players']) -1))
 
