@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 from concierge import Concierge
 import model
 import subprocess, sys

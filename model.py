@@ -147,8 +147,8 @@ def new_mergerSale(player = None, corp = None):
     sale = dict()
     sale['Player'] = player
     sale['Corporation'] = corp
-    sale['Trade'] = 0
-    sale['Sell'] = 0
+#   sale['Trade'] = 0
+#   sale['Sell'] = 0
     sale['Done']= False
     sale['Types'] = [] # New feature !!
     return sale
