@@ -7,12 +7,13 @@ def dot_product(phi, w):
         _ = phi[i]
     s = 0
     for i in phi:
-        s += phi[i] + w[i]
+        s += phi[i] * w[i]
     return s
 
 def feature_extractor(state, corpname):
     cur_player = state['Turn']['Player']
     phi = defaultdict(float)
+    corp_size = len(state['Group'][corpname])
 
     # Find nearby larger or smaller/equal corporations
     cn = corpNeighbors(state, corpname)
@@ -30,52 +31,9 @@ def feature_extractor(state, corpname):
         if len(fn[i]):
             phi["dist{}freetiles".format(i)] = len(fn[1])
 
-    # The type of corporation
- #  if corpname in ['Tower','Luxor']:
- #      phi['Cheap'] = 1
- #  elif corpname in ['Worldwide', 'Festival', 'American']:
- #      phi['MidPrice'] = 1
- #  else:
- #      phi['Expensive'] = 1
-
-    # Whether or not the corporation's shares are affordable to the player
-#    if state['Players']['Bank'][corpname] >= 3 and\
-#            state['Players'][cur_player]['money'] >= 3 * stockPrice(state, corpname):
-#        phi['CanAfford3'] = 1
-#    elif state['Players']['Bank'][corpname] >= 2 and\
-#            state['Players'][cur_player]['money'] >= 2 * stockPrice(state, corpname):
-#        phi['CanAfford2'] = 1
-#    elif state['Players']['Bank'][corpname] >= 1 and\
-#            state['Players'][cur_player]['money'] >= 1 * stockPrice(state, corpname):
-#        phi['CanAfford1'] = 1
-
     # The size of the corporation
-    corp_size = len(state['Group'][corpname])
-    if corp_size > 10:
-        phi['Size11+'] == 1
-    else:
-        phi['Size{}'.format(corp_size)] = 1
-
+    phi['Size{}'.format(corp_size)] = 1
     phi['Safety'] = min(11, corp_size)/11.0
-
-#    if corp_size < 6:
-#        phi['Size[]'.format(corp_size)] = 1
-#        phi['safe'] = 0
-#    elif corp_size < 11:
-#        phi['Size6-10]'.format(corp_size)] = 1
-#        phi['safe'] = 0
-#    elif corp_size < 21:
-#        phi['Size11]'.format(corp_size)] = 1
-#        phi['safe'] = 1
-#    elif corp_size < 31:
-#        phi['Size21]'.format(corp_size)] = 1
-#        phi['safe'] = 1
-#    elif corp_size < 41:
-#        phi['Size31]'.format(corp_size)] = 1
-#        phi['safe'] = 1
-#    else:
-#        phi['Size41]'.format(corp_size)] = 1
-#        phi['safe'] = 1
 
     phi['GameLeft'] = (80-num_turns(state))/80.0
 
@@ -153,13 +111,13 @@ def groupNeighbors(state, g_name):
             n.add(nb)
     return n.difference(set(state['Group'][g_name]))
 
-def corpNeighbors(state, c_name):
+def groupNeighbors(state, c_name):
     """ Provides a list of lists, with each list a set of corporations
     whose minimum distance to this one is the index of the list
     For example, c_name itself will end up in a list at index 0 """
     n = list()
     corps = dict()
-    for c in corporations:
+    for c in State['Group']:
         if len(state['Group'][c]):
             corps[c] = groupNeighbors(state, c).union(set(state['Group'][c]))
 
