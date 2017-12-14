@@ -31,12 +31,12 @@ def feature_extractor(state, corpname):
             phi["dist{}freetiles".format(i)] = len(fn[1])
 
     # The type of corporation
-    if corpname in ['Tower','Luxor']:
-        phi['Cheap'] = 1
-    elif corpname in ['Worldwide', 'Festival', 'American']:
-        phi['MidPrice'] = 1
-    else:
-        phi['Expensive'] = 1
+ #  if corpname in ['Tower','Luxor']:
+ #      phi['Cheap'] = 1
+ #  elif corpname in ['Worldwide', 'Festival', 'American']:
+ #      phi['MidPrice'] = 1
+ #  else:
+ #      phi['Expensive'] = 1
 
     # Whether or not the corporation's shares are affordable to the player
 #    if state['Players']['Bank'][corpname] >= 3 and\
@@ -54,7 +54,9 @@ def feature_extractor(state, corpname):
     if corp_size > 10:
         phi['Size11+'] == 1
     else:
-        phi['Size[]'.format(corp_size)] = 1
+        phi['Size{}'.format(corp_size)] = 1
+
+    phi['Safety'] = min(11, corp_size)/11.0
 
 #    if corp_size < 6:
 #        phi['Size[]'.format(corp_size)] = 1
@@ -158,7 +160,7 @@ def corpNeighbors(state, c_name):
     n = list()
     corps = dict()
     for c in corporations:
-        if len(s['Group'][c]):
+        if len(state['Group'][c]):
             corps[c] = groupNeighbors(state, c).union(set(state['Group'][c]))
 
     an = allGroupNeighbors(state['Group'][c_name])
