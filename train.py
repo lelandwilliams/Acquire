@@ -1,10 +1,10 @@
 from featureExtractor import *
-import random, subprocess, sys
+import random, subprocess, sys, math
 import model, rules
 
-f = open('weights.py')
+f = open('weights.gam')
 tile_growth_weights = eval(f.readline())
-turns_left_weights = eval(f.readline())
+turns_remaining_weights = eval(f.readline())
 f.close()
 
 #subprocess.call('./exampleMaker.py')
@@ -55,12 +55,26 @@ def corp_outlook(states, turn_num):
 #       print("{}: {} more turns, {} more tiles".format(corp, corp_end - turn_num, end_size - cur_size))
     return results
 
+def train(states, eta = 0.01):
+    idx = 0
+    while idx < len(states):
+        results = corp_outlook(states, idx)
+        for corp in results:
+            features = feature_extractor(states[idx], corp)
+            revise(features, tile_growth_weights, results[corp]['Tiles'], eta)
+            revise(features, turns_remaining_weights, results[corp]['Turns'], eta)
+        idx += 1
+
+def revise(phi, w, y, eta):
+    train_loss = (dot_product(phi, w) - y) 
+    for el in w:
+        w[el] -= eta * 2 * train_loss * phi[el]
+
+def run():
+    for i in range(1,3):
+        subprocess.call('./exampleMaker.py')
+        states, history = reconstruct_states()
+        train(states, 1/math.sqrt(i))
+#   train(states)
 
 states, history = reconstruct_states()
-                
-
-            
-
-
-    
-
