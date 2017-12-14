@@ -16,13 +16,16 @@ def feature_extractor(state, corpname):
     corp_size = len(state['Group'][corpname])
 
     # Find nearby larger or smaller/equal corporations
-    cn = corpNeighbors(state, corpname)
-    for i in range(1, len(cn)):
-        for c in cn[i]:
-            if state['Group'][c] > state['Group'][corpname]:
-                phi["dist{}largercorp".format(i)] = len(cn[1])
-            else:
-                phi["dist{}smallercorp".format(i)] = len(cn[1])
+    gn = neighborDistances(state, corpname)
+    for i in range(1, len(gn)):
+        for g in gn[i]:
+            if g in corporations and state['Group'][c] > state['Group'][corpname]\
+                    and corp_size < 11:
+                phi["dist{}largercorp".format(i)] += 1
+            elif g in corporations and state['Group'][c] <= state['Group'][corpname]:
+                phi["dist{}smallercorp".format(i)] += 1
+            elif g not in corporations:
+                phi["AnonDist{}".format(i)] += 1
 
     # Add in the number of tiles that could potentially
     # (if improbably) be added onto the company
@@ -111,13 +114,13 @@ def groupNeighbors(state, g_name):
             n.add(nb)
     return n.difference(set(state['Group'][g_name]))
 
-def groupNeighbors(state, c_name):
+def neighborDistances(state, c_name):
     """ Provides a list of lists, with each list a set of corporations
     whose minimum distance to this one is the index of the list
     For example, c_name itself will end up in a list at index 0 """
     n = list()
     corps = dict()
-    for c in State['Group']:
+    for c in state['Group']:
         if len(state['Group'][c]):
             corps[c] = groupNeighbors(state, c).union(set(state['Group'][c]))
 
