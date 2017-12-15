@@ -10,7 +10,7 @@ def dot_product(phi, w):
         s += phi[i] * w[i]
     return s
 
-def feature_extractor(state, corpname):
+def feature_extractor(state, corpname, f_rational = True):
     cur_player = state['Turn']['Player']
     phi = defaultdict(float)
     corp_size = len(state['Group'][corpname])
@@ -19,10 +19,10 @@ def feature_extractor(state, corpname):
     gn = neighborDistances(state, corpname)
     for i in range(1, len(gn)):
         for g in gn[i]:
-            if g in corporations and state['Group'][c] > state['Group'][corpname]\
+            if g in corporations and state['Group'][g] > state['Group'][corpname]\
                     and corp_size < 11:
                 phi["dist{}largercorp".format(i)] += 1
-            elif g in corporations and state['Group'][c] <= state['Group'][corpname]:
+            elif g in corporations and state['Group'][g] <= state['Group'][corpname]:
                 phi["dist{}smallercorp".format(i)] += 1
             elif g not in corporations:
                 phi["AnonDist{}".format(i)] += 1
@@ -36,7 +36,10 @@ def feature_extractor(state, corpname):
 
     # The size of the corporation
     phi['Size{}'.format(corp_size)] = 1
-    phi['Safety'] = min(11, corp_size)/11.0
+    if f_rational:
+        phi['Safety'] = min(11, corp_size)/11.0
+    else:
+        phi['Size{}'.format(corp_size)] = 1
 
     phi['GameLeft'] = (80-num_turns(state))/80.0
 
