@@ -20,6 +20,7 @@ class Concierge(QObject):
         self.max_servers = 1
         self.serverPort = 0
         self.serverPorts = dict()
+        self.servers_active = 0
         self.servers = list() # A place to store obj references so the garbarge collector
                             # won't take them away
 
@@ -67,9 +68,10 @@ class Concierge(QObject):
 #       self.of = open('results.txt', 'w')
 #       self.of.write("{:^3}, {:^8}, {:^8}, {:^5}, {:^8}, {:^8}\n".format('num','avg','std','max','w_avg','w_std'))
 #       self.of.close()
-        self.num_games += 1
+#       self.num_games += 1
 #       if len(self.readyServers) < self.max_servers:
         for i in range(self.num_servers):
+            self.servers_active += 1
             subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 #           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 #           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
