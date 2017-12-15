@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 from concierge import Concierge
-import model
+import model, train
 import subprocess, sys
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtNetwork import QHostAddress
@@ -14,27 +14,33 @@ class statsBuilder(Concierge):
             my_id = None, 
             port = DEFAULTPORT, 
             address = QHostAddress.LocalHost,
-            num_servers = 4,
+            num_servers = 1,
             players = None):
         super().__init__(my_id, port, address, num_servers)
         self.players = players
-
-    def runGames(self):
-        subprocess.Popen(["python", 
-                "gameServer.py", 
-                "-cp", 
-                str(self.port), 
-                "-n", 
-                str(len(self.players))])
+        self.num_games = 0
+        self.max_games = 1
 
     def serverDone(self, game, server):
-        of = open('example.gam', 'w')
+        try:
+            _ = train.reconstruct_states(game) 
+        except:
+            self.server.disconnect()
+            QCoreApplication.quit()
+        of = open('examples.gam', 'a')
         of.write(game)
         of.write('\n')
         of.close()
-        QCoreApplication.quit()
+        if self.num_games < self.max_games:
+            server.sendTextMessage("RESET")
+        else:
+            server.sendTextMessage("DISCONNECT")
+            self.servers_active -= 1
+            self.server.disconnect()
+            QCoreApplication.quit()
 
     def serverReady(self, port):
+        self.num_games += 1
         subprocess.Popen(["python", "GM.py", "-p", port ])
         for player in self.players:
             subprocess.Popen(["python", players[player], "-p", port, "-n", player])
