@@ -3,42 +3,45 @@ import random, subprocess, sys, math
 import model, rules
 
 f = open('weights.gam')
-tile_growth_weights = eval(f.readline())
-turns_remaining_weights = eval(f.readline())
+tile_growth_weights = defaultdict(float)
+turns_remaining_weights = defaultdict(float)
 f.close()
 
-#subprocess.call('./exampleMaker.py')
-
-def reconstruct_states():
-    f = open('example.gam')
-    state, history = eval(f.read())
+def reconstruct_states(game):
+    state, history = eval(game)
     history.append(state['Turn'])
-    f.close()
     players = [p for p in state['Players'] if p != 'Bank']
     seed = state['Seed']
     s, hand = rules.new_game(players, True, seed)
     states = [s]
 
     for turn in history:
-        s = states[-1]
-        if type(turn['Tile']) is tuple:
-            s, hand = rules.succ(s, hand, turn['Tile'], None)
-        if not turn['NewCorp'] is None and turn['NewCorp']:
-            s, hand = rules.succ(s, hand, turn['NewCorp'])
-        if not turn['Merger'] is None:
-            if rules.getActions(s, hand)[0] == 'Choose Survivor':
-                s, hand = rules.succ(s, hand, turn['Merger']['NewCorps'][0], None)
-            for p in turn['Merger']['Sales']:
-                for action in p['Types']:
-                    s, hand = rules.succ(s, hand, action)
-        for share in turn['Buy']:
-            if rules.getActions(s, hand)[0] == 'Buy':
-                s, hand = rules.succ(s, hand, share, None)
-        if turn['Call Game']:
-            s, hand = rules.succ(s, hand, turn['Call Game'], None)
-        states.append(s)
+        step(states, turn)
 
     return states, history
+
+def step(states, turn):
+    s = states[-1]
+    if type(turn['Tile']) is tuple:
+        result = rules.succ(s, None, turn['Tile'])
+        if result is None:
+            print(turn['Tile'])
+        s, _ = result
+    if not turn['NewCorp'] is None and turn['NewCorp']:
+        s, _ = rules.succ(s, None, turn['NewCorp'])
+    if not turn['Merger'] is None:
+        if rules.getActions(s, None)[0] == 'Choose Survivor':
+            s, _ = rules.succ(s, None, turn['Merger']['NewCorps'][0], None)
+        for p in turn['Merger']['Sales']:
+            for action in p['Types']:
+                s, _ = rules.succ(s, None, action)
+    for share in turn['Buy']:
+        if rules.getActions(s, None)[0] == 'Buy':
+            s, _ = rules.succ(s, None, share)
+    if turn['Call Game']:
+        s, _ = rules.succ(s, None, turn['Call Game'])
+    states.append(s)
+
 
 def corp_outlook(states, turn_num):
     results = dict()
@@ -55,26 +58,38 @@ def corp_outlook(states, turn_num):
 #       print("{}: {} more turns, {} more tiles".format(corp, corp_end - turn_num, end_size - cur_size))
     return results
 
-def train(states, eta = 0.01):
+def train(states, growth_weight, duration_weight, eta = 0.01):
     idx = 0
     while idx < len(states):
         results = corp_outlook(states, idx)
         for corp in results:
             features = feature_extractor(states[idx], corp)
-            revise(features, tile_growth_weights, results[corp]['Tiles'], eta)
-            revise(features, turns_remaining_weights, results[corp]['Turns'], eta)
+            if len(states[idx]['Group'][corp]) < 11:
+                revise(features, growth_weight, results[corp]['Tiles'], eta)
+            revise(features, duration_weight, results[corp]['Turns'], eta)
         idx += 1
+    return growth_weight, duration_weight
 
 def revise(phi, w, y, eta):
     train_loss = (dot_product(phi, w) - y) 
     for el in w:
         w[el] -= eta * 2 * train_loss * phi[el]
 
-def run():
-    for i in range(1,3):
-        subprocess.call('./exampleMaker.py')
-        states, history = reconstruct_states()
-        train(states, 1/math.sqrt(i))
-#   train(states)
+def run(gw = defaultdict(float), dw = defaultdict(float)):
+#   f = open('randomTrainingExamples.gam')
+    f = open('examples.gam')
+    i = 0
+    for game in f:
+        i += 1
+        print("Game # {}".format(i))
+        states, history = reconstruct_states(game)
+        gw, dw = train(states, gw, dw, 1/math.sqrt(i))
+    f.close()
+    return gw, dw
 
-states, history = reconstruct_states()
+if __name__ == '__main__':
+    f = open('examples.gam')
+    game = f.readline()
+    game = f.readline()
+    test = reconstruct_states(game)
+    f.close()
