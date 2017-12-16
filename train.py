@@ -2,10 +2,6 @@ from featureExtractor import *
 import random, subprocess, sys, math
 import model, rules
 
-f = open('weights.gam')
-tile_growth_weights = defaultdict(float)
-turns_remaining_weights = defaultdict(float)
-f.close()
 
 def reconstruct_states(game):
     state, history = eval(game)
@@ -58,15 +54,32 @@ def corp_outlook(states, turn_num):
 #       print("{}: {} more turns, {} more tiles".format(corp, corp_end - turn_num, end_size - cur_size))
     return results
 
-def train(states, growth_weight, duration_weight, eta = 0.01):
+def test(states, growth_weight, duration_weight ):
+    growth_tests = 0
+    duration_tests = 0
+    duration_error = 0
+    growth_error = 0
+    for idx in range(len(states)):
+        results = corp_outlook(states, idx)
+        for corp in results:
+            growth_tests += 1
+            features = feature_extractor(states[idx], corp)
+            if len(states[idx]['Group'][corp]) < 11:
+                duration_tests += 1
+                duration_error += (dot_product(features, duration_weight) - results[corp]['Turns']) **2
+            growth_error += (dot_product(features, growth_weight) - results[corp]['Tiles']) **2
+        idx += 1
+    return growth_error/growth_tests, duration_error/duration_tests
+
+def train(states, growth_weight, duration_weight, eta = 0.0001):
     idx = 0
     while idx < len(states):
         results = corp_outlook(states, idx)
         for corp in results:
             features = feature_extractor(states[idx], corp)
             if len(states[idx]['Group'][corp]) < 11:
-                revise(features, growth_weight, results[corp]['Tiles'], eta)
-            revise(features, duration_weight, results[corp]['Turns'], eta)
+                revise(features, duration_weight, results[corp]['Turns'], eta)
+            revise(features, growth_weight, results[corp]['Tiles'], eta)
         idx += 1
     return growth_weight, duration_weight
 
@@ -76,20 +89,36 @@ def revise(phi, w, y, eta):
         w[el] -= eta * 2 * train_loss * phi[el]
 
 def run(gw = defaultdict(float), dw = defaultdict(float)):
-#   f = open('randomTrainingExamples.gam')
-    f = open('examples.gam')
-    i = 0
+    f = open('randomTrainingExamples1.gam')
+    total_training_sets = 0
+    training_runs = 0
+    testing_runs = 0
+    growth_error_sum = 0
+    duration_error_sum = 0
     for game in f:
-        i += 1
-        print("Game # {}".format(i))
         states, history = reconstruct_states(game)
-        gw, dw = train(states, gw, dw, 1/math.sqrt(i))
+        print("\rGame # {}".format(training_runs + testing_runs), end = "")
+        if training_runs < 700:
+            total_training_sets += 1
+            training_runs += 1
+            gw, dw = train(states, gw, dw)
+        else:
+            testing_runs += 1
+            results= test(states, gw, dw)
+            growth_error_sum += results[0]
+            duration_error_sum += results[1]
     f.close()
-    return gw, dw
+    print("\ngrowth_error = {}, duration_error = {}".format(growth_error_sum, duration_error_sum)) 
+    return gw, dw, growth_error_sum, duration_error_sum
 
 if __name__ == '__main__':
-    f = open('examples.gam')
-    game = f.readline()
-    game = f.readline()
-    test = reconstruct_states(game)
+    f = open('weights.gam','r')
+    gw = eval(f.readline())
+    dw = eval(f.readline())
+    f.close()
+
+    gw, dw, ge, de = run(gw, dw)
+
+    f = open('weights.gam','w')
+    f.write("{}\n{}\n".format(dict(gw), dict(dw)))
     f.close()
