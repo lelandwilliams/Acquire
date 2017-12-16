@@ -16,7 +16,7 @@ class statsBuilder(Concierge):
             players = None):
         super().__init__(my_id, port, address, num_servers)
         self.players = players
-        self.num_games_desired = 100
+        self.num_games_desired = 1000
 
     def runGames(self):
         header = str()
@@ -69,7 +69,10 @@ class statsBuilder(Concierge):
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
     players = dict()
-    players['Random1'] = 'randomClient.py'
+#   players['Random1'] = 'randomClient.py'
+#   players['Random2'] = 'randomClient.py'
+#   players['Random3'] = 'randomClient.py'
+    players['Flex4'] = 'reflexAgent4.py'
     players['Flex3'] = 'reflexAgent3.py'
     players['Flex1'] = 'reflexAgent.py'
     players['Flex2'] = 'reflexAgent2.py'
