@@ -1,7 +1,10 @@
 # Acquire
 An implementation of the Sid Sackson 3M Classic for purposes of exploring Artificial Intelligence
-## Now Playable !!
+## Now Playable against random opponents!!
 clone the master branch, and type `python3 mainWidgent.py` and enjoy !!
+
+
+The AI stuff is not yet merged in from a branch.
 ## Background
 Acquire is a long-time favorite board game of mine. When I'm hosting a game night, I find this game to be a good one to teach persons new to gaming as the rules are simple, and the goal (make money) is more concrete than victory point schemes, and the game has suspense, and a sense of history.
 
