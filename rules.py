@@ -51,6 +51,9 @@ def getActions(state, hand):
         return None
 
 def getFullActions(state, hand):
+    """
+    DEPRECATED. DO NOT USE
+    """
     actions = list()
     player = state['Turn']['Player']
     for tile in hand[player]:
