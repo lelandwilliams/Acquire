@@ -81,6 +81,7 @@ class Concierge(QObject):
         s, hist = eval(game)
 #       for h in hist:
 #           model.print_turn(h)
+        print("\rResults of game # {}".format(self.num_games))
         for player in [p for p in s['Players'] if p != 'Bank']:
             print("{}: {}".format(player, model.netWorth(player, s)))
         scores = [model.netWorth(player, s) for player in s['Players'] if player != "Bank"]
@@ -88,7 +89,7 @@ class Concierge(QObject):
         self.scores += scores
         if self.num_games < 1:
             self.num_games += 1
-            print("\rRunning game # {}".format(self.num_games), end = '')
+#           print("\rRunning game # {}".format(self.num_games), end = '')
             server.sendTextMessage("RESET")
 #           self.serverReady(self.serverPort)
         else:
