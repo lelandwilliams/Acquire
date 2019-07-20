@@ -8,7 +8,13 @@ from PyQt5.QtNetwork import QHostAddress
 
 DEFAULTPORT = 64337
 
+"""Provides class statsBuilder
+"""
+
 class statsBuilder(Concierge):
+    """
+
+    """
     def __init__(
             self,
             my_id = None, 
