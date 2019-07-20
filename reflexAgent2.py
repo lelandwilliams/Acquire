@@ -45,12 +45,6 @@ class reflexAgent(RandomClient):
     def chooseEndGame(self, actions): return "Yes"
 
 
-
-
-
-
-
-
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
     parser = argparse.ArgumentParser()
