@@ -4,6 +4,31 @@ from PyQt5.QtWebSockets import QWebSocket, QWebSocketProtocol
 import random, sys, argparse
 
 class RandomClient(QObject):
+    """ A base class for all networked clients
+        Provides methods to communicate with a game server, and parse it's methods
+        Provides methods to make choices, called chooseXXX()
+        Non-random clients need only override those choice methods.
+
+        Args:
+            client_id (str): not currently used
+            serverPort (int): the port number of the game server
+            serverAddress (str): the address of the game server, defaults to localhost
+            name (str): The name of the player
+            client_type (str): if the client is a GM, a PLAYER, or a LOGGER
+
+        Attributes:
+            name (str): the name of the player
+            client_type (str): if the client is a GM, a PLAYER, or a LOGGER
+            state (dict): the current state of the game board, players, and stock
+            hand (list): the tile held in the player's 'hand'
+            history (dict): all the moves that have happened in the game
+            socket (QWebsocket): the socket class, set by connectToServer()
+
+        Todo:
+            [ ] Code to handle network failures
+            [ ] Code to create nonnetworked clients, perhaps have network code as an addin
+    """
+
     def __init__(self, 
             client_id = None, 
             serverPort = 0, 
@@ -21,6 +46,16 @@ class RandomClient(QObject):
         self.history = None
 
     def connectToServer(self, address, port):
+        """ Connects to game server, and sends a signal to onConnected() when connected
+
+            args:
+                address (str): the address of the game server.
+                port (int): the port number of the game server. 
+            
+            returns:
+                nothing
+        """
+
         self.socket = QWebSocket()
         url = QUrl()
         url.setScheme("ws")
@@ -37,6 +72,16 @@ class RandomClient(QObject):
             print(self.socket.errorString())
 
     def onConnected(self):
+        """ called by signal when self.socket successfully connects to a game server
+            connects the the sockets recieve signal to procesTextMessage() 
+            sends it's information to the game server
+
+            args:
+                none
+
+            returns:
+                nothing
+        """
         self.socket.textMessageReceived.connect(self.processTextMessage)
         self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
 
@@ -74,14 +119,18 @@ class RandomClient(QObject):
                 choice = self.chooseEndGame(actions[-1])
                 self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
         elif m_type == 'BROADCAST' and m_subtype == 'BEGIN':
+            self.announceBegin()
             self.state = model.new_game(eval(m_body))
         elif m_type == 'BROADCAST' and m_subtype == 'PLAY':
             if m_body[0] in ['(','[']:
                 m_body = eval(m_body)
+            self.announcePlay(m_body)
             self.state, self.hands = succ(self.state, None, m_body, self.history)
         elif m_type == 'DISCONNECT':
             self.quit()
 
+    def announceBegin(self): pass
+    def announcePlay(self, msg): pass
     def chooseTile(self, actions): return random.choice(actions)
     def chooseNewCompany(self, actions): return random.choice(actions)
     def chooseSurvivor(self, actions): return random.choice(actions)
