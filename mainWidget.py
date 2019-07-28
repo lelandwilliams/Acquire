@@ -7,7 +7,8 @@ from playerDialogBox import PlayerDialogBox
 from controller import Controller
 import acquire_model
 
-class AcquireUI(QMainWindow, Controller):
+#class AcquireUI(QMainWindow, Controller):
+class AcquireUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.frame = QFrame()
@@ -81,6 +82,11 @@ class AcquireUI(QMainWindow, Controller):
                 if self.debug:
                     print(player.name, "chose", tile, self.game.evaluatePlay(tile))
                 return tile
+
+    def newGame(self):
+        """ A stub function to enable startup """
+        pass
+
 
     def setColors(self): 
         colorscheme = {}
