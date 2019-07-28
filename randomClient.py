@@ -67,6 +67,7 @@ class RandomClient(QObject):
         self.socket.open(url)
 
     def error(self, errorcode):
+        """ Routine to handle an error message from server"""
         if errorcode != 1:
             print("{}: Error #{}: ".format(self.name, errorcode))
             print(self.socket.errorString())
@@ -92,6 +93,7 @@ class RandomClient(QObject):
         QCoreApplication.quit()
 
     def processTextMessage(self, message):
+        """ The central client routine, it parses a message from the server and calls the relevant handling routine"""
 #       print("{} recieved message: {}".format(self.name, message))
         if len(message.split(';')) != 3:
             return
@@ -139,6 +141,7 @@ class RandomClient(QObject):
     def chooseEndGame(self, actions): return "Yes"
 
     def quit(self):
+        """ Method to handle the reciept of a quit request """
 #       if self.name == "Min1":
 #           print(self.state)
         QCoreApplication.quit()
