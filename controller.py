@@ -1,15 +1,16 @@
 import sys, uuid
-import acquire_model
-from network import AcquireServer, DEFAULTPORT
+import acquire_model, concierge, randomClient
+#from network import AcquireServer, DEFAULTPORT
 from PyQt5.QtCore import pyqtSlot, QTimer, QCoreApplication
 
-class Controller(AcquireServer):
-    def __init__(self, port = DEFAULTPORT):
-        self.game = acquire_model.Acquire()
+class Controller(randomClient.RandomClient):
+    def __init__(self):
+#        self.game = acquire_model.Acquire()
         self.name = 'Control'
-        super().__init__(port)
+#       super().__init__(port)
+        super().__init__()
 
-    @pyqtSlot()
+#    @pyqtSlot()
     def parse_message(self, m):
 #       print("Controller.parse_message received: " + m)
         clientid, command,  parameter = m.split(';')
