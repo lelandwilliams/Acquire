@@ -4,7 +4,7 @@ from PyQt5.QtWebSockets import QWebSocket, QWebSocketProtocol
 import random, sys, argparse
 
 class RandomClient(QObject):
-    """ A base class for all networked clients
+    """ A base class for all networked player clients
         Provides methods to communicate with a game server, and parse it's methods
         Provides methods to make choices, called chooseXXX()
         Non-random clients need only override those choice methods.
