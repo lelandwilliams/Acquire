@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QHBoxLayout, QFrame, QLabel
-from acquire_model import Acquire
+#from acquire_model import Acquire
 from PyQt5.QtCore import Qt
 
 class PlayerBox(QFrame):
@@ -34,7 +34,8 @@ class PlayerBox(QFrame):
         self.lastPlayLabel = QLabel()
         self.bottomlayout.addWidget(self.lastPlayLabel)
         self.corporationLabel = dict()
-        for corp in Acquire.corpNames:
+        corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
+        for corp in corpNames:
             self.corporationLabel[corp] = QLabel()
             self.stockFrameLayout.addWidget(self.corporationLabel[corp])
             self.corporationLabel[corp].hide()
