@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt, QTimer
 from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
-from controller import Controller
-import acquire_model
+#from controller import Controller
+#import acquire_model
 
 #class AcquireUI(QMainWindow, Controller):
 class AcquireUI(QMainWindow):
