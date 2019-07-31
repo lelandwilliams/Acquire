@@ -1,4 +1,5 @@
 import sys
+sys.path.append("..")
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp
 from PyQt5.QtCore import Qt, QTimer
 from playerboxgroup import PlayerBoxGroup
@@ -6,6 +7,7 @@ from board import Board
 from playerDialogBox import PlayerDialogBox
 #from controller import Controller
 #import acquire_model
+import model
 
 #class AcquireUI(QMainWindow, Controller):
 class AcquireUI(QMainWindow):
