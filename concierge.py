@@ -6,6 +6,7 @@ import model
 DEFAULTPORT = 64337
 
 class Concierge(QObject):
+    """ A Server Management Class """
     def __init__(self, 
             my_id = None, 
             port = DEFAULTPORT, 
@@ -73,9 +74,6 @@ class Concierge(QObject):
         for i in range(self.num_servers):
             self.servers_active += 1
             subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
-#           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
-#           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
-#           subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
 
     def serverDone(self, game, server):
         s, hist = eval(game)
