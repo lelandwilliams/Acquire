@@ -1,12 +1,20 @@
 import sys, queue, uuid, argparse, subprocess, statistics
 from PyQt5 import QtNetwork, QtWebSockets
-from PyQt5.QtCore import QObject, QDataStream, pyqtSlot, QCoreApplication, QTimer
+from PyQt5.QtCore import QObject, QDataStream, pyqtSignal, pyqtSlot, QCoreApplication, QTimer
 import model
 
 DEFAULTPORT = 64337
 
 class Concierge(QObject):
-    """ A Server Management Class """
+    """ A Server Management Class 
+    
+    TODO:
+        [ ] Remove old code
+        [ ] Write additional documentation
+        [ ] Change newClient() to handle requests from players 
+            looking for game servers.
+        
+    """
     def __init__(self, 
             my_id = None, 
             port = DEFAULTPORT, 
@@ -25,6 +33,8 @@ class Concierge(QObject):
         self.servers = list() # A place to store obj references so the garbarge collector
                             # won't take them away
         self.process_list = list()
+
+        serverAvailable = pyqtSignal(int, name='serverAvailable')
 
 
         attempts = 0
@@ -47,6 +57,15 @@ class Concierge(QObject):
 #       self.runGames()
 
     def newClient(self):
+        """ Routine to handle incoming connections.
+
+        Currently, it is assumed that incoming connections are from game servers.
+        Later it should be changed to allow clients ot inquire about available servers.
+
+        Server connections are persistant.
+        When a message is recieved, processTextMessage() is signalled.
+        """
+
 #       print('a new server connected to concierge')
         client = self.server.nextPendingConnection()
         client.textMessageReceived.connect(self.processTextMessage)
@@ -54,6 +73,17 @@ class Concierge(QObject):
         self.servers.append(client) # solely to keep the garbage collector from destroying
 
     def processTextMessage(self,message):
+        """ Called when a message is recieved.
+
+        Parses incoming messages, and acts on their parts.
+        Messages are of the form m_type;m_body
+
+        Two m_types are recognized: 'READY' and 'DONE'.
+
+        On 'READY', calls serverREADY()
+        On 'DONE', calls serverDone()
+
+        """
 #       print("Concierge recieved message: {}".format(message))
         sender= self.sender()
         if len(message.split(';')) != 2:
@@ -68,6 +98,10 @@ class Concierge(QObject):
             self.serverDone(m_body, sender)
 
     def runGames(self):
+        """ Starts up a number of game servers
+        
+            The number is defined by self.num_servers.
+        """
 #       self.of = open('results.txt', 'w')
 #       self.of.write("{:^3}, {:^8}, {:^8}, {:^5}, {:^8}, {:^8}\n".format('num','avg','std','max','w_avg','w_std'))
 #       self.of.close()
@@ -123,6 +157,7 @@ class Concierge(QObject):
             args.append(port)
             subprocess.Popen(args)
         subprocess.Popen(["python", "GM.py", "-p", port, "-s", str(self.game_seed)])
+        self.serverAvailable.emit(int(port))
 
     def socketDisconnected(self):
         pass
