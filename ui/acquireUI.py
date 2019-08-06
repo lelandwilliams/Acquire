@@ -8,6 +8,8 @@ from playerDialogBox import PlayerDialogBox
 #from controller import Controller
 #import acquire_model
 import model
+from concierge import Concierge
+
 
 #class AcquireUI(QMainWindow, Controller):
 class AcquireUI(QMainWindow):
@@ -87,7 +89,8 @@ class AcquireUI(QMainWindow):
 
     def newGame(self):
         """ A stub function to enable startup """
-        pass
+        self.Concierge = Concierge()
+        self.Concierge.runGames()
 
 
     def setColors(self): 
