@@ -15,6 +15,8 @@ class Concierge(QObject):
             looking for game servers.
         
     """
+    serverAvailable = pyqtSignal(int, name='serverAvailable')
+
     def __init__(self, 
             my_id = None, 
             port = DEFAULTPORT, 
@@ -34,7 +36,7 @@ class Concierge(QObject):
                             # won't take them away
         self.process_list = list()
 
-        serverAvailable = pyqtSignal(int, name='serverAvailable')
+#       self.serverAvailable = pyqtSignal(int, name='serverAvailable')
 
 
         attempts = 0
