@@ -24,6 +24,8 @@ class Concierge(QObject):
         self.servers_active = 0
         self.servers = list() # A place to store obj references so the garbarge collector
                             # won't take them away
+        self.process_list = list()
+
 
         attempts = 0
         max_attempts = 10
@@ -116,15 +118,11 @@ class Concierge(QObject):
 
     def serverReady(self, port):
 #       print("Concierge: a server said it is ready")
-        process_list = list()
-        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Random1"])
-        process_list.append(["python", "randomClient.py", "-p", port, "-n", "Random2"])
-        process_list.append(["python", "reflexAgent.py", "-p", port, "-n", "Flex1"])
-        process_list.append(["python", "reflexAgent2.py", "-p", port, "-n", "Flex2"])
-        process_list.append(["python", "GM.py", "-p", port, "-s", str(self.game_seed)])
-
-        for args in process_list:
+        for args in self.process_list:
+            args.append("-p")
+            args.append(port)
             subprocess.Popen(args)
+        subprocess.Popen(["python", "GM.py", "-p", port, "-s", str(self.game_seed)])
 
     def socketDisconnected(self):
         pass
@@ -135,5 +133,12 @@ if __name__ == '__main__':
 #   parser.add_argument('-cp', '--conciergePort', type = int) 
 #   args = parser.parse_args()
     c = Concierge()
+    c.process_list.append(["python", "randomClient.py", "-n", "Random1"])
+    c.process_list.append(["python", "randomClient.py", "-n", "Random2"])
+    c.process_list.append(["python", "randomClient.py", "-n", "Random3"])
+    c.process_list.append(["python", "randomClient.py", "-n", "Random4"])
+#   c.process_list.append(["python", "randomClient.py", "-p", port, "-n", "Random4"])
+#    c.process_list.append(["python", "reflexAgent.py", "-p", port, "-n", "Flex1"])
+#    c.process_list.append(["python", "reflexAgent2.py", "-p", port, "-n", "Flex2"])
     c.runGames()
     app.exec_()
