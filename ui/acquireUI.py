@@ -5,14 +5,12 @@ from PyQt5.QtCore import Qt, QTimer
 from playerboxgroup import PlayerBoxGroup
 from board import Board
 from playerDialogBox import PlayerDialogBox
-#from controller import Controller
-#import acquire_model
 import model
 from concierge import Concierge
+from humanClient import HumanClient
 
 
-#class AcquireUI(QMainWindow, Controller):
-class AcquireUI(QMainWindow):
+class AcquireUI(QMainWindow, HumanClient):
     def __init__(self):
         super().__init__()
         self.frame = QFrame()
@@ -87,11 +85,6 @@ class AcquireUI(QMainWindow):
                     print(player.name, "chose", tile, self.game.evaluatePlay(tile))
                 return tile
 
-    def newGame(self):
-        """ A stub function to enable startup """
-        self.Concierge = Concierge()
-        self.Concierge.serverAvailable.connect(self.start)
-        self.Concierge.runGames()
 
 
     def setColors(self): 
@@ -146,4 +139,5 @@ def dialogTest():
     print(" **** %s ****" %(stock))
     sys.exit(app.exec_())
 
-play()
+if __name__ == "__main__":
+    play()
