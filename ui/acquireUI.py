@@ -90,6 +90,7 @@ class AcquireUI(QMainWindow):
     def newGame(self):
         """ A stub function to enable startup """
         self.Concierge = Concierge()
+        self.Concierge.serverAvailable.connect(self.start)
         self.Concierge.runGames()
 
 
