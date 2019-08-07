@@ -1,4 +1,4 @@
-import sys, queue, uuid, argparse, subprocess, statistics
+import sys, queue, uuid, argparse, subprocess, statistics, logging, os
 from PyQt5 import QtNetwork, QtWebSockets
 from PyQt5.QtCore import QObject, QDataStream, pyqtSignal, pyqtSlot, QCoreApplication, QTimer
 import model
@@ -23,6 +23,14 @@ class Concierge(QObject):
             address = QtNetwork.QHostAddress.LocalHost,
             num_servers = 1):
         super().__init__()
+
+        LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
+        logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
+
+        if os.path.basename(os.getcwd()) != 'Acquire':
+            os.chdir('..')
+            logging.info('Set cwd to ' + os.getcwd())
+
         self.server = QtWebSockets.QWebSocketServer('',QtWebSockets.QWebSocketServer.NonSecureMode)
         self.port = port
         self.address = address
@@ -36,16 +44,13 @@ class Concierge(QObject):
                             # won't take them away
         self.process_list = list()
 
-#       self.serverAvailable = pyqtSignal(int, name='serverAvailable')
-
-
         attempts = 0
         max_attempts = 10
 
         while attempts < max_attempts and not self.server.isListening():
             if self.server.listen(self.address, self.port):
                 self.server.newConnection.connect(self.newClient)
-#               print("Concierge listening on port {}".format(self.port))
+                logging.info("Concierge listening on port {}".format(self.port))
             else:
                 self.port += 1
         if not self.server.isListening():
@@ -68,7 +73,7 @@ class Concierge(QObject):
         When a message is recieved, processTextMessage() is signalled.
         """
 
-#       print('a new server connected to concierge')
+        logging.info('a new server connected to concierge')
         client = self.server.nextPendingConnection()
         client.textMessageReceived.connect(self.processTextMessage)
         client.disconnected.connect(self.socketDisconnected)
