@@ -9,6 +9,8 @@ class RandomClient(QObject):
         Provides methods to make choices, called chooseXXX()
         Non-random clients need only override those choice methods.
 
+        Auto-connects to the given server, unless the player type is 'HUMAN'
+
         Args:
             client_id (str): not currently used
             serverPort (int): the port number of the game server
@@ -17,6 +19,8 @@ class RandomClient(QObject):
             client_type (str): if the client is a GM, a PLAYER, or a LOGGER
 
         Attributes:
+            serverPort (int): the port number of the game server
+            serverAddress (str): the address of the game server, defaults to localhost
             name (str): the name of the player
             client_type (str): if the client is a GM, a PLAYER, or a LOGGER
             state (dict): the current state of the game board, players, and stock
@@ -38,14 +42,17 @@ class RandomClient(QObject):
 
         super().__init__()
 #        self.client_id = client_id
+        self.serverPort = serverPort
+        self.serverAddress = serverAddress
         self.name = name
         self.client_type = client_type
-        self.connectToServer(serverAddress, serverPort)
+        if self.client_type != 'HUMAN':
+            self.connectToServer(serverAddress, serverPort)
         self.state = None
         self.hand = None
         self.history = None
 
-    def connectToServer(self, address, port):
+    def connectToServer(self, address = None, port = None):
         """ Connects to game server, and sends a signal to onConnected() when connected
 
             args:
@@ -55,6 +62,12 @@ class RandomClient(QObject):
             returns:
                 nothing
         """
+
+        if address is None:
+            address = self.serverAddress
+
+        if port is None:
+            port = self.serverPort
 
         self.socket = QWebSocket()
         url = QUrl()
