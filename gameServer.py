@@ -1,4 +1,4 @@
-import sys, queue, uuid, argparse
+import sys, queue, uuid, argparse, logging
 from PyQt5 import QtNetwork, QtWebSockets
 from PyQt5.QtCore import QObject, QDataStream, pyqtSlot, QCoreApplication, QTimer, QUrl
 
@@ -12,6 +12,11 @@ class GameServer(QObject):
             conciergePort = None,
             numPlayers = 4):
         super().__init__()
+
+        self.logger = logging.getLogger()
+        LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
+        logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
+
         self.server = QtWebSockets.QWebSocketServer('',QtWebSockets.QWebSocketServer.NonSecureMode)
         self.port = port
         self.address = address
@@ -28,7 +33,7 @@ class GameServer(QObject):
             if not self.server.listen(self.address, self.port):
                 attempts +=1
             else:
-#               print('Game Server now listening')
+                self.logger.info('Game Server now listening')
                 self.server.newConnection.connect(self.newClient)
                 self.c_socket = QtWebSockets.QWebSocket()
                 self.url = QUrl()
@@ -39,7 +44,7 @@ class GameServer(QObject):
                 self.c_socket.open(self.url)
 
     def onConnected(self):
-#       print('Game Server connected to concierge')
+        self.logger.info('Game Server connected to concierge')
         self.c_socket.textMessageReceived.connect(self.processConciergeMessage)
         self.c_socket.disconnected.connect(self.conciergeDisconnected)
         self.c_socket.sendTextMessage("READY;{}".format(self.port))
@@ -49,7 +54,7 @@ class GameServer(QObject):
         sys.exit()
 
     def newClient(self):
-#       print('Game server recieved a connection')
+        self.logger.info('Game server recieved a connection')
         self.consecutive_timeouts = 0
         client = self.server.nextPendingConnection()
         self.clients[client] = 'Undefined'
@@ -65,7 +70,7 @@ class GameServer(QObject):
             self.startGame()
 
     def processTextMessage(self,message):
-#       print("server recieved message: {}".format(message))
+        self.logger.info("server recieved message: {}".format(message))
         sender= self.sender()
         if len(message.split(';')) != 3:
                 return
@@ -79,7 +84,7 @@ class GameServer(QObject):
             self.clients[sender] = 'GM'
             if not self.numPlayersNeeded:
                 self.startGame()
-        elif m_type == 'REGISTER' and m_subtype == 'PLAYER' and self.numPlayersNeeded:
+        elif m_type == 'REGISTER' and m_subtype in ['PLAYER','HUMAN'] and self.numPlayersNeeded > 0:
             self.clients[sender] = m_val
             self.players[m_val] = sender
 #           print( "player {} registered".format(m_val))
