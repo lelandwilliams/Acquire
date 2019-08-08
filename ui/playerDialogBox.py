@@ -84,8 +84,8 @@ class PlayerDialogBox(QFrame,QObject):
         self.label1.setText("You Chose " + stock)
         return stock
 
-    def chooseTile(self, tiles, player):
-        label = "<h1><font color=\"blue\">" + player.name + "</font> Choose a Tile</h1>\n"
+    def chooseTile(self, tiles):
+        label = "<h1><font color=\"blue\"></font> Choose a Tile</h1>\n"
         label += "<p> It's now your turn.</p>" 
         label += "<p> Choose one of your tiles to place on the board.</p> "
         label += "<li> Tiles that played next to (a) solitary tile(s) <br>"
