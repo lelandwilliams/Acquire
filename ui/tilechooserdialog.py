@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import QHBoxLayout,QDialog,QPushButton
 from PyQt5.QtCore import QObject, pyqtSignal
+import logging
 
 class TileChooserDialog(QDialog):
     chosen = pyqtSignal(str)
     def __init__(self, tileList):
         super().__init__()
         self.tile_list = tileList
-        print(tileList)
+        logging.debug(tileList)
 
         self.tile_size = 40
 
@@ -14,7 +15,7 @@ class TileChooserDialog(QDialog):
         l.addStretch()
         for tile in tileList:
             tile_text = str(tile[0]) + '-' + tile[1]
-            print(tile_text)
+            logging.debug(tile_text)
             newTile = QPushButton(tile_text)
             newTile.setStyleSheet("QPushButton {background-color: black;"
                         "color: white;"
@@ -29,9 +30,9 @@ class TileChooserDialog(QDialog):
 
     def buttonClicked(self):
         sender = self.sender()
-        print(sender.text())
+        logging.debug(sender.text())
         txt = ''.join(sender.text().split('&'))
-        print(txt)
+        logging.debug(txt)
 #       num = 0
 #        if len(txt) ==4:
 #            num = 10 + int(txt[1])
@@ -39,9 +40,9 @@ class TileChooserDialog(QDialog):
 #            num = int(txt[0])
 #       tile = (num,txt[-1])
         txt = txt.split('-')
-        print(txt)
+        logging.debug(txt)
         tile = (int(txt[0]),txt[1])
-        print(tile)
+        logging.debug(tile)
         self.done(self.tile_list.index(tile))
 
 
