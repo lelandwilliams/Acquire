@@ -44,6 +44,7 @@ class AcquireUI(QMainWindow, HumanClient):
         self.setWindowTitle('Acquire')
         self.debug = True
         self.gui = True
+        self.stockChoiceNum = 1
 
     def addPlayers(self, players):
         """ Adds a player box for each player to the playerBoxGroup
@@ -83,8 +84,13 @@ class AcquireUI(QMainWindow, HumanClient):
     def chooseMergerStockAction(self, player, corp, largestCorp, actions):
         return self.dialogbox.chooseMergerStockAction(player,self.game.getCurrentPlayer(), corp,largestCorp, actions, self.setColors())
 
-    def chooseStock(self,corps,number):
-        return self.dialogbox.chooseStock(number, corps, self.setColors())
+    def chooseStock(self,corps):
+        corps.remove('Done')
+        if len(corps) == 0:
+            return 'Done'
+        if self.stockChoiceNum == 3:
+            self.stockChoiceNum = 1
+        return self.dialogbox.chooseStock(self.stockChoiceNum, corps, self.setColors())
 
     def chooseTile(self, hand):
         tile = None
