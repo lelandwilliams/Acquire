@@ -1,7 +1,7 @@
 from rules import *
 from PyQt5.QtCore import QCoreApplication, QUrl, QObject
 from PyQt5.QtWebSockets import QWebSocket, QWebSocketProtocol
-import random, sys, argparse
+import random, sys, argparse, logging
 
 class RandomClient(QObject):
     """ A base class for all networked player clients
@@ -42,6 +42,10 @@ class RandomClient(QObject):
 
         super().__init__()
 #        self.client_id = client_id
+
+        LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
+        logging.basicConfig(level = logging.WARNING, format = LOG_FORMAT)
+
         self.serverPort = serverPort
         self.serverAddress = serverAddress
         self.name = name
@@ -107,7 +111,7 @@ class RandomClient(QObject):
 
     def processTextMessage(self, message):
         """ The central client routine, it parses a message from the server and calls the relevant handling routine"""
-#       print("{} recieved message: {}".format(self.name, message))
+        logging.info("recieved message: {}".format(message))
         if len(message.split(';')) != 3:
             return
         m_type, m_subtype, m_body = message.split(';')
@@ -134,8 +138,9 @@ class RandomClient(QObject):
                 choice = self.chooseEndGame(actions[-1])
                 self.socket.sendTextMessage("{};{};{}".format(self.name, 'PLAY', choice))
         elif m_type == 'BROADCAST' and m_subtype == 'BEGIN':
-            self.announceBegin()
-            self.state = model.new_game(eval(m_body))
+            players = eval(m_body)
+            self.state = model.new_game(players)
+            self.announceBegin(players)
         elif m_type == 'BROADCAST' and m_subtype == 'PLAY':
             if m_body[0] in ['(','[']:
                 m_body = eval(m_body)
@@ -144,7 +149,7 @@ class RandomClient(QObject):
         elif m_type == 'DISCONNECT':
             self.quit()
 
-    def announceBegin(self): pass
+    def announceBegin(self, players): pass
     def announcePlay(self, msg): pass
     def chooseTile(self, actions): return random.choice(actions)
     def chooseNewCompany(self, actions): return random.choice(actions)
