@@ -8,9 +8,14 @@ from playerDialogBox import PlayerDialogBox
 import model
 from concierge import Concierge
 from humanClient import HumanClient
+import logging
 
 
 class AcquireUI(QMainWindow, HumanClient):
+    """
+        Todo:
+            [ ] clean up cruft in chooseTile()
+    """
     def __init__(self):
         super().__init__()
         self.frame = QFrame()
@@ -41,8 +46,16 @@ class AcquireUI(QMainWindow, HumanClient):
         self.gui = True
 
     def addPlayers(self, players):
+        """ Adds a player box for each player to the playerBoxGroup
+
+
+        Parameters:
+            players: a python list of the names of the players
+
+        """
         for player in players:
-            self.pb.addPlayer(player.name, player.money)
+            money = self.state['Players'][player]['money']
+            self.pb.addPlayer(player, money)
 
     def announceGameOver(self, name):
         self.dialogbox.announceGameOver(name)
@@ -73,16 +86,13 @@ class AcquireUI(QMainWindow, HumanClient):
     def chooseStock(self,corps,number):
         return self.dialogbox.chooseStock(number, corps, self.setColors())
 
-    def chooseTile(self,player):
+    def chooseTile(self, hand):
         tile = None
         while True:
-            if(player.playerType == 'Human'):
-                tile = self.dialogbox.chooseTile(player.hand, player)
-            else:
-                tile = self.game.aiChooseTile(player)
-            if self.game.evaluatePlay(tile) != "Illegal":
-                if self.debug:
-                    print(player.name, "chose", tile, self.game.evaluatePlay(tile))
+            tile = self.dialogbox.chooseTile(hand)
+#           if self.game.evaluatePlay(tile) != "Illegal":
+            if True:
+                logging.info(" Player chose " + str(tile))
                 return tile
 
 
