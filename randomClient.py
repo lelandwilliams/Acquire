@@ -144,13 +144,14 @@ class RandomClient(QObject):
         elif m_type == 'BROADCAST' and m_subtype == 'PLAY':
             if m_body[0] in ['(','[']:
                 m_body = eval(m_body)
-            self.announcePlay(m_body)
+            action_type = getActions(self.state, None)[0]
             self.state, self.hands = succ(self.state, None, m_body, self.history)
+            self.announcePlay(m_body, action_type)
         elif m_type == 'DISCONNECT':
             self.quit()
 
     def announceBegin(self, players): pass
-    def announcePlay(self, msg): pass
+    def announcePlay(self, msg, action_type): pass
     def chooseTile(self, actions): return random.choice(actions)
     def chooseNewCompany(self, actions): return random.choice(actions)
     def chooseSurvivor(self, actions): return random.choice(actions)
