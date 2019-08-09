@@ -89,7 +89,13 @@ class AcquireUI(QMainWindow, HumanClient):
             return 'Done'
         if self.stockChoiceNum == 3:
             self.stockChoiceNum = 1
-        return self.dialogbox.chooseStock(self.stockChoiceNum, corps, self.setColors())
+
+        companies = dict()
+        for corp in corps:
+            companies[corp] = model.stockPrice(self.state, corp)
+        choice =  self.dialogbox.chooseStock(self.stockChoiceNum, companies, self.setColors())
+        self.stockChoiceNum += 1
+        return choice
 
     def chooseTile(self, hand):
         tile = None
