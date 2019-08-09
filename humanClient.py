@@ -17,6 +17,35 @@ class HumanClient(RandomClient):
         """
         self.addPlayers(players)
 
+    def announcePlay(self, play, action_type):
+        """ Updates the UI after a play.
+
+
+        """
+
+        if action_type == 'Place':
+            membership = None
+            for group, tiles in self.state['Group'].items():
+                if play in tiles:
+                    membership = group
+                    continue
+            if 'Anon' in membership:
+                self.changeTileColor(play, 'None')
+            else:
+                self.changeGroupColor(membership)
+        elif action_type == 'Found':
+            self.changeGroupColor(play)
+        elif action_type == 'Choose Survivor':
+            pass
+        elif action_type == 'Liquidate':
+            pass
+        elif action_type == 'Buy':
+            pass
+        elif action_type == 'Call':
+            pass
+        else:
+            logging.error("action_type {} not handled".format(action_type))
+
     def newGame(self):
         """ Begin a new game
 
