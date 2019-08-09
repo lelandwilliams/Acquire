@@ -65,8 +65,7 @@ class AcquireUI(QMainWindow, HumanClient):
         self.board.changeTileColor(tile,company)
 
     def changeGroupColor(self, corp):
-        idx = self.game.corporations[corp].groupIndex
-        for member in self.game.tilegroups[idx]:
+        for member in self.state['Group'][corp]:
             self.changeTileColor(member, corp)
     
     def chooseNewCorp(self,available): 
@@ -101,8 +100,6 @@ class AcquireUI(QMainWindow, HumanClient):
                 logging.info(" Player chose " + str(tile))
                 return tile
 
-
-
     def setColors(self): 
         colorscheme = {}
 #       colorscheme['None'] = "rgb(32,32,32)"
@@ -127,6 +124,8 @@ class AcquireUI(QMainWindow, HumanClient):
         return colorscheme
 
     def setPlayers(self):
+        """ DEPRECATED: gives a way to create default players
+        """
         players = []
         players.append(acquire_model.Player('Bender', 'Robot'))
         players.append(acquire_model.Player('C3P0', 'Robot'))
