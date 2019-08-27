@@ -64,6 +64,11 @@ class HumanClient(RandomClient):
         self.Concierge.serverAvailable.connect(self.serverAvailable)
         self.Concierge.runGames()
 
+    def chooseNewCompany(self, actions):
+        """ Handles the action to choose which new corporation to found.
+        """
+        return self.chooseNewCorp(actions)
+
     def serverAvailable(self, port):
         self.serverPort = port
         self.Concierge.serverAvailable.disconnect(self.serverAvailable)

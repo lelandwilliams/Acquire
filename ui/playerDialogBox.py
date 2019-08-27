@@ -68,9 +68,17 @@ class PlayerDialogBox(QFrame,QObject):
 
 
     def chooseStock(self,number,companies,colors):
-        text = "<h1>Purchase Stock</h1>"
-        text += "<p>At this point in your turn you can purchase up to<br>"
-        text += "three shares of stock in active companies</p>"
+        text = ""
+        if  number == -1 :
+            text = "<h1>Found a New Corporation</h1>"
+            text += "<p>You played a tile that joins one or more single tiles together<br>"
+            text += "so you must choose which new corporation to form<br>"
+            text += "You will recieve one free share of stock in the new corporation</p>"
+        else:
+            text = "<h1>Purchase Stock</h1>"
+            text += "<p>At this point in your turn you can purchase up to<br>"
+            text += "three shares of stock in active companies</p>"
+
         self.dialog = StockChooserDialog(companies,colors)
         if number == 1:
             self.label1.setText(text +"Choose your <b>first</b> stock")
@@ -78,6 +86,8 @@ class PlayerDialogBox(QFrame,QObject):
             self.label1.setText(text +"Choose your <b>second</b> stock")
         elif number == 3:
             self.label1.setText(text +"Choose your <b>third</b> stock")
+        elif number == -1:
+            self.label1.setText(text +"Choose which company to found")
         self.layout.addWidget(self.dialog)
         stock =  list(companies)[self.dialog.exec()]
         print(stock)

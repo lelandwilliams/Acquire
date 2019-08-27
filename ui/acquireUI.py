@@ -68,8 +68,11 @@ class AcquireUI(QMainWindow, HumanClient):
         for member in self.state['Group'][corp]:
             self.changeTileColor(member, corp)
     
-    def chooseNewCorp(self,available): 
-        return self.dialogbox.chooseCorporation(available, self.setColors())
+    def chooseNewCorp(self, choices): 
+        companies = dict()
+        for corp in choices:
+            companies[corp] = model.stockPrice(self.state, corp)
+        return self.dialogbox.chooseStock(-1, companies, self.setColors())
 
     def chooseGameOver(self):
         return self.dialogbox.chooseGameOver(self.game.getCurrentPlayer().name) == "End"
