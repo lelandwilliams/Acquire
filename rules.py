@@ -50,6 +50,10 @@ def getActions(state, hand):
     else:
         return None
 
+def getCurrentPlayer(state):
+    """ Returns the name of the current player. """
+    return state['Turn']['Player']
+
 def getFullActions(state, hand):
     """
     DEPRECATED. DO NOT USE
@@ -197,6 +201,7 @@ def succ(state, hands, action, history = None):
             s['Turn']['Buy'].append(action)
             s['Players']['Bank'][action] -= 1
             s['Players'][s['Turn']['Player']][action] +=1
+            s['Players'][s['Turn']['Player']]['money'] -= model.stockPrice(s,action)
 
 # ---------- Determine whether to end the game -----------------
     elif actions[0] == 'Call':
