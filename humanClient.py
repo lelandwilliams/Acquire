@@ -40,6 +40,9 @@ class HumanClient(RandomClient):
         elif action_type == 'Liquidate':
             pass
         elif action_type == 'Buy':
+            player = self.state['Turn']['Player']
+            money = self.state['Players'][player]['money']
+            self.pb.updatePlayerMoney(player, money)
             pass
         elif action_type == 'Call':
             pass
