@@ -46,8 +46,19 @@ class HumanClient(RandomClient):
         else:
             logging.error("action_type {} not handled".format(action_type))
 
+    def chooseNewCompany(self, actions):
+        """ Handles the action to choose which new corporation to found.
+        """
+        return self.chooseNewCorp(actions)
+
+    def chooseSurvivor(self, actions): return random.choice(actions)
+    def chooseLiquidate(self, actions): return random.choice(actions)
+    def chooseEndGame(self, actions): return "Yes"
+
     def newGame(self):
         """ Begin a new game
+
+        A function specific to this subclass.
 
         Begins by starting a new Concierge. 
         When the the Concierge finds an available server,
@@ -63,11 +74,6 @@ class HumanClient(RandomClient):
             self.Concierge.process_list.append(["python", "randomClient.py", "-n", "Random3"])
         self.Concierge.serverAvailable.connect(self.serverAvailable)
         self.Concierge.runGames()
-
-    def chooseNewCompany(self, actions):
-        """ Handles the action to choose which new corporation to found.
-        """
-        return self.chooseNewCorp(actions)
 
     def serverAvailable(self, port):
         self.serverPort = port
