@@ -198,10 +198,11 @@ def succ(state, hands, action, history = None):
             while len(s['Turn']['Buy']) < 3:
                 s['Turn']['Buy'].append('Done')
         else:
+            player = s['Turn']['Player']
             s['Turn']['Buy'].append(action)
             s['Players']['Bank'][action] -= 1
-            s['Players'][s['Turn']['Player']][action] +=1
-            s['Players'][s['Turn']['Player']]['money'] -= model.stockPrice(s,action)
+            s['Players'][player][action] +=1
+            s['Players'][player]['money'] -= model.stockPrice(s,action)
 
 # ---------- Determine whether to end the game -----------------
     elif actions[0] == 'Call':
@@ -259,7 +260,8 @@ def assignAnon(state, t):
             state['Group'][a].append(t)
             return a
 
-    new_name = "Anon{}".format(int(anons[-1][-1]) + 1)
+#   new_name = "Anon{}".format(int(anons[-1][-1]) + 1)
+    new_name = "Anon{}".format(len(anons) + 1)
     state['Group'][new_name] = [t]
     return new_name
 
@@ -285,6 +287,7 @@ def endGameConditionsMet(state):
     return False
 
 def getAdjacentAnons(state, t):
+    """ returns names of Anon groups that have a tile adjacent to a given tile."""
     anons = [g for g in state['Group'] if g not in model.corporations]
     return [a for a in anons if isAdjacent(t, state['Group'][a])]
 
