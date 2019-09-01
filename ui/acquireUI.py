@@ -72,7 +72,9 @@ class AcquireUI(QMainWindow, HumanClient):
         companies = dict()
         for corp in choices:
             companies[corp] = model.stockPrice(self.state, corp)
-        return self.dialogbox.chooseStock(-1, companies, self.setColors())
+        choice = self.dialogbox.chooseStock(-1, companies, self.setColors())
+        self.stockChoiceNum = 1
+        return choice
 
     def chooseGameOver(self):
         return self.dialogbox.chooseGameOver(self.game.getCurrentPlayer().name) == "End"
