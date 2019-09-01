@@ -37,14 +37,21 @@ class PlayerBox(QFrame):
         corpNames = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
         for corp in corpNames:
             self.corporationLabel[corp] = QLabel()
-            self.stockFrameLayout.addWidget(self.corporationLabel[corp])
-            self.corporationLabel[corp].hide()
+            self.corporationLabel[corp].setText("")
+#           self.stockFrameLayout.addWidget(self.corporationLabel[corp])
+            self.bottomlayout.addWidget(self.corporationLabel[corp])
             color = self.colorPallet[corp]
-            self.corporationLabel[corp].setStyleSheet("QLabel {background-color: " + color + "; color: white;}")
-            self.corporationLabel[corp].setFixedSize(self.stockWidth, self.stockHeight) 
-            self.corporationLabel[corp].setAlignment(Qt.AlignCenter)
+            self.corporationLabel[corp].setStyleSheet("QLabel {background-color: " + color + "; color: white; }")
+            self.corporationLabel[corp].setFixedWidth(12)
+            self.corporationLabel[corp].setFixedHeight(20)
+#           self.corporationLabel[corp].setFixedSize(20, 50) 
+#           self.corporationLabel[corp].setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+#            self.corporationLabel[corp].setAlignment(Qt.AlignCenter)
+            self.corporationLabel[corp].setScaledContents(True)
+            self.corporationLabel[corp].hide()
 
         self.stockFrame.setLayout(self.stockFrameLayout)
+        self.stockFrame.setMinimumHeight(10)
         self.bottomlayout.addWidget(self.stockFrame)
         self.bottomFrame.setLayout(self.bottomlayout)
 
