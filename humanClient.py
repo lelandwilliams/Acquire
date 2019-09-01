@@ -19,11 +19,12 @@ class HumanClient(RandomClient):
         self.addPlayers(players)
 
     def announcePlay(self, play, action_type):
-        """ Updates the UI after a play.
+        """ Updates the UI after receiving notification from the game server of a play.
 
 
         """
 
+        player = self.state['Turn']['Player']
         if action_type == 'Place':
             membership = None
             for group, tiles in self.state['Group'].items():
@@ -37,12 +38,15 @@ class HumanClient(RandomClient):
             model.print_state(self.state)
         elif action_type == 'Found':
             self.changeGroupColor(play)
+            stock = dict()
+            for corp in model.corporations:
+                stock[corp] = self.state['Players'][player][corp]
+            self.pb.updatePlayerStock(player, stock)
         elif action_type == 'Choose Survivor':
             pass
         elif action_type == 'Liquidate':
             pass
         elif action_type == 'Buy':
-            player = self.state['Turn']['Player']
             money = self.state['Players'][player]['money']
             self.pb.updatePlayerMoney(player, money)
             stock = dict()
