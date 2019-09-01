@@ -1,3 +1,4 @@
+from rules import *
 from randomClient import RandomClient
 from concierge import Concierge
 import logging
@@ -33,6 +34,7 @@ class HumanClient(RandomClient):
                 self.changeTileColor(play, 'None')
             else:
                 self.changeGroupColor(membership)
+            model.print_state(self.state)
         elif action_type == 'Found':
             self.changeGroupColor(play)
         elif action_type == 'Choose Survivor':
@@ -43,7 +45,10 @@ class HumanClient(RandomClient):
             player = self.state['Turn']['Player']
             money = self.state['Players'][player]['money']
             self.pb.updatePlayerMoney(player, money)
-            pass
+            stock = dict()
+            for corp in model.corporations:
+                stock[corp] = self.state['Players'][player][corp]
+            self.pb.updatePlayerStock(player, stock)
         elif action_type == 'Call':
             pass
         else:
