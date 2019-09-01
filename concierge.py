@@ -128,8 +128,8 @@ class Concierge(QObject):
         scores = [model.netWorth(player, s) for player in s['Players'] if player != "Bank"]
         self.highscores.append(max(scores))
         self.scores += scores
+        self.num_games += 1
         if self.num_games < 1:
-            self.num_games += 1
 #           print("\rRunning game # {}".format(self.num_games), end = '')
             server.sendTextMessage("RESET")
 #           self.serverReady(self.serverPort)
