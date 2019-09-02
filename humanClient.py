@@ -45,16 +45,24 @@ class HumanClient(RandomClient):
         elif action_type == 'Choose Survivor':
             pass
         elif action_type == 'Liquidate':
-            pass
-        elif action_type == 'Buy':
+            # for now, same routine as in 'Buy' below
             money = self.state['Players'][player]['money']
             self.pb.updatePlayerMoney(player, money)
             stock = dict()
             for corp in model.corporations:
                 stock[corp] = self.state['Players'][player][corp]
             self.pb.updatePlayerStock(player, stock)
+        elif action_type == 'Buy':
+            #money = self.state['Players'][player]['money']
+            #self.pb.updatePlayerMoney(player, money)
+            #stock = dict()
+            #for corp in model.corporations:
+            #    stock[corp] = self.state['Players'][player][corp]
+            #self.pb.updatePlayerStock(player, stock)
+            self.pb.updateAllPlayers(self.state)
         elif action_type == 'Call':
-            pass
+            self.pb.updateAllPlayers(self.state)
+            self.announceGameOver(self, player)
         else:
             logging.error("action_type {} not handled".format(action_type))
 
