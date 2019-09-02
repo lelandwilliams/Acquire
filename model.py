@@ -1,4 +1,23 @@
 import random, string
+""" Provides the basic game state.
+
+The state comes in two parts, one providing the public information
+of the game, the other the hidden information.
+
+The hidden information are the player hands.
+
+The code throughout refers to the public information as 'state', and
+the hidden information as 'hands'
+
+The state dictionary has the following keys:
+    Players:
+    Group:
+    Phase:
+    Turn:
+    Seed:
+
+
+"""
 
 corporations = ["Tower","Luxor","Worldwide","Festival","American", "Continental","Imperial"]
 
@@ -102,8 +121,9 @@ def new_player(bank = False):
     return p_dict
 
 def new_game(playerNames):
-    """
-    Produces the initial game state
+    """ Produces the initial game state
+
+    The games state is a dictionary.
     This is a partial state, showing the public information:
         player money and stock holdings
         tiles that have been played, and to which companies they
