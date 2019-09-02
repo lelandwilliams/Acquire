@@ -150,7 +150,8 @@ class Concierge(QObject):
                 self.game_seed += 1
                 self.runGames()
             else:
-                QCoreApplication.quit()
+                pass
+#               QCoreApplication.quit()
 
 #          print("Average Score was {:5.2f} with a std dev of {:5.2f}".format(
 #               statistics.mean(self.scores), statistics.stdev(self.scores)))
