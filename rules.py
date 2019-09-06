@@ -249,6 +249,12 @@ def succ(state, hands, action, history = None):
             cur_player = players.index(s['Turn']['Player'])
             s['Turn'] = model.new_turn(players[cur_player + 1])
 
+# ------------------------ Clean Up if Game is Called --------------------
+    if s['Turn']['Call Game'] == 'Yes': 
+        s['Phase'] = 'Game Over'
+        if not history is None:
+            history.append(s['Turn'])
+        s['Turn'] = None
     return s,h
     
 # ------------------------ Helper Functions --------------------
