@@ -10,12 +10,14 @@ The code throughout refers to the public information as 'state', and
 the hidden information as 'hands'
 
 The state dictionary has the following keys:
-    Players:
-    Group:
-    Phase:
-    Turn:
-    Seed:
+    "Players", "Group", "Phase", "Turn", "Seed"
 
+
+Here is a breakdown of the values given to each key:
+"Players": dict()
+
+
+"Group", "Phase", "Turn", "Seed"
 
 """
 
@@ -81,6 +83,20 @@ def getBonus(state, corp):
     return bonuses
 
 def stockPrice(state, corp):
+    """ Determines the current price of a share for a given corporation.
+
+    Paremeters:
+    ___________
+    state: dict
+        the current game state
+
+    corp: str
+        the name of the corporation for which a price is desired
+
+    Returns:
+    int
+        the price of a share of stock in the specified corporation
+    """
     corp_size = len(state['Group'][corp])
     price = 0
     if corp in ["Worldwide", "American", "Festival"]:
