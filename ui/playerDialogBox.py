@@ -49,10 +49,10 @@ class PlayerDialogBox(QFrame,QObject):
 
     def chooseMergerStockAction(self,player,activePlayer, corp,largestCorp, actions, colors):
         text = "<h1>Choose how to Liquidate Stock</h1>"
-        if player.name == activePlayer.name:
+        if player == activePlayer:
             text += "<p>" + "You"
         else:
-            text += "<p>" + activePlayer.name
+            text += "<p>" + activePlayer
         text += " played a tile that caused " + corp + " to be merged into <br>"
         text += largestCorp +".<p>"
         text += "<p> Now you must choose what to do with your remaining stock in"
