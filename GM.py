@@ -50,6 +50,7 @@ class GM(GameClient):
     def resolveAction(self, a):
         self.state, self.hands = succ(self.state, self.hands, a, self.history)
         if a == 'Yes':
+            self.socket.sendTextMessage("BROADCAST;PLAY;{}".format(a))
             self.socket.sendTextMessage('BROADCAST;INFO;Game Over') 
             self.socket.sendTextMessage("{};{};{}".format('SERVER', 'END', (self.state,self.history)))
             self.game_in_progress = False
