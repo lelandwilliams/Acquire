@@ -76,7 +76,33 @@ class HumanClient(RandomClient):
         return self.chooseNewCorp(actions)
 
     def chooseSurvivor(self, actions): return random.choice(actions)
-    def chooseLiquidate(self, actions): return random.choice(actions)
+
+    def chooseLiquidate(self, actions):
+        """ Ask the human player what to do with stock in acquired corporation.
+
+        Parameters:
+        ___________
+        actions : list(str)
+            a list of strings containing the actions.
+            possible actions include 'Sell' 'Trade' 'All' 'Done'
+
+        Returns:
+        --------
+        str : the action chosen by the player from the given options
+        """
+
+        # First discover which sale is currently being processed
+        idx = 0
+        while self.state['Turn']['Merger']['Sales'][idx]['Done']:
+           idx += 1 
+        sale  = self.state['Turn']['Merger']['Sales'][idx]
+
+        # Obtain corporation, and obtain action
+        corp = sale['Corporation']
+        largestCorp = self.state['Turn']['Merger']['NewCorps'][0]
+
+        return self.chooseMergerStockAction(corp, largestCorp, actions)
+
     def chooseEndGame(self, actions): return "Yes"
 
     def newGame(self):
