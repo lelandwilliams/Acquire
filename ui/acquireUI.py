@@ -85,8 +85,9 @@ class AcquireUI(QMainWindow, HumanClient):
             companyList[corp] = ""
         return self.dialogbox.chooseMerger(companyList, self.setColors())
 
-    def chooseMergerStockAction(self, player, corp, largestCorp, actions):
-        return self.dialogbox.chooseMergerStockAction(player,self.game.getCurrentPlayer(), corp,largestCorp, actions, self.setColors())
+    def chooseMergerStockAction(self, corp, largestCorp, actions):
+        activePlayer = self.state['Turn']['Player']
+        return self.dialogbox.chooseMergerStockAction(self.name, activePlayer, corp,largestCorp, actions, self.setColors())
 
     def chooseStock(self,corps):
         corps.remove('Done')
