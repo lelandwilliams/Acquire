@@ -64,7 +64,8 @@ def getFullActions(state, hand):
         pass
 
 def succ(state, hands, action, history = None):
-    """
+    """ updates state, hands, and history according to the given action
+
     param @history: either None, in which case it is ignored,
         or a reference to a list, to be added onto if a new turn is created
     """
@@ -254,7 +255,7 @@ def succ(state, hands, action, history = None):
         s['Phase'] = 'Game Over'
         if not history is None:
             history.append(s['Turn'])
-        s['Turn'] = None
+        #s['Turn'] = None
     return s,h
     
 # ------------------------ Helper Functions --------------------
