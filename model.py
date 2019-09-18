@@ -1,5 +1,6 @@
 import random, string
 """ Provides the basic game state.
+Some more complex state manipuplation actions are found in rules.py
 
 The state comes in two parts, one providing the public information
 of the game, the other the hidden information.
@@ -119,6 +120,8 @@ def stockPrice(state, corp):
     return price
 
 def netWorth(player, s):
+    """ Returns the calculated sum of a player's money, stock holdings value, and shareholder bonuses.
+    """
     networth = s['Players'][player]['money']
     for corp in corporations:
         networth += s['Players'][player][corp] * stockPrice(s, corp)
