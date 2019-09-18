@@ -64,6 +64,8 @@ class HumanClient(RandomClient):
                 for newCorp in self.state['Turn']['Merger']['NewCorps']:
                     for tile in self.state['Group'][newCorp]:
                         self.board.changeTileColor(tile, newCorp)
+        elif action_type == 'Trade':
+            self.pb.updateAllPlayers(self.state)
         elif action_type == 'Call':
             self.pb.updateAllPlayers(self.state)
             self.announceGameOver(self, player)
