@@ -55,8 +55,8 @@ class PlayerDialogBox(QFrame,QObject):
             text += "<p>" + activePlayer
         text += " played a tile that caused " + corp + " to be merged into <br>"
         text += largestCorp +".<p>"
-        text += "<p> Now you must choose what to do with your remaining stock in"
-        text += corp + "</p>"
+        text += "<p> Now you must choose what to do with your remaining stock in <b>"
+        text += corp + "</b></p>"
         text += "<p> Depending on share availibilty, you may:"
         text += "<li> Trade in two shares of " + corp + "for one share of " + largestCorp
         text += "<li> Sell a shares to the bank"
