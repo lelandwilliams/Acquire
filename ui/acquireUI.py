@@ -59,6 +59,10 @@ class AcquireUI(QMainWindow, HumanClient):
             self.pb.addPlayer(player, money)
 
     def announceGameOver(self, name):
+        for player in self.state['Players']:
+            if player == "Bank":
+                continue
+            self.pb.updatePlayerMoney(player, model.netWorth(player, self.state))
         self.dialogbox.announceGameOver(name)
 
     def changeTileColor(self, tile, company):
