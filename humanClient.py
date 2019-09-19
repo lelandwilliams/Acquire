@@ -68,7 +68,7 @@ class HumanClient(RandomClient):
             self.pb.updateAllPlayers(self.state)
         elif action_type == 'Call':
             self.pb.updateAllPlayers(self.state)
-            self.announceGameOver(self, player)
+            self.announceGameOver(player)
         else:
             logging.error("action_type {} not handled".format(action_type))
 
@@ -127,7 +127,22 @@ class HumanClient(RandomClient):
         self.Concierge.serverAvailable.connect(self.serverAvailable)
         self.Concierge.runGames()
 
+    def onDisconnected(self):
+        """ Overrides parent method. Removes closing application command.
+
+        TODO: Add a disconnection handling routine in cases that game is still in session
+        
+        ____"""
+        self.socket.close()
+
     def serverAvailable(self, port):
         self.serverPort = port
         self.Concierge.serverAvailable.disconnect(self.serverAvailable)
         self.connectToServer(port = self.serverPort)
+
+    def quit(self):
+        """ Routine to handle receipt of a DISCONNECT message
+
+        Overrides parent routine.
+        """
+        self.socket.close()
