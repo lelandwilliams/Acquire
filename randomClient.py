@@ -104,8 +104,6 @@ class RandomClient(QObject):
         self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
 
     def onDisconnected(self):
-#       if self.name == "Min1":
-#           print(self.state)
         self.socket.close()
         QCoreApplication.quit()
 
@@ -161,8 +159,6 @@ class RandomClient(QObject):
 
     def quit(self):
         """ Method to handle the reciept of a quit request """
-#       if self.name == "Min1":
-#           print(self.state)
         QCoreApplication.quit()
         sys.exit()
 
