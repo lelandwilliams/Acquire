@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QHBoxLayout, QFrame, QLabel
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QFrame, QLabel
 #from acquire_model import Acquire
 from PyQt5.QtCore import Qt
 
