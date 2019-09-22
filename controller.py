@@ -1,8 +1,95 @@
-import acquire_model
+import sys, uuid
+import acquire_model, concierge, randomClient
+#from network import AcquireServer, DEFAULTPORT
+from PyQt5.QtCore import pyqtSlot, QTimer, QCoreApplication
 
-class Controller:
+class Controller(randomClient.RandomClient):
     def __init__(self):
-        self.gui = True
+#        self.game = acquire_model.Acquire()
+        self.name = 'Control'
+#       super().__init__(port)
+        super().__init__()
+
+#    @pyqtSlot()
+    def parse_message(self, m):
+#       print("Controller.parse_message received: " + m)
+        clientid, command,  parameter = m.split(';')
+#       print("Controller clientid: " + clientid)
+#       print("Controller command: " + command)
+#       print("Controller parameter: " + parameter)
+        if command == "REGISTER":
+            self.process_register(clientid, parameter)
+        elif command == "KILL":
+            print("Server: in disconnect()")
+            self.outgoing_message_q.put('DISCONNECT;')
+            self.gameDone = True
+            QCoreApplication.quit()
+        elif command == "BEGIN":
+            if len(self.game.players) < 3:
+                self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T START - NOT ENOUGH PLAYERS;")
+            else:
+                self.outgoing_message_q.put('BEGIN;;;')
+                self.gameState = 'PLACESTARTERS'
+                self.outgoing_message_q.put(self.build_request(self.starterPlayer),'PLACESTARTER')
+        elif command == "PLACESTARTER":
+            if self.gameState != 'PLACESTARTERS':
+                self.outgoing_message_q.put("ERROR;" + parameter + ";NOT STARTER PHASE;")
+            elif clientid != self.get_id_of_name(self.game.players[self.starterPlayer].name):
+                self.outgoing_message_q.put("ERROR;" + parameter + ";PLAYER ID != NAME;")
+            elif parameter not in self.game.players[self.starterPlayer].hand:
+                self.outgoing_message_q.put("ERROR;" + parameter + ";YOU DON'T HAVE THAT TILE;")
+            else:
+                self.game.placeStarter(parameter)
+                self.game.players[self.starterPlayer].hand.remove(tile)
+                self.game.players[self.starterPlayer].lastPlay = tile
+                self.outgoing_message_q.put("PLAY;" + self.get_name_of_id(clientid)
+                        + ";PLACESTARTER" + parameter)
+                self.starterPlayer += 1
+                if self.starterPlayer >= len(self.game.players):
+                    start = self.determineStartingPlayer()
+                    self.game.currentPlayerNumber = start
+                    self.outgoing_message_q.put("INFO;" + self.game.players[start].name + ";STARTS")
+                    self.build_request(start, 'PLACETILE')
+                    self.game.gameState = 'DONE'
+                    self.outgoing_message_q.put('DISCONNECT;;')
+
+    def process_register(self, clientid, parameter):
+        if len(self.game.players) > 6:
+            self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T JOIN - GAME IS FULL;")
+#       elif self.game.gameState != "SETUP":
+#           self.outgoing_message_q.put("ERROR;" + parameter + ";CAN'T JOIN - GAME HAS STARTED;")
+#       elif parameter in self.game.players:
+#           self.outgoing_message_q.put("ERROR;" + parameter + ";NAME UNAVAILABLE;")
+#       elif self.get_name_of_id(clientid) != None:
+#           self.outgoing_message_q.put("ERROR;" + parameter + ";PLAYER ALREADY NAMED;")
+        else:
+#           print("SERVER: REGISTER VALID, PROCESSING")
+            self.outgoing_message_q.put("REGISTER;" + parameter)
+            self.send_private_message('PRIVATE;;', parameter)
+#               QTimer.singleShot(250, self.main)
+ 
+    def build_request(self, player_num, request_type):
+        message = 'REQUEST;'
+        message += self.game.players[player_num].name
+        messsage += ';' + request_type + ';'
+        return message
+
+    def get_name_of_id(self, clientid):
+        for client in self.clients:
+            if client.client_id == clientid:
+                return client.name
+        sys.exit("Error: (get_name_of_id) uuid does not match any client")
+
+    def get_id_of_name(self, name):
+        for client in self.clients:
+            if client.name == name:
+                return client.client_id
+        sys.exit("Error: (get_id_of_name) name does not match any client")
+
+    def set_name_of_id(self, clientid, name):
+        for client in self.clients:
+            if client.client_id == clientid:
+                client.name = name
 
     def liquidate(self):
         for corp in self.game.corporations:
@@ -93,7 +180,7 @@ class Controller:
         player.hand.sort()
 
 
-    def newGame(self):
+    def oldMainLoop(self):
         self.setup()
         while(not self.game.gameOver()):
             if self.debug:
