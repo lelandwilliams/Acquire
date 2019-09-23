@@ -1,22 +1,25 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
+QLineEdit, QButtonGroup, QGridLayout, QRadioButton
+
+playerTypes = ['Human', 'Random']
 
 class Window(QFrame):
     """ Provides the contents of the dialog box.
     """
     def __init__(self):
         super().__init__()
-        self.num_players = 1
+        self.num_players = 4
         self.players = list()
         self.playerLayout = QVBoxLayout()
         self.addPlayer(True)
-        for _ in self.num_players -1:
+        for _ in range(self.num_players -1):
             self.addPlayer(False)
 
-        self.setLayout(self.playerBox)
+        self.setLayout(self.playerLayout)
 
-    def addPlayer(human = False): 
-        player = self.PlayerBox(human = human)
+    def addPlayer(self, human = False): 
+        player = PlayerBox(None, human)
         self.playerLayout.addWidget(player)
         self.players.append(player)
 
@@ -33,19 +36,28 @@ class PlayerBox(QFrame):
                 self.name = "Bender"
         else:
             self.name = name
+        self.typeGroup = QButtonGroup()
+        self.button_layout = QGridLayout()
+
         self.nameBox = QLineEdit(self.name)
         self.nameBox.setReadOnly(True)
 
+        i = 0
+        for pt in playerTypes:
+            button = QRadioButton(pt)
+            self.button_layout.addWidget(button, 0, i)
+            self.typeGroup.addButton(button, id = i)
+            i += 1
+
         self.layout.addWidget(self.nameBox)
+        self.layout.addLayout(self.button_layout)
         self.setLayout(self.layout)
-
-
-
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    a = PlayerBox()
+#   a = PlayerBox()
+    a = Window()
     a.show()
     sys.exit(app.exec_())
 
