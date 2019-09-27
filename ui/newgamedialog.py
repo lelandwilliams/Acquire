@@ -25,11 +25,14 @@ class Window(QFrame):
 
 
 class PlayerBox(QFrame):
-    """ Proveds a Horizontal widget to define a player"""
-    def __init__(self, name = None, human = True):
+    """ Proveds a Horizontal widget to specify player information when starting a game.
+    Parameters:
+    -----------
+    """
+    def __init__(self, name = "", type = 'human'):
         super().__init__()
         self.layout = QHBoxLayout()
-        if name is None:
+        if name == "":
             if human:
                 self.name = "Puny Human"
             else:
@@ -48,6 +51,10 @@ class PlayerBox(QFrame):
             self.button_layout.addWidget(button, 0, i)
             self.typeGroup.addButton(button, id = i)
             i += 1
+            if human and pt == 'Human':
+                button.toggle()
+            if not human and pt != 'Human':
+                button.toggle()
 
         self.layout.addWidget(self.nameBox)
         self.layout.addLayout(self.button_layout)
