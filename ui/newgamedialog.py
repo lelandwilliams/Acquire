@@ -28,15 +28,16 @@ class PlayerBox(QFrame):
     """ Proveds a Horizontal widget to specify player information when starting a game.
     Parameters:
     -----------
+        name(str): the specified name for the player.
+        restricted_type(str): can be 'human' or 'robot' or ''.
     """
-    def __init__(self, name = "", type = 'human'):
+    def __init__(self, name = "", restricted_type = 'human'):
         super().__init__()
         self.layout = QHBoxLayout()
-        if name == "":
-            if human:
-                self.name = "Puny Human"
-            else:
-                self.name = "Bender"
+        if name == "" and restricted_type == 'human':
+            self.name = "Puny Human"
+        elif name == "" and restricted_type != 'human':
+            self.name = "Bender"
         else:
             self.name = name
         self.typeGroup = QButtonGroup()
@@ -51,7 +52,7 @@ class PlayerBox(QFrame):
             self.button_layout.addWidget(button, 0, i)
             self.typeGroup.addButton(button, id = i)
             i += 1
-            if human and pt == 'Human':
+            if restricted_type == 'human' and pt == 'Human':
                 button.toggle()
             if not human and pt != 'Human':
                 button.toggle()
