@@ -14,12 +14,12 @@ class Window(QFrame):
         self.playerLayout = QVBoxLayout()
         self.addPlayer(True)
         for _ in range(self.num_players -1):
-            self.addPlayer(False)
+            self.addPlayer('human')
 
         self.setLayout(self.playerLayout)
 
-    def addPlayer(self, human = False): 
-        player = PlayerBox(None, human)
+    def addPlayer(self, player_type = 'robot'): 
+        player = PlayerBox(None, player_type)
         self.playerLayout.addWidget(player)
         self.players.append(player)
 
@@ -31,6 +31,7 @@ class PlayerBox(QFrame):
         name(str): the specified name for the player.
         restricted_type(str): can be 'human' or 'robot' or ''.
     """
+    spacer_width = 0
     def __init__(self, name = "", restricted_type = 'human'):
         super().__init__()
         self.layout = QHBoxLayout()
@@ -40,12 +41,14 @@ class PlayerBox(QFrame):
             self.name = "Bender"
         else:
             self.name = name
+
         self.typeGroup = QButtonGroup()
         self.button_layout = QGridLayout()
 
         self.nameBox = QLineEdit(self.name)
         self.nameBox.setReadOnly(True)
 
+        # Add player type choices as radio buttons
         i = 0
         for pt in playerTypes:
             button = QRadioButton(pt)
@@ -54,7 +57,7 @@ class PlayerBox(QFrame):
             i += 1
             if restricted_type == 'human' and pt == 'Human':
                 button.toggle()
-            if not human and pt != 'Human':
+            if restricted_type != 'human' and pt != 'Human':
                 button.toggle()
 
         self.layout.addWidget(self.nameBox)
