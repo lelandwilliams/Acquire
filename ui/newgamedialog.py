@@ -17,9 +17,9 @@ class Window(QFrame):
         self.num_players = 4
         self.players = list()
         self.playerLayout = QVBoxLayout()
-        self.addPlayer(True)
+        self.addPlayer('human')
         for _ in range(self.num_players -1):
-            self.addPlayer('human')
+            self.addPlayer('robot')
 
         self.setLayout(self.playerLayout)
 
@@ -52,7 +52,7 @@ class PlayerBox(QFrame):
 
         self.nameBox = QLineEdit(self.name)
         self.nameBox.setReadOnly(True)
-        self.nameBox.setText('Test')
+        self.nameBox.setText(self.name)
 
         # Add player type choices as radio buttons
         i = 0
