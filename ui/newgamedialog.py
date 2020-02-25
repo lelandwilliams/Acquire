@@ -1,8 +1,13 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
 QLineEdit, QButtonGroup, QGridLayout, QRadioButton
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+from robotNames import names
 
-playerTypes = ['Human', 'Random']
+playerTypes = ['Human', 'RandomAI']
 
 class Window(QFrame):
     """ Provides the contents of the dialog box.
@@ -47,6 +52,7 @@ class PlayerBox(QFrame):
 
         self.nameBox = QLineEdit(self.name)
         self.nameBox.setReadOnly(True)
+        self.nameBox.setText('Test')
 
         # Add player type choices as radio buttons
         i = 0
