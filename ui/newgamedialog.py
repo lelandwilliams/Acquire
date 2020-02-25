@@ -37,25 +37,15 @@ class PlayerBox(QFrame):
         restricted_type(str): can be 'human' or 'robot' or ''.
     """
     spacer_width = 0
-    def __init__(self, name = "", restricted_type = 'human'):
+    def __init__(self, name = "", player_type = 'human'):
         super().__init__()
-        self.layout = QHBoxLayout()
-        if name == "" and restricted_type == 'human':
-            self.name = "Puny Human"
-        elif name == "" and restricted_type != 'human':
-            self.name = "Bender"
-        else:
-            self.name = name
 
+        self.layout = QHBoxLayout()
         self.typeGroup = QButtonGroup()
         self.button_layout = QGridLayout()
 
-        self.nameBox = QLineEdit(self.name)
+        self.nameBox = QLineEdit(name)
         self.nameBox.setReadOnly(True)
-        if restricted_type == 'human':
-            self.nameBox.setText('Meat Bag')
-        else:
-            self.nameBox.setText('Meat Bag')
 
         # Add player type choices as radio buttons
         i = 0
@@ -64,9 +54,9 @@ class PlayerBox(QFrame):
             self.button_layout.addWidget(button, 0, i)
             self.typeGroup.addButton(button, id = i)
             i += 1
-            if restricted_type == 'human' and pt == 'Human':
+            if player_type == 'human' and pt == 'Human':
                 button.toggle()
-            if restricted_type != 'human' and pt != 'Human':
+            if player_type != 'human' and pt != 'Human':
                 button.toggle()
 
         self.layout.addWidget(self.nameBox)
