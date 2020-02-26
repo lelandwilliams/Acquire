@@ -6,6 +6,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 from robotNames import names as robotnames
+from random import choice
 
 playerTypes = ['Human', 'RandomAI']
 
@@ -24,6 +25,9 @@ class NewGameDialog(QFrame):
         self.setLayout(self.playerLayout)
 
     def addPlayer(self, name ='Meat Bag', player_type = 'robot'): 
+        cur_names = [p.nameBox.text() for p in self.players]
+        while name in cur_names:
+            name = choice(robotnames)
         player = PlayerBox(name, player_type)
         self.playerLayout.addWidget(player)
         self.players.append(player)
