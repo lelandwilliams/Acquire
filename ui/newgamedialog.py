@@ -5,11 +5,11 @@ import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
-from robotNames import names
+from robotNames import names as robotnames
 
 playerTypes = ['Human', 'RandomAI']
 
-class Window(QFrame):
+class NewGameDialog(QFrame):
     """ Provides the contents of the dialog box.
     """
     def __init__(self):
@@ -67,7 +67,7 @@ class PlayerBox(QFrame):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 #   a = PlayerBox()
-    a = Window()
+    a = NewGameDialog()
     a.show()
     sys.exit(app.exec_())
 
