@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
-QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog
+QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog, QPushButton
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -17,6 +17,8 @@ class NewGameDialog(QFrame):
         super().__init__()
         self.num_players = num_players
         self.standalone = standalone
+        self.logfile = ""
+        self.num_rounds = 0
 
         self.players = list()
         self.playerLayout = QVBoxLayout()
@@ -29,6 +31,13 @@ class NewGameDialog(QFrame):
         self.leftLayout = QVBoxLayout()
         self.mainLayout.addLayout(self.leftLayout)
         self.leftLayout.addLayout(self.playerLayout)
+
+        if self.standalone:
+            self.standalonelayout = QHBoxLayout()
+            self.filedialogbutton = QPushButton('Button')
+            self.standalonelayout.addWidget(self.filedialogbutton)
+            self.leftLayout.addLayout(self.standalonelayout)
+
 
         self.setLayout(self.mainLayout)
 
