@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
-QLineEdit, QButtonGroup, QGridLayout, QRadioButton
+QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -13,20 +13,28 @@ playerTypes = ['Human', 'RandomAI']
 class NewGameDialog(QFrame):
     """ Provides the contents of the dialog box.
     """
-    def __init__(self):
+    def __init__(self, num_players = 2, standalone = True):
         super().__init__()
-        self.num_players = 4
+        self.num_players = num_players
+        self.standalone = standalone
+
         self.players = list()
         self.playerLayout = QVBoxLayout()
-        self.addPlayer(player_type='human')
-        for _ in range(self.num_players -1):
+        if not standalone:
+            self.addPlayer(player_type='human')
+        while len(self.players) < self.num_players:
             self.addPlayer(player_type='robot')
 
-        self.setLayout(self.playerLayout)
+        self.mainLayout = QHBoxLayout()
+        self.leftLayout = QVBoxLayout()
+        self.mainLayout.addLayout(self.leftLayout)
+        self.leftLayout.addLayout(self.playerLayout)
 
-    def addPlayer(self, name ='Meat Bag', player_type = 'robot'): 
+        self.setLayout(self.mainLayout)
+
+    def addPlayer(self, name ='', player_type = 'robot'): 
         cur_names = [p.nameBox.text() for p in self.players]
-        while name in cur_names:
+        while name in cur_names or name == '':
             name = choice(robotnames)
         player = PlayerBox(name, player_type)
         self.playerLayout.addWidget(player)
@@ -70,8 +78,7 @@ class PlayerBox(QFrame):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-#   a = PlayerBox()
-    a = NewGameDialog()
+    a = NewGameDialog(num_players = 4, standalone=True)
     a.show()
     sys.exit(app.exec_())
 
