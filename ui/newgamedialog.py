@@ -62,6 +62,10 @@ class NewGameDialog(QFrame):
         self.playerLayout.addWidget(player)
         self.players.append(player)
 
+    def chooseFile(self):
+        self.filename = QFileDialog.getOpenFileName()
+        self.saEditBar.setText(self.filename)
+
 
 class PlayerBox(QFrame):
     """ Proveds a Horizontal widget to specify player information when starting a game.
