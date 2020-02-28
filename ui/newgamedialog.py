@@ -39,6 +39,7 @@ class NewGameDialog(QFrame):
             self.standalonelayout = QHBoxLayout()
             self.filedialogbutton = QToolButton()
             self.filedialogbutton.setIcon(QIcon.fromTheme('folder'))
+            self.filedialogbutton.clicked.connect(self.chooseFile)
             self.saLabel = QLabel("Log File:")
             self.saLabel2 = QLabel("Num Games:")
             self.saEditBar = QLineEdit(self.logfile)
@@ -49,7 +50,16 @@ class NewGameDialog(QFrame):
             self.standalonelayout.addWidget(self.filedialogbutton)
             self.standalonelayout.addWidget(self.saLabel2)
             self.standalonelayout.addWidget(self.numBox)
+
+            self.buttonRow = QHBoxLayout()
+            self.startButton = QPushButton('Start')
+            self.quitButton = QPushButton('Quit')
+            self.buttonRow.addWidget(self.startButton)
+            self.buttonRow.addWidget(self.quitButton)
+            self.quitButton.clicked.connect(self.close)
+
             self.leftLayout.addLayout(self.standalonelayout)
+            self.leftLayout.addLayout(self.buttonRow)
 
 
         self.setLayout(self.mainLayout)
@@ -63,8 +73,9 @@ class NewGameDialog(QFrame):
         self.players.append(player)
 
     def chooseFile(self):
-        self.filename = QFileDialog.getOpenFileName()
-        self.saEditBar.setText(self.filename)
+        self.filename = QFileDialog.getSaveFileName()
+        print(self.filename)
+        self.saEditBar.setText(self.filename[0])
 
 
 class PlayerBox(QFrame):
