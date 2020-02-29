@@ -26,6 +26,7 @@ class statsBuilder(Concierge):
         self.players = players
         self.num_games = 0
         self.max_games = 1
+        self.fname = 'examples.gam'
 
     def serverDone(self, game, server):
         try:
@@ -33,7 +34,7 @@ class statsBuilder(Concierge):
         except:
             self.server.disconnect()
             QCoreApplication.quit()
-        of = open('examples.gam', 'a')
+        of = open(self.fname, 'a')
         of.write(game)
         of.write('\n')
         of.close()
