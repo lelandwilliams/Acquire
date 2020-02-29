@@ -8,11 +8,20 @@ from PyQt5.QtNetwork import QHostAddress
 
 DEFAULTPORT = 64337
 
+Bots = ["randomClient.py", "reflexAgent2.py", "reflexAgent3.py",\
+        "reflexAgent4.py"]
+
 """Provides class statsBuilder
 """
 
 class statsBuilder(Concierge):
     """
+    Parameters:
+    -----------
+    int my_id: not currently used
+    int port: the network port number to use
+    dict players: a dictionary of name -> playerfile entries
+
 
     """
     def __init__(
