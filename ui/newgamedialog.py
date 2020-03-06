@@ -16,7 +16,7 @@ for b in Bots:
     playerTypes.append(b[:-3])
 
 class NewGameDialog(QFrame):
-    """ Provides the contents of the dialog box.
+    """ Provides a dialog to start a new game
     """
     def __init__(self, num_players = 2, standalone = True):
         super().__init__()
@@ -79,7 +79,8 @@ class NewGameDialog(QFrame):
         self.players.append(player)
 
     def chooseFile(self):
-        self.filename = QFileDialog.getSaveFileName()
+        """ initiates the use of QFileDialog and handles the results """
+        self.filename = QFileDialog.getSaveFileName(options=(QFileDialog.DontConfirmOverwrite))
         print(self.filename)
         self.saEditBar.setText(self.filename[0])
 
@@ -134,7 +135,6 @@ class PlayerBox(QFrame):
         self.layout.addWidget(self.nameBox)
         self.layout.addLayout(self.button_layout)
         self.setLayout(self.layout)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
