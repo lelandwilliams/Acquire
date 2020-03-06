@@ -1,9 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
 QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog, QPushButton,\
-QToolButton, QLabel
+QToolButton, QLabel, QProgressDialog
 from PyQt5.QtGui import QIcon, QIntValidator
-import os,sys,inspect
+import os,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -38,7 +38,8 @@ class NewGameDialog(QFrame):
         self.leftLayout.addLayout(self.playerLayout)
 
         if self.standalone:
-            self.logfile = ""
+            self.filename = ""
+            self.numGames = None
             self.standalonelayout = QHBoxLayout()
             self.filedialogbutton = QToolButton()
             self.filedialogbutton.setIcon(QIcon.fromTheme('folder'))
@@ -46,9 +47,11 @@ class NewGameDialog(QFrame):
             self.saLabel = QLabel("Log File:")
             self.saLabel2 = QLabel("Num Games:")
             self.saEditBar = QLineEdit(self.logfile)
+
             self.numBox = QLineEdit("10")
             self.validator = QIntValidator(1,100)
             self.numBox.setValidator(self.validator)
+            self.numBox.textChanged.connect(self.numBoxUpdated)
 
             self.standalonelayout.addWidget(self.saLabel)
             self.standalonelayout.addWidget(self.saEditBar)
@@ -81,10 +84,11 @@ class NewGameDialog(QFrame):
     def chooseFile(self):
         """ initiates the use of QFileDialog and handles the results """
         self.filename = QFileDialog.getSaveFileName(options=(QFileDialog.DontConfirmOverwrite))
-        print(self.filename)
+        print(self.filename[0])
         self.saEditBar.setText(self.filename[0])
 
     def makeExamples(self):
+        """ Runs the simulations upon the user selecting the start button """
         game_runner = statsBuilder()
         player_dict = dict()
         for p in self.players:
@@ -93,6 +97,13 @@ class NewGameDialog(QFrame):
             player_dict[p_name] = selected + ".py"
         game_runner.players = player_dict
 
+        progress = QProgressDialog("Running Simulations")
+
+    def numBoxUpdated(self, txt):
+        try:
+            self.num_games = int(txt) 
+        except:
+            self.num_games = None
 
 
 class PlayerBox(QFrame):
