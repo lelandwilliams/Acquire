@@ -92,7 +92,7 @@ class NewGameDialog(QFrame):
         self.updateStartButtonStatus()
 
     def makeExamples(self):
-        """ Runs the simulations upon the user selecting the start button """
+        """ Runs the simulations upon the user selecting the start button  in standalone mode"""
         game_runner = statsBuilder()
         player_dict = dict()
         for p in self.players:
@@ -101,7 +101,7 @@ class NewGameDialog(QFrame):
             player_dict[p_name] = selected + ".py"
         game_runner.players = player_dict
 
-        progress = QProgressDialog("Running Simulations")
+        progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
 
     def numBoxUpdated(self, txt):
         try:
