@@ -39,7 +39,7 @@ class NewGameDialog(QFrame):
 
         if self.standalone:
             self.filename = ""
-            self.numGames = None
+            self.num_games = 1
             self.standalonelayout = QHBoxLayout()
             self.filedialogbutton = QToolButton()
             self.filedialogbutton.setIcon(QIcon.fromTheme('folder'))
@@ -48,7 +48,7 @@ class NewGameDialog(QFrame):
             self.saLabel2 = QLabel("Num Games:")
             self.saEditBar = QLineEdit(self.logfile)
 
-            self.numBox = QLineEdit("10")
+            self.numBox = QLineEdit(str(self.num_games))
             self.validator = QIntValidator(1,100)
             self.numBox.setValidator(self.validator)
             self.numBox.textChanged.connect(self.numBoxUpdated)
@@ -69,6 +69,7 @@ class NewGameDialog(QFrame):
 
             self.leftLayout.addLayout(self.standalonelayout)
             self.leftLayout.addLayout(self.buttonRow)
+            self.updateStartButtonStatus()
 
 
         self.setLayout(self.mainLayout)
@@ -86,6 +87,7 @@ class NewGameDialog(QFrame):
         self.filename = QFileDialog.getSaveFileName(options=(QFileDialog.DontConfirmOverwrite))
         print(self.filename[0])
         self.saEditBar.setText(self.filename[0])
+        self.updateStartButtonStatus()
 
     def makeExamples(self):
         """ Runs the simulations upon the user selecting the start button """
@@ -104,6 +106,10 @@ class NewGameDialog(QFrame):
             self.num_games = int(txt) 
         except:
             self.num_games = None
+        self.updateStartButtonStatus()
+
+    def updateStartButtonStatus(self):
+        self.startButton.setEnabled(self.num_games is not None and self.filename != "")
 
 
 class PlayerBox(QFrame):
