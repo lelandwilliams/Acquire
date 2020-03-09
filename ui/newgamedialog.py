@@ -36,6 +36,7 @@ class NewGameDialog(QFrame):
         self.leftLayout = QVBoxLayout()
         self.mainLayout.addLayout(self.leftLayout)
         self.leftLayout.addLayout(self.playerLayout)
+        self.leftLayout.addSpacing(40)
 
         if self.standalone:
             self.filename = ""
@@ -56,6 +57,7 @@ class NewGameDialog(QFrame):
             self.standalonelayout.addWidget(self.saLabel)
             self.standalonelayout.addWidget(self.saEditBar)
             self.standalonelayout.addWidget(self.filedialogbutton)
+            self.standalonelayout.addSpacing(30)
             self.standalonelayout.addWidget(self.saLabel2)
             self.standalonelayout.addWidget(self.numBox)
 
