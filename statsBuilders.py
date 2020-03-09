@@ -1,12 +1,15 @@
 from concierge import Concierge
 import model
 import subprocess, sys
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, pyqtSignal
 from PyQt5.QtNetwork import QHostAddress
 
 DEFAULTPORT = 64337
 
 class statsBuilder(Concierge):
+    completedRounds = pyqtSignal(int)
+    gamesComplete = pyqtSignal()
+
     def __init__(
             self,
             my_id = None, 
@@ -17,6 +20,8 @@ class statsBuilder(Concierge):
         super().__init__(my_id, port, address, num_servers)
         self.players = players
         self.num_games_desired = 1000
+        self.filename = "results.csv"
+
 
     def runGames(self):
         header = str()
@@ -24,7 +29,7 @@ class statsBuilder(Concierge):
             header += "{} score,".format(player)
         for player in self.players:
             header += "{} won,".format(player)
-        of = open('results.csv', 'a')
+        of = open(self.filename, 'a')
         of.write(header[:-1])
         of.write('\n')
         of.close()
