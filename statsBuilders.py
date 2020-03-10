@@ -7,23 +7,45 @@ from PyQt5.QtNetwork import QHostAddress
 DEFAULTPORT = 64337
 
 class statsBuilder(Concierge):
+    """ statsBuilder
+    This class extends Concierge to create a game runner solely to generate data from
+    bot players.
+
+    It's original use was to run games and record the final scores and the winner.
+    It is being overhauled to only run games and save the game data.
+    """
     completedRounds = pyqtSignal(int)
     gamesComplete = pyqtSignal()
+    ready = pyqtSignal()
 
     def __init__(
             self,
             my_id = None, 
             port = DEFAULTPORT, 
             address = QHostAddress.LocalHost,
-            num_servers = 4,
+            num_servers = 1,
             players = None):
         super().__init__(my_id, port, address, num_servers)
         self.players = players
         self.num_games_desired = 1000
         self.filename = "results.csv"
+        self.num_servers = num_servers
+        self.evaluate_results = False
+        self.num_games = 0
 
+    def startServers(self):
+        if self.evaluate_results:
+            printHeader()
 
-    def runGames(self):
+        for i in range(self.num_servers):
+            subprocess.Popen(["python", 
+                    "gameServer.py", 
+                    "-cp", 
+                    str(self.port), 
+                    "-n", 
+                    str(len(self.players))])
+
+    def printHeader(self):
         header = str()
         for player in self.players:
             header += "{} score,".format(player)
@@ -33,31 +55,31 @@ class statsBuilder(Concierge):
         of.write(header[:-1])
         of.write('\n')
         of.close()
-        for i in range(self.num_servers):
-            subprocess.Popen(["python", 
-                    "gameServer.py", 
-                    "-cp", 
-                    str(self.port), 
-                    "-n", 
-                    str(len(self.players))])
 
-    def serverDone(self,game, server):
-        s, hist = eval(game)
-        player_scores = dict()
-        player_won = dict()
-        for player in self.players:
-            player_scores[player] = model.netWorth(player, s)
-        for player in self.players:
-            player_won[player] = int(player_scores[player] == max(player_scores.values()))
-        line = str()
-        for player in self.players:
-            line += "{},".format(player_scores[player])
-        for player in self.players:
-            line += "{},".format(player_won[player])
-        of = open('results.csv', 'a')
-        of.write(line[:-1])
-        of.write('\n')
-        of.close()
+    def serverDone(self, game, server):
+        """ called when a server reports to the concierge that a game is finished """
+        if self.evaluate_results:
+            s, hist = eval(game)
+            player_scores = dict()
+            player_won = dict()
+            for player in self.players:
+                player_scores[player] = model.netWorth(player, s)
+            for player in self.players:
+                player_won[player] = int(player_scores[player] == max(player_scores.values()))
+            line = str()
+            for player in self.players:
+                line += "{},".format(player_scores[player])
+            for player in self.players:
+                line += "{},".format(player_won[player])
+            of = open(self.filename, 'a')
+            of.write(line[:-1])
+            of.write('\n')
+            of.close()
+        else:
+            of = open(self.filename, 'a')
+            of.write(game)
+            of.write('\n')
+            of.close()
 
         if self.num_games < self.num_games_desired:
             self.num_games += 1
@@ -67,6 +89,9 @@ class statsBuilder(Concierge):
             QCoreApplication.quit()
 
     def serverReady(self, port):
+        """ serverReady()
+        called when the concierge recieves a message from a client
+        """
         subprocess.Popen(["python", "GM.py", "-p", port ])
         for player in self.players:
             subprocess.Popen(["python", players[player], "-p", port, "-n", player])
@@ -83,7 +108,7 @@ if __name__ == '__main__':
     players['Flex2'] = 'reflexAgent2.py'
     s = statsBuilder()
     s.players = players
-    s.runGames()
+    s.startServers()
     app.exec_()
 
             
