@@ -23,7 +23,7 @@ class GM(GameClient):
             self.startGame(eval(m_body))
         elif sender == self.cur_player and m_type == 'PLAY' and m_body in self.cur_actions[-1]:
             self.resolveAction(m_body)
-        elif sender != 'SERVER' and m_type == 'DISCONNECT':
+        elif sender == 'SERVER' and m_type == 'DISCONNECT':
             QCoreApplication.quit()
             sys.exit()
 
