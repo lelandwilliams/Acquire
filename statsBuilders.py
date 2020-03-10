@@ -35,7 +35,7 @@ class statsBuilder(Concierge):
 
     def startServers(self):
         if self.evaluate_results:
-            printHeader()
+            self.printHeader()
 
         for i in range(self.num_servers):
             subprocess.Popen(["python", 
@@ -99,15 +99,17 @@ class statsBuilder(Concierge):
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
     players = dict()
-#   players['Random1'] = 'randomClient.py'
+    players['Random1'] = 'randomClient.py'
 #   players['Random2'] = 'randomClient.py'
 #   players['Random3'] = 'randomClient.py'
-    players['Flex4'] = 'reflexAgent4.py'
+#   players['Flex4'] = 'reflexAgent4.py'
     players['Flex3'] = 'reflexAgent3.py'
     players['Flex1'] = 'reflexAgent.py'
     players['Flex2'] = 'reflexAgent2.py'
     s = statsBuilder()
     s.players = players
+    s.num_games_desired = 5
+    s.evaluate_results = True
     s.startServers()
     app.exec_()
 
