@@ -6,13 +6,18 @@ import model
 DEFAULTPORT = 64337
 
 class Concierge(QObject):
-    """ A Server Management Class 
+    """ A Server Management 
+    A Concierge starts game servers, 
+     * passes on their info (address, port, etc) to
+     * potential clients (players)
+     * tells the servers to shut down when no longer needed.
     
     TODO:
         [ ] Remove old code
         [ ] Write additional documentation
         [ ] Change newClient() to handle requests from players 
             looking for game servers.
+        [ ] Change all prints to logger messages
         
     """
     serverAvailable = pyqtSignal(int, name='serverAvailable')
