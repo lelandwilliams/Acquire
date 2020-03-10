@@ -1,6 +1,6 @@
 import random, string
 """ Provides the basic game state.
-Some more complex state manipuplation actions are found in rules.py
+Some more complex state manipulation actions are found in rules.py
 
 The state comes in two parts, one providing the public information
 of the game, the other the hidden information.
