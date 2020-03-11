@@ -131,11 +131,12 @@ def netWorth(player, s):
                 networth += bonus['Bonus']
     return networth
 
-def new_player(bank = False):
+def new_player(playerType = 'Unspecified'):
     p_dict = dict()
     p_dict['money'] = 6000
+    p_dict['playerType'] = playerType
     for corp in corporations:
-        p_dict[corp] = 25 if bank else 0
+        p_dict[corp] = 25 if playerType == 'Bank' else 0
     p_dict['Last Play'] = None
 
     return p_dict
@@ -159,8 +160,10 @@ def new_game(playerNames):
     state['Turn'] = new_turn(playerNames[0])
     state['Seed'] = None
 
-    for player in playerNames + ['Bank']:
-        state['Players'][player] = new_player(player == 'Bank')
+    for player in playerNames:
+        state['Players'][player] = new_player()
+    state['Players']['Bank'] = new_player('Bank')
+
     for corp in corporations:
         state['Group'][corp] = []
     for i in range(1, len(playerNames) + 1):
