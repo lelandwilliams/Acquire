@@ -100,8 +100,10 @@ class NewGameDialog(QFrame):
             selected = p.typeGroup.checkedButton().text()
             player_dict[p_name] = selected + ".py"
         game_runner.players = player_dict
+        game_runner.filename = self.filename
 
         progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
+
 
     def numBoxUpdated(self, txt):
         try:
