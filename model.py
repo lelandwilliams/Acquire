@@ -153,6 +153,8 @@ def new_game(playerNames):
     Player Hands and the order of the tile stack are private information
     Anon is for groups that are started by placing a non-adjacent tile.
     """
+    if type(playerNames) is list:
+        players = {p : 'Unspecified' for p in playerNames}
     state = dict()
     state['Players'] = dict()
     state['Group'] = dict()
@@ -160,8 +162,8 @@ def new_game(playerNames):
     state['Turn'] = new_turn(playerNames[0])
     state['Seed'] = None
 
-    for player in playerNames:
-        state['Players'][player] = new_player()
+    for player, ptype in players.items():
+        state['Players'][player] = new_player(ptype)
     state['Players']['Bank'] = new_player('Bank')
 
     for corp in corporations:
