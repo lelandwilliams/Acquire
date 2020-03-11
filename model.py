@@ -15,7 +15,8 @@ The state dictionary has the following keys:
 
 
 Here is a breakdown of the values given to each key:
-"Players": dict()
+"Players": -> dict: player_name (str) -> player_dictionary
+
 
 
 "Group", "Phase", "Turn", "Seed"
