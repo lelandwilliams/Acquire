@@ -12,10 +12,10 @@ class statsBuilder(Concierge):
     bot players.
 
     It's original use was to run games and record the final scores and the winner.
-    It is being overhauled to only run games and save the game data.
+    It is being overhauled to record (optionally) the entire game's data.
     """
     completedRounds = pyqtSignal(int)
-    gamesComplete = pyqtSignal()
+    roundComplete = pyqtSignal()
     ready = pyqtSignal()
 
     def __init__(
@@ -31,7 +31,9 @@ class statsBuilder(Concierge):
         self.filename = "results.csv"
         self.num_servers = num_servers
         self.evaluate_results = False
-        self.num_games = 0
+        self.num_games_finished = 0
+        self.interupt = False
+        self.managed = False
 
     def startServers(self):
         if self.evaluate_results:
@@ -44,6 +46,9 @@ class statsBuilder(Concierge):
                     str(self.port), 
                     "-n", 
                     str(len(self.players))])
+
+        if self.managed:
+            self.roundComplete.connect(self.serverManage)
 
     def printHeader(self):
         header = str()
@@ -81,16 +86,34 @@ class statsBuilder(Concierge):
             of.write('\n')
             of.close()
 
-        if self.num_games < self.num_games_desired:
-            self.num_games += 1
-            server.sendTextMessage("RESET")
-        else:
+        self.num_games_finished += 1
+        self.readyServers.append(server)
+        self.roundComplete.emit()
+
+    def serverDisconnect(self):
+        if len(self.readyServers) > 0:
+            server = self.readyServers.pop()
             server.sendTextMessage("DISCONNECT")
+
+    def serverReset(self):
+        if len(self.readyServers) > 0:
+            server = self.readyServers.pop()
+            server.sendTextMessage("RESET")
+    
+    def serverManage(self):
+        """ provides a method to run the desired number of games """
+        if self.interupt:
+            self.serverDisconnect()
+        elif self.num_games_finished < self.num_games_desired:
+            self.serverReset()
+        else:
+            self.serverDisconnect()
             QCoreApplication.quit()
 
     def serverReady(self, port):
         """ serverReady()
-        called when the concierge recieves a message from a client
+        called when the concierge recieves a ready message from one of the
+        game servers it manages
         """
         subprocess.Popen(["python", "GM.py", "-p", port ])
         for player in self.players:
@@ -108,8 +131,9 @@ if __name__ == '__main__':
     players['Flex2'] = 'reflexAgent2.py'
     s = statsBuilder()
     s.players = players
-    s.num_games_desired = 5
-    s.evaluate_results = True
+    s.num_games_desired = 1
+    s.evaluate_results = False
+    s.managed = True
     s.startServers()
     app.exec_()
 
