@@ -18,18 +18,18 @@ for b in Bots:
 class NewGameDialog(QDialog):
     """ Provides a dialog to start a new game
     """
-    def __init__(self, num_players = 2, standalone = True):
-        super().__init__()
+    def __init__(self, parent=None, num_players = 2, standalone = False):
+        super().__init__(parent)
         self.num_players = num_players
         self.standalone = standalone
         self.logfile = ""
         self.num_rounds = 0
 
-        self.players = list()
+        self.playerWidgets = list()
         self.playerLayout = QVBoxLayout()
         if not standalone:
             self.addPlayer(player_type='human')
-        while len(self.players) < self.num_players:
+        while len(self.playerWidgets) < self.num_players:
             self.addPlayer(player_type='robot')
 
         self.mainLayout = QHBoxLayout()
@@ -77,12 +77,12 @@ class NewGameDialog(QDialog):
         self.setLayout(self.mainLayout)
 
     def addPlayer(self, name ='', player_type = 'robot'): 
-        cur_names = [p.nameBox.text() for p in self.players]
+        cur_names = [p.nameBox.text() for p in self.playerWidgets]
         while name in cur_names or name == '':
             name = choice(robotnames)
         player = PlayerBox(name, player_type, self.standalone)
         self.playerLayout.addWidget(player)
-        self.players.append(player)
+        self.playerWidgets.append(player)
 
     def chooseFile(self):
         """ initiates the use of QFileDialog and handles the results """
@@ -95,7 +95,7 @@ class NewGameDialog(QDialog):
         """ Runs the simulations upon the user selecting the start button  in standalone mode"""
         game_runner = statsBuilder()
         player_dict = dict()
-        for p in self.players:
+        for p in self.playerWidgets:
             p_name = p.nameBox.text()
             selected = p.typeGroup.checkedButton().text()
             player_dict[p_name] = selected + ".py"
