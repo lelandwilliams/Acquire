@@ -1,6 +1,6 @@
 import sys
 sys.path.append("..")
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp, QDialog
 from PyQt5.QtCore import Qt, QTimer
 from playerboxgroup import PlayerBoxGroup
 from board import Board
@@ -19,6 +19,8 @@ class AcquireUI(QMainWindow, HumanClient):
     """
     def __init__(self):
         super().__init__()
+        self.game_in_progress = False
+
         self.frame = QFrame()
         self.frame.setMinimumSize(270,360)
         self.lt = QGridLayout()
@@ -38,7 +40,7 @@ class AcquireUI(QMainWindow, HumanClient):
         self.fileMenu = self.menuBar().addMenu("&Game")
         self.startAction = (QAction("&New", self))
         self.fileMenu.addAction(self.startAction)
-        self.startAction.triggered.connect(self.newGame)
+        self.startAction.triggered.connect(self.startNewGame)
         self.exitAction = QAction("E&xit",self)
         self.fileMenu.addAction(self.exitAction)
         self.exitAction.triggered.connect(qApp.quit)
@@ -151,6 +153,12 @@ class AcquireUI(QMainWindow, HumanClient):
         players.append(acquire_model.Player('Puny Human', 'Human'))
 
         return players
+
+    def startNewGame(self):
+        dialog = NewGameDialog(parent=self, num_players=4)
+        dialog.open()
+        if dialog.result() == QDialog.Rejected:
+            return
 
     def test(self):
         self.pb.test()
