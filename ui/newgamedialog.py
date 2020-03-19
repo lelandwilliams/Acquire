@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
 QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog, QPushButton,\
-QToolButton, QLabel, QProgressDialog
+QToolButton, QLabel, QProgressDialog, QDialog
 from PyQt5.QtGui import QIcon, QIntValidator
 import os,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -15,7 +15,7 @@ playerTypes = ['Human']
 for b in Bots:
     playerTypes.append(b[:-3])
 
-class NewGameDialog(QFrame):
+class NewGameDialog(QDialog):
     """ Provides a dialog to start a new game
     """
     def __init__(self, num_players = 2, standalone = True):
