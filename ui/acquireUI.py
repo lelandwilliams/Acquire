@@ -8,6 +8,7 @@ from playerDialogBox import PlayerDialogBox
 import model
 from concierge import Concierge
 from humanClient import HumanClient
+from newgamedialog import NewGameDialog
 import logging
 
 
@@ -19,6 +20,7 @@ class AcquireUI(QMainWindow, HumanClient):
     def __init__(self):
         super().__init__()
         self.frame = QFrame()
+        self.frame.setMinimumSize(270,360)
         self.lt = QGridLayout()
         self.board = Board(self.setColors())
         self.pb = PlayerBoxGroup(self.setColors())
