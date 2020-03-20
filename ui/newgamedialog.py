@@ -73,6 +73,20 @@ class NewGameDialog(QDialog):
             self.leftLayout.addLayout(self.buttonRow)
             self.updateStartButtonStatus()
 
+        else:
+            self.buttonRow = QHBoxLayout()
+            self.startButton = QPushButton('Start')
+            self.quitButton = QPushButton('Cancel')
+
+            self.buttonRow.addStretch()
+            self.buttonRow.addWidget(self.startButton)
+            self.buttonRow.addStretch()
+            self.buttonRow.addWidget(self.quitButton)
+            self.buttonRow.addStretch()
+            self.quitButton.clicked.connect(self.reject)
+            self.startButton.clicked.connect(self.accept)
+            self.leftLayout.addLayout(self.buttonRow)
+
 
         self.setLayout(self.mainLayout)
 
