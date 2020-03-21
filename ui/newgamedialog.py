@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
 QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog, QPushButton,\
-QToolButton, QLabel, QProgressDialog, QDialog
+QToolButton, QLabel, QProgressDialog, QDialog, QCheckBox
 from PyQt5.QtGui import QIcon, QIntValidator
 import os,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -74,6 +74,18 @@ class NewGameDialog(QDialog):
             self.updateStartButtonStatus()
 
         else:
+            self.seedRow = QHBoxLayout()
+            self.seedLabel = QLabel('Seed:')
+            self.numBox = QLineEdit(str(0))
+            self.validator = QIntValidator()
+            self.seedCheckBox = QCheckBox('Random Seed')
+            self.seedRow.addWidget(self.seedLabel)
+            self.seedRow.addWidget(self.numBox)
+            self.seedRow.addWidget(self.seedCheckBox)
+            self.seedCheckBox.stateChanged.connect(self.changebox)
+            self.seedRow.addStretch()
+            self.leftLayout.addLayout(self.seedRow)
+
             self.buttonRow = QHBoxLayout()
             self.startButton = QPushButton('Start')
             self.quitButton = QPushButton('Cancel')
@@ -97,6 +109,12 @@ class NewGameDialog(QDialog):
         player = PlayerBox(name, player_type, self.standalone)
         self.playerLayout.addWidget(player)
         self.playerWidgets.append(player)
+
+    def changebox(self, on):
+        """ used by the dialog when not in standalone mode to \
+        flip the enabled state of the edit box so to make selecting a 
+        seed and a random seed mutually exclusive """
+        self.numBox.setEnabled(not on)
 
     def chooseFile(self):
         """ initiates the use of QFileDialog and handles the results """
@@ -151,10 +169,10 @@ class PlayerBox(QFrame):
 
         # Add player type choices as radio buttons
         playerOptions = []
-        if standalone:
+        if player_type == 'robot':
             playerOptions = playerTypes[1:]
         else:
-            playerOptions = playerTypes
+            playerOptions = playerTypes[:1]
 
         i = 0
         for pt in playerOptions:
@@ -169,6 +187,7 @@ class PlayerBox(QFrame):
 
         self.layout.addWidget(self.nameBox)
         self.layout.addLayout(self.button_layout)
+        self.layout.addStretch()
         self.setLayout(self.layout)
 
 if __name__ == "__main__":
