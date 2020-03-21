@@ -26,7 +26,8 @@ class Concierge(QObject):
             my_id = None, 
             port = DEFAULTPORT, 
             address = QtNetwork.QHostAddress.LocalHost,
-            num_servers = 1):
+            num_servers = 1,
+            seed = None):
         super().__init__()
 
         LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
@@ -61,7 +62,7 @@ class Concierge(QObject):
         if not self.server.isListening():
             raise('Concierge unable to bind port')
 
-        self.game_seed = 0
+        self.game_seed = seed
         self.num_games = 0
         self.scores = list()
         self.highscores = list()
