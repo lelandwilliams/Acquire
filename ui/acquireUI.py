@@ -1,4 +1,4 @@
-import sys
+import sys, logging
 sys.path.append("..")
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp, QDialog
 from PyQt5.QtCore import Qt, QTimer
@@ -9,8 +9,6 @@ import model
 from concierge import Concierge
 from humanClient import HumanClient
 from newgamedialog import NewGameDialog
-import logging
-
 
 class AcquireUI(QMainWindow, HumanClient):
     """
