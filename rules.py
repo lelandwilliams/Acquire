@@ -7,7 +7,7 @@ provides the new_game(), getActions() and succ() methods
 """
 
 
-def new_game(playerNames, shuffle = True, seed = None):
+def new_game(playerNames, shuffle = True, seed = -1):
     state = model.new_game(playerNames)
     state['Seed'] = seed
     hands = build_hands(state, shuffle = shuffle, seed = seed)
@@ -272,12 +272,12 @@ def assignAnon(state, t):
     state['Group'][new_name] = [t]
     return new_name
 
-def build_hands(state, shuffle = False, seed = None):
+def build_hands(state, shuffle = False, seed = -1):
     hands= dict()
     for p in state['Players']:
         hands[p] = []
     hands['Bank'] = [(j,i) for i in string.ascii_uppercase[:9] for j in range(1,13)]
-    if shuffle and not seed is None:
+    if shuffle and seed != 1:
         random.seed(seed)
     if shuffle:
         random.shuffle(hands['Bank'])
