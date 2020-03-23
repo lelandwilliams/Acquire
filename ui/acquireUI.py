@@ -48,6 +48,8 @@ class AcquireUI(QMainWindow, HumanClient):
         self.gui = True
         self.stockChoiceNum = 1
 
+        self.concierge = None
+
     def addPlayers(self, players):
         """ Adds a player box for each player to the playerBoxGroup
 
@@ -154,9 +156,24 @@ class AcquireUI(QMainWindow, HumanClient):
 
     def startNewGame(self):
         dialog = NewGameDialog(parent=self, num_players=4)
-        dialog.open()
+        dialog.exec()
         if dialog.result() == QDialog.Rejected:
             return
+        player_dict = dialog.getPlayers()
+        if self.concierge is None:
+            self.concierge = Concierge()
+        if dialog.seedCheckBox.isChecked():
+            self.game_seed = int(dialog.numBox.text())
+        else:
+            self.game_seed = 0
+
+        self.concierge.process_list.clear()
+        for name, executable in player_dict.items():
+            self.concierge.process_list.append(["python", executable, "-n", name])
+        self.concierge.serverAvailable.connect(self.serverAvailable)
+        self.concierge.runGames()
+
+
 
     def test(self):
         self.pb.test()
