@@ -27,7 +27,7 @@ class Concierge(QObject):
             port = DEFAULTPORT, 
             address = QtNetwork.QHostAddress.LocalHost,
             num_servers = 1,
-            seed = None):
+            seed = -1):
         super().__init__()
 
         LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
@@ -122,7 +122,7 @@ class Concierge(QObject):
 #       if len(self.readyServers) < self.max_servers:
         for i in range(self.num_servers):
             self.servers_active += 1
-            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4'])
+            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4', "-s", str(self.game_seed)])
 
     def serverDone(self, game, server):
         s, hist = eval(game)
