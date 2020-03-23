@@ -123,15 +123,20 @@ class NewGameDialog(QDialog):
         self.saEditBar.setText(self.filename[0])
         self.updateStartButtonStatus()
 
-    def makeExamples(self):
-        """ Runs the simulations upon the user selecting the start button  in standalone mode"""
-        game_runner = statsBuilder()
+    def getPlayers(self):
+        """ returns the current player selections"""
         player_dict = dict()
         for p in self.playerWidgets:
             p_name = p.nameBox.text()
             selected = p.typeGroup.checkedButton().text()
             player_dict[p_name] = selected + ".py"
-        game_runner.players = player_dict
+        return player_dict
+
+    def makeExamples(self):
+        """ Runs the simulations upon the user selecting the start button  in standalone mode"""
+        game_runner = statsBuilder()
+        player_dict = dict()
+        game_runner.players = self.getPlayers()
         game_runner.filename = self.filename
 
         progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
