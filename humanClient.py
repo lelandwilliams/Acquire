@@ -8,7 +8,7 @@ class HumanClient(RandomClient):
     """ An extension of RandomClient to control a GUI """
     def __init__(self):
         super().__init__(client_type = 'HUMAN', name = 'PunyHuman')
-        self.Concierge = None
+#       self.Concierge = None
         LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
         logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
 
@@ -119,13 +119,13 @@ class HumanClient(RandomClient):
         TODO:
             [ ] Connect to a remote concierge.
         """
-        if self.Concierge is None:
-            self.Concierge = Concierge()
-            self.Concierge.process_list.append(["python", "randomClient.py", "-n", "Random1"])
-            self.Concierge.process_list.append(["python", "randomClient.py", "-n", "Random2"])
-            self.Concierge.process_list.append(["python", "randomClient.py", "-n", "Random3"])
-        self.Concierge.serverAvailable.connect(self.serverAvailable)
-        self.Concierge.runGames()
+        if self.concierge is None:
+            self.concierge = Concierge()
+            self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random1"])
+            self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random2"])
+            self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random3"])
+        self.concierge.serverAvailable.connect(self.serverAvailable)
+        self.concierge.runGames()
 
     def onDisconnected(self):
         """ Overrides parent method. Removes closing application command.
@@ -137,7 +137,7 @@ class HumanClient(RandomClient):
 
     def serverAvailable(self, port):
         self.serverPort = port
-        self.Concierge.serverAvailable.disconnect(self.serverAvailable)
+        self.concierge.serverAvailable.disconnect(self.serverAvailable)
         self.connectToServer(port = self.serverPort)
 
     def quit(self):
