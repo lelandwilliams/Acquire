@@ -4,10 +4,10 @@ from PyQt5.QtCore import QCoreApplication
 import sys, argparse, random
 
 class GM(GameClient):
-    def __init__(self, client_id = None, serverPort = 0, serverAddress = 'localhost', seed = None):
+    def __init__(self, client_id = None, serverPort = 0, serverAddress = 'localhost', seed = -1):
         super().__init__(client_id, serverPort, serverAddress, 'GM', 'GM')
         self.game_in_progress = False
-        self.seed = seed if seed is not None else random.randrange(sys.maxsize)
+        self.seed = seed
         self.history = []
         self.cur_actions = None
 
@@ -34,6 +34,7 @@ class GM(GameClient):
             return
         self.game_in_progress = True
         self.players = players
+        seed = self.seed if self.seed != -1 else random.randrange(sys.maxsize)
         self.state, self.hands = new_game(players, True, self.seed)
 #       model.print_turn(self.state['Turn'])
         self.socket.sendTextMessage('BROADCAST;BEGIN;{}'.format(players)) 
