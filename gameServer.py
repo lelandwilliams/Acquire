@@ -10,7 +10,8 @@ class GameServer(QObject):
             port = DEFAULTPORT, 
             address = QtNetwork.QHostAddress.LocalHost,
             conciergePort = None,
-            numPlayers = 4):
+            numPlayers = 4,
+            seed = -1):
         super().__init__()
 
         self.logger = logging.getLogger()
@@ -119,9 +120,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-cp', '--conciergePort', type = int) 
     parser.add_argument('-n', '--numPlayers', type = int)
+    parser.add_argument('-s', '--seed', type = int)
     args = parser.parse_args()
     if args.numPlayers is None:
         a = GameServer()
     else:
-        a = GameServer(numPlayers = args.numPlayers, conciergePort = args.conciergePort)
+        a = GameServer(numPlayers = args.numPlayers, conciergePort = args.conciergePort, seed = args.seed)
     app.exec_()
