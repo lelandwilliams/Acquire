@@ -20,7 +20,7 @@ class AcquireUI(QMainWindow, HumanClient):
         self.game_in_progress = False
 
         self.frame = QFrame()
-        self.frame.setMinimumSize(270,360)
+#       self.frame.setMinimumSize(270,360)
         self.lt = QGridLayout()
         self.board = Board(self.setColors())
         self.pb = PlayerBoxGroup(self.setColors())
