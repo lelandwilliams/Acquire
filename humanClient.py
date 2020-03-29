@@ -2,6 +2,7 @@ from rules import *
 from randomClient import RandomClient
 from concierge import Concierge
 import logging
+from PyQt5.QtCore import QMutex
 
 
 class HumanClient(RandomClient):
@@ -11,6 +12,7 @@ class HumanClient(RandomClient):
 #       self.Concierge = None
         LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
         logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
+        self.event_queue = list()
 
     def announceBegin(self, players):
         """ Overrides base class
@@ -107,6 +109,18 @@ class HumanClient(RandomClient):
 
     def chooseEndGame(self, actions): return "Yes"
 
+    def enqueueTextMessage(self, message):
+        """ Puts valid incoming messages into the event_queue, until 
+        a REQUEST message is recieved, in which case it enpties the queue """
+
+        if len(message.split(';')) != 3:
+            return
+        self.event_queue.append(message)
+        m_type, m_subtype, m_body = message.split(';')
+        if m_type == 'REQUEST':
+            while len(self.event_queue) > 0:
+                self.processTextMessage(self.event_queue.pop(0))
+
     def newGame(self):
         """ Begin a new game
 
@@ -126,6 +140,22 @@ class HumanClient(RandomClient):
             self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random3"])
         self.concierge.serverAvailable.connect(self.serverAvailable)
         self.concierge.runGames()
+
+    def onConnected(self):
+        """ Overrides parent class method
+            called by signal when self.socket successfully connects to a game server
+            connects the the sockets recieve signal to enqueueTextMessage() 
+            sends it's information to the game server
+
+            args:
+                none
+
+            returns:
+                nothing
+        """
+        self.socket.textMessageReceived.connect(self.enqueueTextMessage)
+        self.socket.sendTextMessage('REGISTER;{};{}'.format(self.client_type, self.name))
+
 
     def onDisconnected(self):
         """ Overrides parent method. Removes closing application command.
