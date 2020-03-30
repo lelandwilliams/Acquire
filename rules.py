@@ -277,8 +277,9 @@ def build_hands(state, shuffle = False, seed = -1):
     for p in state['Players']:
         hands[p] = []
     hands['Bank'] = [(j,i) for i in string.ascii_uppercase[:9] for j in range(1,13)]
-    if shuffle and seed != 1:
+    if shuffle and seed != -1:
         random.seed(seed)
+        print("build_hands with seed {}".format(seed))
     if shuffle:
         random.shuffle(hands['Bank'])
     for p in state['Players']:
