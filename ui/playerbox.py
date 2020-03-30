@@ -42,11 +42,12 @@ class PlayerBox(QFrame):
             self.bottomlayout.addWidget(self.corporationLabel[corp])
             color = self.colorPallet[corp]
             self.corporationLabel[corp].setStyleSheet("QLabel {background-color: " + color + "; color: white; }")
-            self.corporationLabel[corp].setFixedWidth(12)
+#           self.corporationLabel[corp].setFixedWidth(12)
+            self.corporationLabel[corp].setFixedWidth(15)
             self.corporationLabel[corp].setFixedHeight(20)
 #           self.corporationLabel[corp].setFixedSize(20, 50) 
 #           self.corporationLabel[corp].setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-#            self.corporationLabel[corp].setAlignment(Qt.AlignCenter)
+            self.corporationLabel[corp].setAlignment(Qt.AlignCenter)
             self.corporationLabel[corp].setScaledContents(True)
             self.corporationLabel[corp].hide()
 
