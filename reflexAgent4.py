@@ -65,9 +65,10 @@ class reflexAgent(RandomClient):
                 if expectation > highest_growth:
                     highest_growth = expectation
                     choice = company
-            return choice
-        else:
-            return random.choice(actions)
+            if choice is not None:
+                return choice
+
+        return random.choice(actions)
 
     def chooseEndGame(self, actions): return "Yes"
 
