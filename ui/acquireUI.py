@@ -169,7 +169,8 @@ class AcquireUI(QMainWindow, HumanClient):
 
         self.concierge.process_list.clear()
         for name, executable in player_dict.items():
-            self.concierge.process_list.append(["python", executable, "-n", name])
+            if "Human" not in executable:
+                self.concierge.process_list.append(["python", executable, "-n", name])
         self.concierge.serverAvailable.connect(self.serverAvailable)
         self.concierge.runGames()
 
