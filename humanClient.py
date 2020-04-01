@@ -2,7 +2,7 @@ from rules import *
 from randomClient import RandomClient
 from concierge import Concierge
 import logging
-from PyQt5.QtCore import QMutex
+from PyQt5.QtCore import QMutex, QTimer
 
 
 class HumanClient(RandomClient):
@@ -14,6 +14,7 @@ class HumanClient(RandomClient):
         logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
         self.event_queue = list()
         self.eq_mutex = QMutex() # eq = event_queue
+        self.use_timers = False
 
     def announceBegin(self, players):
         """ Overrides base class
@@ -75,6 +76,9 @@ class HumanClient(RandomClient):
         else:
             logging.error("action_type {} not handled".format(action_type))
 
+        if self.use_timers:
+            QTimer.singleShot(400, self.de_enqueueTextMessage)
+
     def chooseNewCompany(self, actions):
         """ Handles the action to choose which new corporation to found.
         """
@@ -110,6 +114,19 @@ class HumanClient(RandomClient):
 
     def chooseEndGame(self, actions): return "Yes"
 
+    def de_enqueueTextMessage(self):
+        """ This method is the target of the timer. It removes the front event
+        from the queue and processes it. If there is no event it sets a timer to call itself. """
+        assert(self.use_timers)
+        self.eq_mutex.lock()
+        if len(self.event_queue) == 0:
+            self.eq_mutex.unlock()
+            QTimer.singleShot(400, self.de_enqueueTextMessage)
+        else:
+            event = (self.event_queue.pop(0))
+            self.eq_mutex.unlock()
+            self.processTextMessage(event)
+
     def enqueueTextMessage(self, message):
         """ Puts valid incoming messages into the event_queue, until 
         a REQUEST message is recieved, in which case it enpties the queue """
@@ -120,15 +137,21 @@ class HumanClient(RandomClient):
         self.event_queue.append(message)
         self.eq_mutex.unlock()
         m_type, m_subtype, m_body = message.split(';')
-        if m_type == 'REQUEST' or m_body == 'Yes':
-            while len(self.event_queue) > 0:
+        if self.use_timers:
+            QTimer.singleShot(400, self.de_enqueueTextMessage)
+        elif m_type == 'REQUEST' or m_body == 'Yes':
+            self.eq_mutex.lock()
+            queue_length = len(self.event_queue)
+            self.eq_mutex.unlock()
+            while queue_length > 0:
                 self.eq_mutex.lock()
                 event = (self.event_queue.pop(0))
+                queue_length = len(self.event_queue)
                 self.eq_mutex.unlock()
                 self.processTextMessage(event)
 
     def newGame(self):
-        """ Begin a new game
+        """ DEPRECATED - Begin a new game
 
         A function specific to this subclass.
 
