@@ -1,6 +1,7 @@
 import sys, logging
 sys.path.append("..")
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, qApp, QDialog
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, \
+        qApp, QDialog, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from playerboxgroup import PlayerBoxGroup
 from board import Board
@@ -67,7 +68,13 @@ class AcquireUI(QMainWindow, HumanClient):
             if player == "Bank":
                 continue
             self.pb.updatePlayerMoney(player, model.netWorth(player, self.state))
-        self.dialogbox.announceGameOver(name)
+        #self.dialogbox.announceGameOver(name)
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setWindowTitle("Game Over")
+        msgBox.setText("{} ended the game".format(name))
+        msgBox.setStandardButtons(QMessageBox.Ok)
+        msgBox.exec()
 
     def changeTileColor(self, tile, company):
         self.board.changeTileColor(tile,company)
