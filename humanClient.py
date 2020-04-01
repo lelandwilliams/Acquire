@@ -117,7 +117,7 @@ class HumanClient(RandomClient):
             return
         self.event_queue.append(message)
         m_type, m_subtype, m_body = message.split(';')
-        if m_type == 'REQUEST':
+        if m_type == 'REQUEST' or m_body == 'Yes':
             while len(self.event_queue) > 0:
                 self.processTextMessage(self.event_queue.pop(0))
 
