@@ -13,6 +13,7 @@ class HumanClient(RandomClient):
         LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
         logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
         self.event_queue = list()
+        self.eq_mutex = QMutex() # eq = event_queue
 
     def announceBegin(self, players):
         """ Overrides base class
@@ -115,11 +116,16 @@ class HumanClient(RandomClient):
 
         if len(message.split(';')) != 3:
             return
+        self.eq_mutex.lock()
         self.event_queue.append(message)
+        self.eq_mutex.unlock()
         m_type, m_subtype, m_body = message.split(';')
         if m_type == 'REQUEST' or m_body == 'Yes':
             while len(self.event_queue) > 0:
-                self.processTextMessage(self.event_queue.pop(0))
+                self.eq_mutex.lock()
+                event = (self.event_queue.pop(0))
+                self.eq_mutex.unlock()
+                self.processTextMessage(event)
 
     def newGame(self):
         """ Begin a new game
