@@ -2,7 +2,7 @@ from rules import *
 from randomClient import RandomClient
 from concierge import Concierge
 import logging
-from PyQt5.QtCore import QMutex, QTimer
+from PyQt5.QtCore import QMutex, QTimer, Qt
 
 
 class HumanClient(RandomClient):
@@ -12,15 +12,21 @@ class HumanClient(RandomClient):
 #       self.Concierge = None
         LOG_FORMAT = '%(levelname)s:%(module)s:%(message)s'
         logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
+
         self.event_queue = list()
         self.eq_mutex = QMutex() # eq = event_queue
-        self.use_timers = False
+
+        self.use_timers = True
+        self.event_delay = 400
+        self.empty_timer = 200
 
     def announceBegin(self, players):
         """ Overrides base class
 
         """
         self.addPlayers(players)
+        if self.use_timers:
+            QTimer.singleShot(self.event_delay, self.de_enqueueTextMessage)
 
     def announcePlay(self, play, action_type):
         """ Updates the UI after receiving notification from the game server of a play.
@@ -77,7 +83,7 @@ class HumanClient(RandomClient):
             logging.error("action_type {} not handled".format(action_type))
 
         if self.use_timers:
-            QTimer.singleShot(400, self.de_enqueueTextMessage)
+            QTimer.singleShot(self.event_delay, Qt.PreciseTimer, self.de_enqueueTextMessage)
 
     def chooseNewCompany(self, actions):
         """ Handles the action to choose which new corporation to found.
@@ -110,7 +116,10 @@ class HumanClient(RandomClient):
         corp = sale['Corporation']
         largestCorp = self.state['Turn']['Merger']['NewCorps'][0]
 
-        return self.chooseMergerStockAction(corp, largestCorp, actions)
+        choice = self.chooseMergerStockAction(corp, largestCorp, actions)
+        if self.use_timers:
+            QTimer.singleShot(self.uiTime, Qt.PreciseTimer, self.de_enqueueTextMessage)
+        return choice
 
     def chooseEndGame(self, actions): return "Yes"
 
@@ -119,10 +128,12 @@ class HumanClient(RandomClient):
         from the queue and processes it. If there is no event it sets a timer to call itself. """
         assert(self.use_timers)
         self.eq_mutex.lock()
-        if len(self.event_queue) == 0:
-            self.eq_mutex.unlock()
-            QTimer.singleShot(400, self.de_enqueueTextMessage)
+        q_length =  len(self.event_queue)
+        self.eq_mutex.unlock()
+        if q_length == 0:
+            QTimer.singleShot(self.empty_timer, self.de_enqueueTextMessage)
         else:
+            self.eq_mutex.lock()
             event = (self.event_queue.pop(0))
             self.eq_mutex.unlock()
             self.processTextMessage(event)
@@ -137,9 +148,10 @@ class HumanClient(RandomClient):
         self.event_queue.append(message)
         self.eq_mutex.unlock()
         m_type, m_subtype, m_body = message.split(';')
-        if self.use_timers:
+
+        if self.use_timers and m_subtype == "BEGIN":
             QTimer.singleShot(400, self.de_enqueueTextMessage)
-        elif m_type == 'REQUEST' or m_body == 'Yes':
+        elif not self.use_timers and m_type == 'REQUEST' or m_body == 'Yes':
             self.eq_mutex.lock()
             queue_length = len(self.event_queue)
             self.eq_mutex.unlock()

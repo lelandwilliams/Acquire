@@ -50,6 +50,7 @@ class AcquireUI(QMainWindow, HumanClient):
         self.stockChoiceNum = 1
 
         self.concierge = None
+        self.ui_time = 150
 
     def addPlayers(self, players):
         """ Adds a player box for each player to the playerBoxGroup
@@ -62,6 +63,10 @@ class AcquireUI(QMainWindow, HumanClient):
         for player in players:
             money = self.state['Players'][player]['money']
             self.pb.addPlayer(player, money)
+
+#   def announceBegin(self):
+#       if self.use_timers:
+#           QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
 
     def announceGameOver(self, name):
         for player in self.state['Players']:
@@ -89,24 +94,37 @@ class AcquireUI(QMainWindow, HumanClient):
             companies[corp] = model.stockPrice(self.state, corp)
         choice = self.dialogbox.chooseStock(-1, companies, self.setColors())
         self.stockChoiceNum = 1
+        if self.use_timers:
+            QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
         return choice
 
     def chooseGameOver(self):
-        return self.dialogbox.chooseGameOver(self.game.getCurrentPlayer().name) == "End"
+        choice = self.dialogbox.chooseGameOver(self.game.getCurrentPlayer().name) == "End"
+        if self.use_timers:
+            QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
+        return choice
 
     def chooseMerger(self, corps):
         companyList = {}
         for corp in corps:
             companyList[corp] = ""
-        return self.dialogbox.chooseMerger(companyList, self.setColors())
+        choice =  self.dialogbox.chooseMerger(companyList, self.setColors())
+        if self.use_timers:
+            QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
+        return choice
 
     def chooseMergerStockAction(self, corp, largestCorp, actions):
         activePlayer = self.state['Turn']['Player']
-        return self.dialogbox.chooseMergerStockAction(self.name, activePlayer, corp,largestCorp, actions, self.setColors())
+        choice =  self.dialogbox.chooseMergerStockAction(self.name, activePlayer, corp,largestCorp, actions, self.setColors())
+        if self.use_timers:
+            QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
+        return choice
 
     def chooseStock(self,corps):
         corps.remove('Done')
         if len(corps) == 0:
+            if self.use_timers:
+                QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
             return 'Done'
         if self.stockChoiceNum == 3:
             self.stockChoiceNum = 1
@@ -116,16 +134,16 @@ class AcquireUI(QMainWindow, HumanClient):
             companies[corp] = model.stockPrice(self.state, corp)
         choice =  self.dialogbox.chooseStock(self.stockChoiceNum, companies, self.setColors())
         self.stockChoiceNum += 1
+        if self.use_timers:
+            QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
         return choice
 
     def chooseTile(self, hand):
-        tile = None
-        while True:
-            tile = self.dialogbox.chooseTile(hand)
-#           if self.game.evaluatePlay(tile) != "Illegal":
-            if True:
-                logging.info(" Player chose " + str(tile))
-                return tile
+        tile = self.dialogbox.chooseTile(hand)
+        logging.info("Player chose " + str(tile))
+        if self.use_timers:
+            QTimer.singleShot(self.ui_time, self.de_enqueueTextMessage)
+        return tile
 
     def setColors(self): 
         colorscheme = {}
