@@ -118,7 +118,7 @@ class HumanClient(RandomClient):
 
         choice = self.chooseMergerStockAction(corp, largestCorp, actions)
         if self.use_timers:
-            QTimer.singleShot(self.uiTime, Qt.PreciseTimer, self.de_enqueueTextMessage)
+            QTimer.singleShot(self.ui_time, Qt.PreciseTimer, self.de_enqueueTextMessage)
         return choice
 
     def chooseEndGame(self, actions): return "Yes"
