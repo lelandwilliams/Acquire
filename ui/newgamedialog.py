@@ -83,6 +83,7 @@ class NewGameDialog(QDialog):
             self.seedRow.addWidget(self.numBox)
             self.seedRow.addWidget(self.seedCheckBox)
             self.seedCheckBox.stateChanged.connect(self.changebox)
+            self.seedCheckBox.toggle()
             self.seedRow.addStretch()
             self.leftLayout.addLayout(self.seedRow)
 
