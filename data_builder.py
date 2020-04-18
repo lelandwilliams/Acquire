@@ -1,6 +1,7 @@
 from featureExtractor import *
 import random, subprocess, sys, math
 import model, rules
+import pandas as pd
 
 
 def reconstruct_states(game):
@@ -8,16 +9,28 @@ def reconstruct_states(game):
     history.append(state['Turn'])
     players = [p for p in state['Players'] if p != 'Bank']
     seed = state['Seed']
-    s, hand = rules.new_game(players, True, seed)
-    states = [s]
+    cur_state, hand = rules.new_game(players, True, seed)
 
-    for turn in history:
-        step(states, turn)
+    states = [cur_state]
 
-    return states, history
+    for turn in history[:2]:
+        cur_state = step(cur_state, turn)
+#       print(cur_state)
+        for player in players:
+            p = cur_state['Players'][player]
+            turns = pd.DataFrame(columns=["GameNum", "Turn", "Player", "Player_Type", "Is_Turn", "Money", "Hand", "Tower", "Luxor", "American", "Worldwide", "Festival", "Continental", "Imperial"])
 
-def step(states, turn):
-    s = states[-1]
+#   return states, history
+
+def step(state, turn):
+    """ step() is the heavy lifter of game data analysis.
+    It takes in the current game state, and a turn from history. It replays a
+    game turn, and returns the games state after all the actions have been accounted for.
+
+    Currently, it ignores changes in hands, but that might be worth changing later.
+    """
+    s = state
+    print(s)
     if type(turn['Tile']) is tuple:
         result = rules.succ(s, None, turn['Tile'])
         if result is None:
@@ -36,7 +49,7 @@ def step(states, turn):
             s, _ = rules.succ(s, None, share)
     if turn['Call Game']:
         s, _ = rules.succ(s, None, turn['Call Game'])
-    states.append(s)
+    return s
 
 
 def corp_outlook(states, turn_num):
@@ -88,37 +101,82 @@ def revise(phi, w, y, eta):
     for el in w:
         w[el] -= eta * 2 * train_loss * phi[el]
 
-def run(gw = defaultdict(float), dw = defaultdict(float)):
-    f = open('randomTrainingExamples1.gam')
-    total_training_sets = 0
-    training_runs = 0
-    testing_runs = 0
-    growth_error_sum = 0
-    duration_error_sum = 0
-    for game in f:
-        states, history = reconstruct_states(game)
-        print("\rGame # {}".format(training_runs + testing_runs), end = "")
-        if training_runs < 700:
-            total_training_sets += 1
-            training_runs += 1
-            gw, dw = train(states, gw, dw)
-        else:
-            testing_runs += 1
-            results= test(states, gw, dw)
-            growth_error_sum += results[0]
-            duration_error_sum += results[1]
+def run(fname):
+    f = open(fname)
+    game_num = 0
+    turn_num = 0
+
+    for _ in range(1):
+        game = f.readline()
+        reconstruct_states(game)
+#       states, history = reconstruct_states(game)
+#       state, history = eval(game)
+#       history.append(sate['Turn'])
+#       players = [p for p in state['Players'] if p != 'Bank']
+#       seed = state['Seed']
+#       s, hand = rules.new_game(players, True, seed)
+#       print(history[0].keys())
+#       print(history[0])
+#       print(state)
     f.close()
-    print("\ngrowth_error = {}, duration_error = {}".format(growth_error_sum, duration_error_sum)) 
-    return gw, dw, growth_error_sum, duration_error_sum
+
+def setup():
+    fname = "data/randomTrainingExamples1.gam"
+    column_list = ["GameNum", "Turn", "Player", \
+                   "Player_Type", "Is_Turn", \
+                   "Money", "Hand", "Tower", \
+                   "Luxor", "American", "Worldwide", \
+                   "Festival", "Continental", "Imperial"]
+#   turns = pd.DataFrame(columns=column_list)
+    turns = []
+    game_num = 0
+    turn_num = 0
+
+    f = open(fname)
+    for _ in range(1):
+        game = f.readline()
+        state, history = eval(game)
+        history.append(state['Turn'])
+        players = [p for p in state['Players'] if p != 'Bank']
+        seed = state['Seed']
+        cur_state, hand = rules.new_game(players, True, seed)
+
+        states = [cur_state]
+
+        for turn in history[:2]:
+            cur_state = step(cur_state, turn)
+            for player in players:
+                turn = {}
+                turn["GameNum"] = game_num
+                turn["Turn"] = turn_num
+                turn["Player"] = player
+                turn["money"] = cur_state['Players'][player]['money']
+                turn["Player_Type"] = cur_state['Players'][player]['playerType']
+                turn["Tower"] = cur_state['Players'][player]['Tower']
+                turn["Luxor"] = cur_state['Players'][player]['Luxor']
+                turn["American"] = cur_state['Players'][player]['American']
+                turn["Worldwide"] = cur_state['Players'][player]['Worldwide']
+                turn["Festival"] = cur_state['Players'][player]['Festival']
+                turn["Continental"] = cur_state['Players'][player]['Continental']
+                turn["Imperial"] = cur_state['Players'][player]['Imperial']
+                turn["Is_Turn"] = (player == cur_state['Turn']['Player'])
+                turn["Hand"] = None
+                turns.append(turn)
+            turn_num += 1
+
+        print(pd.DataFrame(turns))
+
+
 
 if __name__ == '__main__':
-    f = open('weights.gam','r')
-    gw = eval(f.readline())
-    dw = eval(f.readline())
-    f.close()
+    setup()
+#   f = open('weights.gam','r')
+#   gw = eval(f.readline())
+#   dw = eval(f.readline())
+#   f.close()
 
-    gw, dw, ge, de = run(gw, dw)
+#   gw, dw, ge, de = run(gw, dw)
 
-    f = open('weights.gam','w')
-    f.write("{}\n{}\n".format(dict(gw), dict(dw)))
-    f.close()
+#   f = open('weights.gam','w')
+#   f.write("{}\n{}\n".format(dict(gw), dict(dw)))
+#   f.close()
