@@ -28,7 +28,7 @@ class statsBuilder(Concierge):
         super().__init__(my_id, port, address, num_servers)
         self.players = players
         self.num_games_desired = 1000
-        self.filename = "results.csv"
+        self.filename = "flex4_results.csv"
         self.num_servers = num_servers
         self.evaluate_results = False
         self.num_games_finished = 0
@@ -122,13 +122,16 @@ class statsBuilder(Concierge):
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
     players = dict()
-    players['Random1'] = 'randomClient.py'
+#   players['Random1'] = 'randomClient.py'
 #   players['Random2'] = 'randomClient.py'
 #   players['Random3'] = 'randomClient.py'
-#   players['Flex4'] = 'reflexAgent4.py'
-    players['Flex3'] = 'reflexAgent3.py'
-    players['Flex1'] = 'reflexAgent.py'
-    players['Flex2'] = 'reflexAgent2.py'
+    players['Flex1'] = 'reflexAgent4.py'
+    players['Flex2'] = 'reflexAgent4.py'
+    players['Flex3'] = 'reflexAgent4.py'
+    players['Flex4'] = 'reflexAgent4.py'
+#   players['Flex3'] = 'reflexAgent3.py'
+#   players['Flex1'] = 'reflexAgent.py'
+#   players['Flex2'] = 'reflexAgent2.py'
     s = statsBuilder()
     s.players = players
     s.num_games_desired = 1
