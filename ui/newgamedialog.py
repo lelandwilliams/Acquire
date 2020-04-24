@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
 QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog, QPushButton,\
-QToolButton, QLabel, QProgressDialog, QDialog, QCheckBox
+QToolButton, QLabel, QProgressDialog, QDialog, QCheckBox, QProgressBar
 from PyQt5.QtGui import QIcon, QIntValidator
 import os,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -25,6 +25,10 @@ class NewGameDialog(QDialog):
         self.logfile = ""
         self.num_rounds = 0
 
+        #
+        # Create Player Widget Rows
+        #
+
         self.playerWidgets = list()
         self.playerLayout = QVBoxLayout()
         if not standalone:
@@ -32,13 +36,43 @@ class NewGameDialog(QDialog):
         while len(self.playerWidgets) < self.num_players:
             self.addPlayer(player_type='robot')
 
+        #
+        # Create main Layout
+        #
+
         self.mainLayout = QHBoxLayout()
         self.leftLayout = QVBoxLayout()
         self.mainLayout.addLayout(self.leftLayout)
         self.leftLayout.addLayout(self.playerLayout)
         self.leftLayout.addSpacing(40)
 
+        #
+        # Create row of widgets to handle random seed options
+        #
+
+        self.seedRow = QHBoxLayout()
+        self.seedLabel = QLabel('Seed:')
+        self.numBox = QLineEdit(str(0))
+        self.validator = QIntValidator()
+        self.seedCheckBox = QCheckBox('Random Seed')
+        self.seedRow.addWidget(self.seedLabel)
+        self.seedRow.addWidget(self.numBox)
+        self.seedRow.addWidget(self.seedCheckBox)
+        self.seedCheckBox.stateChanged.connect(self.changebox)
+        self.seedCheckBox.toggle()
+        self.seedRow.addStretch()
+        self.leftLayout.addLayout(self.seedRow)
+
+        #
+        # Use the dialog is to run AI bots aginast each other
+        #
+
         if self.standalone:
+
+            #
+            # Widgets to select log file and number of games
+            #
+
             self.filename = ""
             self.num_games = 1
             self.standalonelayout = QHBoxLayout()
@@ -61,6 +95,10 @@ class NewGameDialog(QDialog):
             self.standalonelayout.addWidget(self.saLabel2)
             self.standalonelayout.addWidget(self.numBox)
 
+            #
+            # Widgets to start simulation or to quit dialog
+            #
+
             self.buttonRow = QHBoxLayout()
             self.startButton = QPushButton('Start')
             self.quitButton = QPushButton('Quit')
@@ -73,20 +111,11 @@ class NewGameDialog(QDialog):
             self.leftLayout.addLayout(self.buttonRow)
             self.updateStartButtonStatus()
 
-        else:
-            self.seedRow = QHBoxLayout()
-            self.seedLabel = QLabel('Seed:')
-            self.numBox = QLineEdit(str(0))
-            self.validator = QIntValidator()
-            self.seedCheckBox = QCheckBox('Random Seed')
-            self.seedRow.addWidget(self.seedLabel)
-            self.seedRow.addWidget(self.numBox)
-            self.seedRow.addWidget(self.seedCheckBox)
-            self.seedCheckBox.stateChanged.connect(self.changebox)
-            self.seedCheckBox.toggle()
-            self.seedRow.addStretch()
-            self.leftLayout.addLayout(self.seedRow)
+        #
+        # Use the dialog to create opponents for a human player
+        #
 
+        else:
             self.buttonRow = QHBoxLayout()
             self.startButton = QPushButton('Start')
             self.quitButton = QPushButton('Cancel')
@@ -124,6 +153,9 @@ class NewGameDialog(QDialog):
         self.saEditBar.setText(self.filename[0])
         self.updateStartButtonStatus()
 
+    def finished(self):
+        self.quitButton.setEnabled(True)
+
     def getPlayers(self):
         """ returns the current player selections"""
         player_dict = dict()
@@ -135,12 +167,26 @@ class NewGameDialog(QDialog):
 
     def makeExamples(self):
         """ Runs the simulations upon the user selecting the start button  in standalone mode"""
+        self.startButton.setEnabled(False)
+        self.quitButton.setEnabled(False)
         game_runner = statsBuilder()
         player_dict = dict()
         game_runner.players = self.getPlayers()
+        game_runner.num_games = self.num_games
         game_runner.filename = self.filename
 
-        progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
+#       progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
+        self.progress = QProgressBar()
+        self.progress.setMinimum(0)
+        self.progress.setMaximum(self.num_games)
+        self.progress.setValue(0)
+
+        self.leftLayout.addWidget(self.progress)
+        game_runner.completedGames.connect(self.progress.setValue)
+        game_runner.finished.connect(self.finished)
+
+        game_runner.runGames()
+
 
 
     def numBoxUpdated(self, txt):
