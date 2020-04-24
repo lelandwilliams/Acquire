@@ -10,6 +10,8 @@ class MergerActionDialog(QDialog):
         self.actions = actions
 
         l = QHBoxLayout()
+        l.addStretch()
+#       l.addSpacing()
         for action in actions:
             newButton = QPushButton(action)
 #            newStock.setStyleSheet("QPushButton {background-color: " + colors[company] + ";"
@@ -20,6 +22,8 @@ class MergerActionDialog(QDialog):
             newButton.setObjectName(action)
 #            newStock.setFixedSize((3 * self.tile_size)//5, self.tile_size)
             l.addWidget(newButton)
+            l.addStretch()
+#        l.addSpacing()
         self.setLayout(l)
 
     def buttonClicked(self):
