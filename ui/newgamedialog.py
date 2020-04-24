@@ -169,11 +169,11 @@ class NewGameDialog(QDialog):
         """ Runs the simulations upon the user selecting the start button  in standalone mode"""
         self.startButton.setEnabled(False)
         self.quitButton.setEnabled(False)
-        game_runner = statsBuilder()
-        player_dict = dict()
-        game_runner.players = self.getPlayers()
-        game_runner.num_games = self.num_games
-        game_runner.filename = self.filename
+        self.game_runner = statsBuilder()
+        player_dict = self.getPlayers()
+        print(player_dict)
+        self.game_runner.num_games = self.num_games
+        self.game_runner.fname = self.filename
 
 #       progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
         self.progress = QProgressBar()
@@ -182,10 +182,12 @@ class NewGameDialog(QDialog):
         self.progress.setValue(0)
 
         self.leftLayout.addWidget(self.progress)
-        game_runner.completedGames.connect(self.progress.setValue)
-        game_runner.finished.connect(self.finished)
+        self.game_runner.completedGames.connect(self.progress.setValue)
+        self.game_runner.finished.connect(self.finished)
 
-        game_runner.runGames()
+        for name, executable in player_dict.items():
+            self.game_runner.process_list.append(["python", executable, "-n", name])
+        self.game_runner.runGames()
 
 
 
