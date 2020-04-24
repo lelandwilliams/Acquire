@@ -115,19 +115,12 @@ class Concierge(QObject):
         
             The number is defined by self.num_servers.
         """
-#       self.of = open('results.txt', 'w')
-#       self.of.write("{:^3}, {:^8}, {:^8}, {:^5}, {:^8}, {:^8}\n".format('num','avg','std','max','w_avg','w_std'))
-#       self.of.close()
-#       self.num_games += 1
-#       if len(self.readyServers) < self.max_servers:
         for i in range(self.num_servers):
             self.servers_active += 1
             subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4', "-s", str(self.game_seed)])
 
     def serverDone(self, game, server):
         s, hist = eval(game)
-#       for h in hist:
-#           model.print_turn(h)
         print("\rResults of game # {}".format(self.num_games))
         for player in [p for p in s['Players'] if p != 'Bank']:
             print("{}: {}".format(player, model.netWorth(player, s)))
