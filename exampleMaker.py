@@ -35,7 +35,7 @@ class statsBuilder(Concierge):
             num_servers = 1,
             players = None):
         super().__init__(my_id, port, address, num_servers)
-        self.players = players
+        self.player_dict = players
         self.num_games = 0
         self.max_games = 1
         self.fname = 'flex4_examples.gam'
@@ -61,17 +61,17 @@ class statsBuilder(Concierge):
             server.sendTextMessage("DISCONNECT")
             self.servers_active -= 1
             self.server.disconnect()
-            self.finshed.emit()
+            self.finished.emit()
         self.mutex.unlock()
         
         if self.servers_active == 0:
             QCoreApplication.quit()
 
-    def serverReady(self, port):
-        self.num_games += 1
-        subprocess.Popen(["python", "GM.py", "-p", port ])
-        for player in self.players:
-            subprocess.Popen(["python", players[player], "-p", port, "-n", player])
+#   def serverReady(self, port):
+#       self.num_games += 1
+#       subprocess.Popen(["python", "GM.py", "-p", port ])
+#       for player in self.players:
+#           subprocess.Popen(["python", players[player], "-p", port, "-n", player])
 
 if __name__ == '__main__':
     app = QCoreApplication(sys.argv)
