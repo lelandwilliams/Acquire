@@ -101,25 +101,6 @@ def revise(phi, w, y, eta):
     for el in w:
         w[el] -= eta * 2 * train_loss * phi[el]
 
-def run(fname):
-    f = open(fname)
-    game_num = 0
-    turn_num = 0
-
-    for _ in range(1):
-        game = f.readline()
-        reconstruct_states(game)
-#       states, history = reconstruct_states(game)
-#       state, history = eval(game)
-#       history.append(sate['Turn'])
-#       players = [p for p in state['Players'] if p != 'Bank']
-#       seed = state['Seed']
-#       s, hand = rules.new_game(players, True, seed)
-#       print(history[0].keys())
-#       print(history[0])
-#       print(state)
-    f.close()
-
 def setup():
     fname = "data/randomTrainingExamples1.gam"
     column_list = ["GameNum", "Turn", "Player", \
@@ -128,22 +109,23 @@ def setup():
                    "Luxor", "American", "Worldwide", \
                    "Festival", "Continental", "Imperial"]
 #   turns = pd.DataFrame(columns=column_list)
-    turns = []
     game_num = 0
     turn_num = 0
+    turn_table = None
 
     f = open(fname)
-    for _ in range(1):
-        game = f.readline()
+#   for _ in range(1):
+    game = f.readline()
+    for game in f:
         state, history = eval(game)
         history.append(state['Turn'])
         players = [p for p in state['Players'] if p != 'Bank']
         seed = state['Seed']
         cur_state, hand = rules.new_game(players, True, seed)
-
+        turns = []
         states = [cur_state]
 
-        for turn in history[:2]:
+        for turn in history[:15]:
             cur_state = step(cur_state, turn)
             for player in players:
                 turn = {}
@@ -164,7 +146,10 @@ def setup():
                 turns.append(turn)
             turn_num += 1
 
-        print(pd.DataFrame(turns))
+        if turn_table is None:
+            turn_table = pd.DataFrame(turns)
+
+        print(turn_table)
 
 
 
