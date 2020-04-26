@@ -1,5 +1,8 @@
-import sys, logging
-sys.path.append("..")
+import sys, os, inspect, logging
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QFrame, QApplication, QDockWidget, QAction, \
         qApp, QDialog, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
