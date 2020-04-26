@@ -26,6 +26,7 @@ class GameServer(QObject):
         self.gameInProgress = False
         self.numPlayersNeeded = numPlayers
         self.players = dict() # This is a dict name -> client_obj
+        self.player_types = dict() # This remembers name -> type
 
         attempts = 0
         max_attempts = 10
@@ -85,9 +86,11 @@ class GameServer(QObject):
             self.clients[sender] = 'GM'
             if not self.numPlayersNeeded:
                 self.startGame()
-        elif m_type == 'REGISTER' and m_subtype in ['PLAYER','HUMAN'] and self.numPlayersNeeded > 0:
+#       elif m_type == 'REGISTER' and m_subtype in ['PLAYER','HUMAN'] and self.numPlayersNeeded > 0:
+        elif m_type == 'REGISTER' and m_subtype != 'GM' and self.numPlayersNeeded > 0:
             self.clients[sender] = m_val
             self.players[m_val] = sender
+            self.player_types[m_val] = m_subtype
 #           print( "player {} registered".format(m_val))
             self.numPlayersNeeded -= 1
             if self.numPlayersNeeded == 0 and self.GM is not None:
@@ -106,8 +109,9 @@ class GameServer(QObject):
         self.GM.sendTextMessage("SERVER;DISCONNECT;")
 
     def startGame(self):
-        p_list = [v for v in self.clients.values() if not v in ['Logger','GM','Undefined']]
-        self.GM.sendTextMessage("Server;Start;{}".format(str(p_list)))
+#       p_list = [v for v in self.clients.values() if not v in ['Logger','GM','Undefined']]
+#       self.GM.sendTextMessage("Server;Start;{}".format(str(p_list)))
+        self.GM.sendTextMessage("Server;Start;{}".format(str(self.player_types)))
 
     def socketDisconnected(self):
 #       print('server lost connection to client')
