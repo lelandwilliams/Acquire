@@ -38,7 +38,7 @@ class RandomClient(QObject):
             serverPort = 0, 
             serverAddress = 'localhost',
             name = 'Noname',
-            client_type = 'PLAYER'):
+            client_type = 'Random'):
 
         super().__init__()
 #        self.client_id = client_id
