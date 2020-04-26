@@ -131,7 +131,8 @@ def netWorth(player, s):
                 networth += bonus['Bonus']
     return networth
 
-def new_player(playerType = 'Unspecified'):
+#def new_player(playerType = 'Unspecified'):
+def new_player(playerType):
     p_dict = dict()
     p_dict['money'] = 6000
     p_dict['playerType'] = playerType
@@ -141,7 +142,7 @@ def new_player(playerType = 'Unspecified'):
 
     return p_dict
 
-def new_game(playerNames):
+def new_game(playerInfo):
     """ Produces the initial game state
 
     The games state is a dictionary.
@@ -153,22 +154,27 @@ def new_game(playerNames):
     Player Hands and the order of the tile stack are private information
     Anon is for groups that are started by placing a non-adjacent tile.
     """
-    if type(playerNames) is list:
-        players = {p : 'Unspecified' for p in playerNames}
+#   print(playerInfo)
+#   return
+    if type(playerInfo) is list:
+        player_types_dict = {p : 'Unspecified' for p in playerInfo}
+    elif type(playerInfo) is dict:
+        player_types_dict = playerInfo
+
     state = dict()
     state['Players'] = dict()
     state['Group'] = dict()
     state['Phase'] = 'Place Starters'
-    state['Turn'] = new_turn(playerNames[0])
+    state['Turn'] = new_turn(list(player_types_dict)[0])
     state['Seed'] = None
 
-    for player, ptype in players.items():
+    for player, ptype in player_types_dict.items():
         state['Players'][player] = new_player(ptype)
     state['Players']['Bank'] = new_player('Bank')
 
     for corp in corporations:
         state['Group'][corp] = []
-    for i in range(1, len(playerNames) + 1):
+    for i in range(1, len(player_types_dict) + 1):
         state['Group']["Anon{}".format(i)] = []
 
     return state
