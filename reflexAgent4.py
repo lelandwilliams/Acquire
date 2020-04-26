@@ -5,7 +5,7 @@ from PyQt5.QtCore import QCoreApplication
 
 class reflexAgent(RandomClient):
     def __init__(self, client_id = None, serverPort = 0, 
-            serverAddress = 'localhost', name = 'Noname', client_type = 'PLAYER'):
+            serverAddress = 'localhost', name = 'Noname', client_type = 'Reflex4'):
         super().__init__(client_id, serverPort, serverAddress, name, client_type)
         f = open('weights.gam')
         self.gw = eval(f.readline())
