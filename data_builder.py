@@ -30,7 +30,7 @@ def step(state, turn):
     Currently, it ignores changes in hands, but that might be worth changing later.
     """
     s = state
-    print(s)
+#   print(s)
     if type(turn['Tile']) is tuple:
         result = rules.succ(s, None, turn['Tile'])
         if result is None:
@@ -102,30 +102,30 @@ def revise(phi, w, y, eta):
         w[el] -= eta * 2 * train_loss * phi[el]
 
 def setup():
-    fname = "data/randomTrainingExamples1.gam"
+    fname = "data/flex4.gam"
     column_list = ["GameNum", "Turn", "Player", \
                    "Player_Type", "Is_Turn", \
                    "Money", "Hand", "Tower", \
                    "Luxor", "American", "Worldwide", \
                    "Festival", "Continental", "Imperial"]
-#   turns = pd.DataFrame(columns=column_list)
     game_num = 0
     turn_num = 0
     turn_table = None
 
     f = open(fname)
-#   for _ in range(1):
-    game = f.readline()
-    for game in f:
+    for _ in range(2):
+        game = f.readline()
+#   for game in f:
         state, history = eval(game)
         history.append(state['Turn'])
-        players = [p for p in state['Players'] if p != 'Bank']
+        playerlist = [p for p in state['Players'] if p != 'Bank']
+        players = {p: state['Players'][p]['playerType'] for p in playerlist}
         seed = state['Seed']
         cur_state, hand = rules.new_game(players, True, seed)
         turns = []
         states = [cur_state]
 
-        for turn in history[:15]:
+        for turn in history[:20]:
             cur_state = step(cur_state, turn)
             for player in players:
                 turn = {}
@@ -145,11 +145,14 @@ def setup():
                 turn["Hand"] = None
                 turns.append(turn)
             turn_num += 1
+        game_num +=1
 
         if turn_table is None:
             turn_table = pd.DataFrame(turns)
+        else:
+            turn_table = turn_table.append(pd.DataFrame(turns), ignore_index = True)
 
-        print(turn_table)
+    print(turn_table)
 
 
 
