@@ -29,7 +29,7 @@ class GM(GameClient):
 
     def startGame(self, players):
 #       print(players)
-        players.sort()
+#       players.sort()   # why ?
         if self.game_in_progress:
             return
         self.game_in_progress = True
