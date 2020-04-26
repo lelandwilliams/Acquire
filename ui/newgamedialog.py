@@ -1,12 +1,12 @@
-import sys
+import sys,os,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout,\
 QLineEdit, QButtonGroup, QGridLayout, QRadioButton, QFileDialog, QPushButton,\
 QToolButton, QLabel, QProgressDialog, QDialog, QCheckBox, QProgressBar
 from PyQt5.QtGui import QIcon, QIntValidator
-import os,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
 from robotNames import names as robotnames
 from random import choice
 from exampleMaker import statsBuilder, Bots
@@ -84,7 +84,7 @@ class NewGameDialog(QDialog):
             self.saEditBar = QLineEdit(self.logfile)
 
             self.numBox = QLineEdit(str(self.num_games))
-            self.validator = QIntValidator(1,100)
+            self.validator = QIntValidator(1,10000)
             self.numBox.setValidator(self.validator)
             self.numBox.textChanged.connect(self.numBoxUpdated)
 
@@ -171,9 +171,9 @@ class NewGameDialog(QDialog):
         self.quitButton.setEnabled(False)
         self.game_runner = statsBuilder()
         player_dict = self.getPlayers()
-        print(player_dict)
-        self.game_runner.num_games = self.num_games
-        self.game_runner.fname = self.filename
+#       print(player_dict)
+        self.game_runner.max_games = self.num_games
+        self.game_runner.fname = self.filename[0]
 
 #       progress = QProgressDialog("Running Simulations", "end", 1, self.num_games, self )
         self.progress = QProgressBar()
