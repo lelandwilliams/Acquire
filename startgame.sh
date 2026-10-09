@@ -1,2 +1,2 @@
-cd ui
-python acquireUI.py
+cd "$(dirname "$0")/ui"
+uv run python acquireUI.py
