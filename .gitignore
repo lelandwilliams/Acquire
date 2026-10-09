@@ -2,3 +2,4 @@ __pycache__
 acquire.log
 network.old
 savegame.txt
+.venv/
