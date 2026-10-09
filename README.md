@@ -1,41 +1,37 @@
 # Acquire
-An implementation of the Sid Sackson 3M Classic for purposes of exploring Artificial Intelligence
+A Python implementation of Sid Sackson's classic board game *Acquire*, built as a testbed for game-playing AI.
 
-## Running
-Requires [uv](https://docs.astral.sh/uv/). Clone the master branch and run:
+Acquire is a game of hotel-chain mergers and stock speculation. The rules fit on a single page, but strong play means reading the board, anticipating mergers, and inferring what your opponents are holding. That combination of simple rules and deep strategy makes it an ideal target for AI research. The long-term goal is an agent that not only wins, but discovers strategy and can explain it in human terms.
+
+## Features
+- **Playable GUI** (PyQt5): play a full game against AI opponents.
+- **Client-server architecture over WebSockets**: human and AI players connect the same way, so games run identically with or without a human at the table.
+- **Pluggable agents**: a random baseline, a family of reflex agents (including one with learned feature weights), and minimax / alpha-beta search.
+- **Self-play at scale**: run large batches of bot-only games and record complete game traces for training and analysis.
+
+## Quick start
+Requires [uv](https://docs.astral.sh/uv/).
 
 ```sh
+git clone https://github.com/lelandwilliams/Acquire.git
+cd Acquire
 ./startgame.sh
 ```
 
-or equivalently `cd ui && uv run python acquireUI.py`. On first run, uv will fetch Python 3.14 and the dependencies (PyQt5, pandas) into a local `.venv`.
+On first run, uv fetches Python 3.14 and the dependencies (PyQt5, pandas) into a local `.venv`. To launch manually: `cd ui && uv run python acquireUI.py`.
 
-The new-game dialog lets you choose your opponents: a random agent (`randomClient`) or one of the reflex agents (`reflexAgent2`–`4`). It also has a standalone mode that runs many bot-only games and records the game traces.
-
-## Background
-Acquire is a long-time favorite board game of mine. When I'm hosting a game night, I find this game to be a good one to teach persons new to gaming as the rules are simple, and the goal (make money) is more concrete than victory point schemes, and the game has suspense, and a sense of history.
-
-I thought that coming up with an AI for the game could be very interesting, as good play
-requires interpreting other players' actions, and understanding the board. The latter,
-in particular, seems like a good place for the use of Neural Nets. I'd love it if a good AI could
-teach me to play better, not just by making me work harder for the win, but by determining a strategy and communicating it in human terms.
-
-Of course, it is more fun to see how an agent performs by playing against it, and it didn't seem
-that the UI for this would be too complex: just a grid for the playing board, a place to show player holdings,
-and a message area for prompts. I'm much more interested in the view as a tool for
-imagining the developments under the hood than a wow-inspiring UI.
+From the new-game dialog, choose your opponents (`randomClient`, `reflexAgent2`–`4`), set a seed, or switch to standalone mode to run bot-only games in bulk.
 
 ## Architecture
-The game runs client-server over WebSockets, so human and AI players take part in exactly the same way,
-and games can be played with or without a human at the table.
+| Layer | Files | Role |
+|---|---|---|
+| Model and rules | `model.py`, `rules.py` | Game state (public `state` plus private `hands`); `new_game()`, `getActions()`, `succ()` |
+| Server | `concierge.py`, `gameServer.py`, `GM.py` | Concierge launches game servers and players; the GM runs each game and records its history |
+| Clients | `randomClient.py`, `humanClient.py`, `ui/` | `RandomClient` is the base for every player; agents override its `chooseXXX()` methods; `HumanClient` drives the GUI |
+| Agents | `reflexAgent*.py`, `featureExtractor.py`, `minimax.py`, `alphabeta.py` | Feature-based reflex agents (`reflexAgent4` loads learned weights from `weights.gam`) and tree search |
+| Data and training | `exampleMaker.py`, `statsBuilders.py`, `train.py`, `data_builder.py`, `data/` | Batch self-play, game-trace reconstruction, and training-data generation |
 
-- **Model and rules**: `model.py` holds the game state (public `state` plus private `hands`); `rules.py` provides `new_game()`, `getActions()` and `succ()`.
-- **Server side**: `concierge.py` launches game servers (`gameServer.py`) and the players for them; `GM.py` is the game master client that runs the game and records its history.
-- **Clients**: `randomClient.py` is the base class for all players and chooses randomly; agents override its `chooseXXX()` methods. `humanClient.py` connects the GUI in `ui/`.
-- **Agents**: `reflexAgent*.py` are hand-built and learned reflex agents using features from `featureExtractor.py`; `reflexAgent4` loads learned weights from `weights.gam`. `minimax.py` and `alphabeta.py` are search experiments over `rules.py`.
-- **Data and training**: `exampleMaker.py` / `statsBuilders.py` run batches of bot games; `train.py` and `data_builder.py` turn game traces into training data. Results live in `data/`.
-- **Older code**: `network/`, `controller.py`, `acquire_model.py`, `randomAI.py` and `robotFactory.py` are from an earlier version of the networking and model, superseded by the files above.
+`network/`, `controller.py`, `acquire_model.py`, `randomAI.py` and `robotFactory.py` are legacy code from an earlier version of the networking and model layers.
 
-## Status
-The game is playable through the GUI against random and reflex agents, and bot-only games can be run in bulk to generate training data.
-See [TODO.md](TODO.md) for planned work.
+## Roadmap
+Planned work includes richer UI feedback (active-player highlighting, recent actions, stock holdings), remote play through the concierge, and stronger learned agents. See [TODO.md](TODO.md).
