@@ -1,0 +1,9 @@
+[project]
+name = "acquire"
+version = "0.1.0"
+description = "An implementation of Sid Sackson's Acquire for exploring AI"
+requires-python = ">=3.14"
+dependencies = [
+    "pandas>=3.0.6",
+    "pyqt5>=5.15.11",
+]
