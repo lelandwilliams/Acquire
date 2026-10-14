@@ -5,7 +5,7 @@
 - [x] Fix README run instructions (`mainWidgent.py` doesn't exist; use `./startgame.sh` or `uv run`)
 - [ ] Replace `sys.path` hacks (`ui/acquireUI.py`, `ui/newgamedialog.py`, `demos/playTest.py`) with a proper package layout
 - [ ] Update or remove `Classes.txt` (describes `mainWidget.py` / `acquire.py`, out of date)
-- [ ] Rename Master branch to `Main`
+- [x] Rename `master` branch to `main`
 - [x] Inspect/Remove old branches
 
 ## Network / concierge
@@ -17,9 +17,15 @@
 - [ ] `humanClient.py`: handle disconnection while a game is still in session
 
 ## UI
+- [ ] Make UI theme independent of system theme
 - [ ] Change background of active player box
 - [ ] Add instructions/prompts for human players
 - [ ] Add delays with one-shot timers
 - [ ] Show last player actions in player bar
 - [ ] Show stocks owned in player bar
 - [ ] Add mouseover animations to tiles and stocks when selecting
+- [ ] Have a different shade of yellow on gridlines
+- [ ] Highlight the board space when hovering over a piece
+- [ ] Dont show stock prices when founding a company
+- [ ] Add a corporation status box
+
