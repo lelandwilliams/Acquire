@@ -18,7 +18,7 @@
 - [ ] `humanClient.py`: handle disconnection while a game is still in session
 
 ## UI
-- [ ] Make UI theme independent of system themee
+- [ ] Make UI theme independent of system theme
 - [ ] Change background of active player box
 - [ ] Add instructions/prompts for human players
 - [ ] Add delays with one-shot timers
