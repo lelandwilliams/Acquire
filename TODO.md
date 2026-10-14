@@ -6,7 +6,7 @@
 - [ ] Replace `sys.path` hacks (`ui/acquireUI.py`, `ui/newgamedialog.py`, `demos/playTest.py`) with a proper package layout
 - [ ] Update or remove `Classes.txt` (describes `mainWidget.py` / `acquire.py`, out of date)
 - [ ] Rename Master branch to `Main`
-- [ ] Inspect/Remove old branches
+- [x] Inspect/Remove old branches
 
 ## Network / concierge
 - [ ] `concierge.py`: remove old code
