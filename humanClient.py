@@ -90,7 +90,9 @@ class HumanClient(RandomClient):
         """
         return self.chooseNewCorp(actions)
 
-    def chooseSurvivor(self, actions): return random.choice(actions)
+    def chooseSurvivor(self, actions):
+        """ Ask the human player which of two equal-sized corporations survives a merger """
+        return self.chooseMerger(actions)
 
     def chooseLiquidate(self, actions):
         """ Ask the human player what to do with stock in acquired corporation.
@@ -116,10 +118,7 @@ class HumanClient(RandomClient):
         corp = sale['Corporation']
         largestCorp = self.state['Turn']['Merger']['NewCorps'][0]
 
-        choice = self.chooseMergerStockAction(corp, largestCorp, actions)
-        if self.use_timers:
-            QTimer.singleShot(self.ui_time, Qt.PreciseTimer, self.de_enqueueTextMessage)
-        return choice
+        return self.chooseMergerStockAction(corp, largestCorp, actions)
 
     def chooseEndGame(self, actions): return "Yes"
 

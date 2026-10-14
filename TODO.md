@@ -18,7 +18,7 @@
 - [ ] `humanClient.py`: handle disconnection while a game is still in session
 
 ## UI
-- [ ] Make UI theme independent of system theme
+- [ ] Make UI theme independent of system themee
 - [ ] Change background of active player box
 - [ ] Add instructions/prompts for human players
 - [ ] Add delays with one-shot timers
@@ -27,6 +27,15 @@
 - [ ] Add mouseover animations to tiles and stocks when selecting
 - [ ] Have a different shade of yellow on gridlines
 - [ ] Highlight the board space when hovering over a piece
+-- or highlight all possible moves and allow the player to choose by clicking on the board.
 - [ ] Dont show stock prices when founding a company
 - [ ] Add a corporation status box
+- [ ] Add a 'Game Over' announcement at the bottom
+- [ ] Default the Human player to 'Puny Human' but allow it to be set
+- [ ] Ensure merging tile gets recolored once the merger is resolved before moving on to stock buying
+- [ ] Include a sellall button in merger resolution dialog
+- [ ] Add messages in UI listing robot actions, or have animations showing robot actions
 
+## Testing
+- [ ] Add a debug option to start a game from a saved position (e.g. just before the human's tile causes an equal-size merger), building on `model.py`'s `savegame.txt` save/load
+- [ ] Test the "Choose the Surviving Corporation" dialog in a real game where the human's tile merges two equal-size corporations

@@ -37,11 +37,11 @@ class PlayerDialogBox(QFrame,QObject):
 
     def chooseMerger(self, corps, colors):
         self.dialog = StockChooserDialog(corps,colors)
-        text = "<h1> Liquidate a Company</h1>"
+        text = "<h1>Choose the Surviving Corporation</h1>"
         text+= "<p>The tile you placed connected two or more corporations.</p>"
         text += "<p>Usually the smallest corporation is absorbed into the larger<br>"
-        text += "but in this case there were two equal sized corporations</p>"
-        text += "<p>now you choose which of the corporations will be absorbed</p>"
+        text += "but in this case the largest corporations are the same size</p>"
+        text += "<p>Now you choose which corporation survives; the others will be absorbed into it</p>"
         self.label1.setText(text)
         self.layout.addWidget(self.dialog)
         corp = list(corps)[self.dialog.exec()]
