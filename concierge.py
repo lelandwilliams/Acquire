@@ -4,6 +4,12 @@ from PyQt5.QtCore import QObject, QDataStream, pyqtSignal, pyqtSlot, QCoreApplic
 import model
 
 DEFAULTPORT = 64337
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+def py_cmd(script, *args):
+    """ Command to run a project script with the current interpreter,
+        independent of PATH and the working directory. """
+    return [sys.executable, os.path.join(HERE, script), *args]
 
 class Concierge(QObject):
     """ A Server Management 
@@ -117,7 +123,7 @@ class Concierge(QObject):
         """
         for i in range(self.num_servers):
             self.servers_active += 1
-            subprocess.Popen(["python", "gameServer.py", "-cp", str(self.port), "-n", '4', "-s", str(self.game_seed)])
+            subprocess.Popen(py_cmd("gameServer.py", "-cp", str(self.port), "-n", '4', "-s", str(self.game_seed)))
 
     def serverDone(self, game, server):
         s, hist = eval(game)
@@ -163,7 +169,7 @@ class Concierge(QObject):
             args.append("-p")
             args.append(port)
             subprocess.Popen(args)
-        subprocess.Popen(["python", "GM.py", "-p", port, "-s", str(self.game_seed)])
+        subprocess.Popen(py_cmd("GM.py", "-p", port, "-s", str(self.game_seed)))
         self.serverAvailable.emit(int(port))
 
     def socketDisconnected(self):
@@ -175,10 +181,10 @@ if __name__ == '__main__':
 #   parser.add_argument('-cp', '--conciergePort', type = int) 
 #   args = parser.parse_args()
     c = Concierge()
-    c.process_list.append(["python", "randomClient.py", "-n", "Random1"])
-    c.process_list.append(["python", "randomClient.py", "-n", "Random2"])
-    c.process_list.append(["python", "randomClient.py", "-n", "Random3"])
-    c.process_list.append(["python", "randomClient.py", "-n", "Random4"])
+    c.process_list.append(py_cmd("randomClient.py", "-n", "Random1"))
+    c.process_list.append(py_cmd("randomClient.py", "-n", "Random2"))
+    c.process_list.append(py_cmd("randomClient.py", "-n", "Random3"))
+    c.process_list.append(py_cmd("randomClient.py", "-n", "Random4"))
 #   c.process_list.append(["python", "randomClient.py", "-p", port, "-n", "Random4"])
 #    c.process_list.append(["python", "reflexAgent.py", "-p", port, "-n", "Flex1"])
 #    c.process_list.append(["python", "reflexAgent2.py", "-p", port, "-n", "Flex2"])

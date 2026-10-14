@@ -1,7 +1,8 @@
 # TODO
 
 ## Environment / setup
-- [ ] Use `sys.executable` instead of hardcoded `"python"` when spawning subprocesses (`humanClient.py`, `concierge.py`, ...)
+- [x] Use `sys.executable` instead of hardcoded `"python"` when spawning subprocesses (`humanClient.py`, `concierge.py`, ...)
+- [ ] Open `weights.gam` / `savegame.txt` via paths relative to `__file__`, then remove the `chdir` hack in `concierge.py`
 - [x] Fix README run instructions (`mainWidgent.py` doesn't exist; use `./startgame.sh` or `uv run`)
 - [ ] Replace `sys.path` hacks (`ui/acquireUI.py`, `ui/newgamedialog.py`, `demos/playTest.py`) with a proper package layout
 - [ ] Update or remove `Classes.txt` (describes `mainWidget.py` / `acquire.py`, out of date)

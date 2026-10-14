@@ -1,6 +1,6 @@
 from rules import *
 from randomClient import RandomClient
-from concierge import Concierge
+from concierge import Concierge, py_cmd
 import logging
 from PyQt5.QtCore import QMutex, QTimer, Qt
 
@@ -176,9 +176,9 @@ class HumanClient(RandomClient):
         """
         if self.concierge is None:
             self.concierge = Concierge()
-            self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random1"])
-            self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random2"])
-            self.concierge.process_list.append(["python", "randomClient.py", "-n", "Random3"])
+            self.concierge.process_list.append(py_cmd("randomClient.py", "-n", "Random1"))
+            self.concierge.process_list.append(py_cmd("randomClient.py", "-n", "Random2"))
+            self.concierge.process_list.append(py_cmd("randomClient.py", "-n", "Random3"))
         self.concierge.serverAvailable.connect(self.serverAvailable)
         self.concierge.runGames()
 
