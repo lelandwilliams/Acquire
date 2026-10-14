@@ -10,6 +10,7 @@ from PyQt5.QtGui import QIcon, QIntValidator
 from robotNames import names as robotnames
 from random import choice
 from exampleMaker import statsBuilder, Bots
+from concierge import py_cmd
 
 playerTypes = ['Human']
 for b in Bots:
@@ -186,7 +187,7 @@ class NewGameDialog(QDialog):
         self.game_runner.finished.connect(self.finished)
 
         for name, executable in player_dict.items():
-            self.game_runner.process_list.append(["python", executable, "-n", name])
+            self.game_runner.process_list.append(py_cmd(executable, "-n", name))
         self.game_runner.runGames()
 
 

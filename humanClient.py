@@ -208,6 +208,7 @@ class HumanClient(RandomClient):
 
     def serverAvailable(self, port):
         self.serverPort = port
+        self.key = self.concierge.key
         self.concierge.serverAvailable.disconnect(self.serverAvailable)
         self.connectToServer(port = self.serverPort)
 

@@ -1,6 +1,7 @@
 import sys, queue, uuid, argparse, logging
 from PyQt5 import QtNetwork, QtWebSockets
 from PyQt5.QtCore import QObject, QDataStream, pyqtSlot, QCoreApplication, QTimer, QUrl
+import netkey
 
 DEFAULTPORT = 64337
 
@@ -25,6 +26,7 @@ class GameServer(QObject):
         self.GM = None
         self.gameInProgress = False
         self.numPlayersNeeded = numPlayers
+        self.key = netkey.env_key()
         self.players = dict() # This is a dict name -> client_obj
         self.player_types = dict() # This remembers name -> type
 
@@ -41,7 +43,8 @@ class GameServer(QObject):
                 self.url = QUrl()
                 self.url.setScheme("ws")
                 self.url.setHost('localhost')
-                self.url.setPort(port)
+                self.url.setPort(conciergePort if conciergePort else DEFAULTPORT)
+                netkey.add_key(self.url, self.key)
                 self.c_socket.connected.connect(self.onConnected)
                 self.c_socket.open(self.url)
 
@@ -56,9 +59,13 @@ class GameServer(QObject):
         sys.exit()
 
     def newClient(self):
+        client = self.server.nextPendingConnection()
+        if self.key and not netkey.has_key(client, self.key):
+            self.logger.warning('Game server rejected a connection without its key')
+            client.close()
+            return
         self.logger.info('Game server recieved a connection')
         self.consecutive_timeouts = 0
-        client = self.server.nextPendingConnection()
         self.clients[client] = 'Undefined'
         client.textMessageReceived.connect(self.processTextMessage)
         client.disconnected.connect(self.socketDisconnected)

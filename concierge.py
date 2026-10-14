@@ -1,7 +1,7 @@
 import sys, queue, uuid, argparse, subprocess, statistics, logging, os
 from PyQt5 import QtNetwork, QtWebSockets
 from PyQt5.QtCore import QObject, QDataStream, pyqtSignal, pyqtSlot, QCoreApplication, QTimer
-import model
+import model, netkey
 
 DEFAULTPORT = 64337
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -55,6 +55,7 @@ class Concierge(QObject):
         self.servers = list() # A place to store obj references so the garbarge collector
                             # won't take them away
         self.process_list = list()
+        self.key = uuid.uuid4().hex # shared with every process this concierge starts
 
         attempts = 0
         max_attempts = 10
@@ -85,8 +86,12 @@ class Concierge(QObject):
         When a message is recieved, processTextMessage() is signalled.
         """
 
-        logging.info('a new server connected to concierge')
         client = self.server.nextPendingConnection()
+        if not netkey.has_key(client, self.key):
+            logging.warning('concierge rejected a connection without its key')
+            client.close()
+            return
+        logging.info('a new server connected to concierge')
         client.textMessageReceived.connect(self.processTextMessage)
         client.disconnected.connect(self.socketDisconnected)
         self.servers.append(client) # solely to keep the garbage collector from destroying
@@ -123,7 +128,11 @@ class Concierge(QObject):
         """
         for i in range(self.num_servers):
             self.servers_active += 1
-            subprocess.Popen(py_cmd("gameServer.py", "-cp", str(self.port), "-n", '4', "-s", str(self.game_seed)))
+            self.spawn(py_cmd("gameServer.py", "-cp", str(self.port), "-n", '4', "-s", str(self.game_seed)))
+
+    def spawn(self, cmd):
+        """ Starts a child process that knows this concierge's key """
+        subprocess.Popen(cmd, env = dict(os.environ, **{netkey.KEY_ENV: self.key}))
 
     def serverDone(self, game, server):
         s, hist = eval(game)
@@ -168,8 +177,8 @@ class Concierge(QObject):
         for args in self.process_list:
             args.append("-p")
             args.append(port)
-            subprocess.Popen(args)
-        subprocess.Popen(py_cmd("GM.py", "-p", port, "-s", str(self.game_seed)))
+            self.spawn(args)
+        self.spawn(py_cmd("GM.py", "-p", port, "-s", str(self.game_seed)))
         self.serverAvailable.emit(int(port))
 
     def socketDisconnected(self):

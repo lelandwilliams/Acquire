@@ -2,6 +2,7 @@ from rules import *
 from PyQt5.QtCore import QCoreApplication, QUrl, QObject
 from PyQt5.QtWebSockets import QWebSocket, QWebSocketProtocol
 import random, sys, argparse, logging
+import netkey
 
 class RandomClient(QObject):
     """ A base class for all networked player clients
@@ -50,6 +51,7 @@ class RandomClient(QObject):
         self.serverAddress = serverAddress
         self.name = name
         self.client_type = client_type
+        self.key = netkey.env_key()
         if self.client_type != 'HUMAN':
             self.connectToServer(serverAddress, serverPort)
         self.state = None
@@ -78,6 +80,7 @@ class RandomClient(QObject):
         url.setScheme("ws")
         url.setHost(address)
         url.setPort(port)
+        netkey.add_key(url, self.key)
         self.socket.error.connect(self.error)
         self.socket.connected.connect(self.onConnected)
         self.socket.disconnected.connect(self.onDisconnected)

@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import (
 )
 
 import model
-from concierge import Concierge
+from concierge import Concierge, py_cmd
 from humanClient import HumanClient
 
 
@@ -220,7 +220,7 @@ class AcquireUI(QMainWindow, HumanClient):
         self.concierge.process_list.clear()
         for name, executable in player_dict.items():
             if "Human" not in executable:
-                self.concierge.process_list.append(["python", executable, "-n", name])
+                self.concierge.process_list.append(py_cmd(executable, "-n", name))
         self.concierge.serverAvailable.connect(self.serverAvailable)
         self.concierge.runGames()
 
